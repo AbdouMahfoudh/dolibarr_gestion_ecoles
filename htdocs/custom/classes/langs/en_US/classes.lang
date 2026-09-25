@@ -1,0 +1,262 @@
+# Dolibarr language file - en_US - classes
+
+Module104600Name=Classes
+Module104600Desc=School classes, subjects, coefficients, monthly fees and timetables
+
+Classes=Classes
+MenuClasses=Classes
+MenuNouvelleClasse=New class
+MenuMatieres=Subjects
+MenuNouvelleMatiere=New subject
+MenuConfiguration=Configuration
+MenuNiveaux=Levels
+MenuSections=Sections
+MenuCreneaux=Time slots
+MenuSessions=Exam sessions
+MenuReglages=Settings
+AccesRapides=Quick access
+EcoleClasses=Classes
+EcoleMatieres=Subjects
+EcoleExamens=Exams
+EcoleEmploiDuTemps=Timetable
+
+EcoleActif=Active
+EcoleInactif=Inactive
+EcoleFiltreStatuts=Several statuses
+
+Niveaux=Levels
+Niveau=Level
+NouveauNiveau=New level
+Sections=Sections
+Section=Section
+NouvelleSection=New section
+Creneaux=Time slots
+Creneau=Time slot
+NouveauCreneau=New time slot
+SessionsExamen=Exam sessions
+SessionExamen=Exam session
+NouvelleSession=New exam session
+Matieres=Subjects
+Matiere=Subject
+NouvelleMatiere=New subject
+Classe=Class
+NouvelleClasse=New class
+
+LabelFr=Label (French)
+LabelAr=Label (Arabic)
+AvecSections=Uses sections
+AvecSectionsHelp=If checked, each class of this level must choose a section (e.g. high school)
+CodeMatiere=Code
+CodeMatiereHelp=Optional short code (e.g. MATH, FR, ARB)
+HeureDebut=Start time
+HeureFin=End time
+Trimestre=Term
+Trimestre1=1st term
+Trimestre2=2nd term
+Trimestre3=3rd term
+DateDebut=Start date
+DateFin=End date
+SectionHelp=Required only for levels that use sections
+EffectifMax=Maximum number of students
+SalleAttitree=Assigned room
+Mensualite=Monthly fee
+MensualiteHelp=Monthly tuition for a student of this class
+FraisInscriptionClasse=Registration fee
+FraisInscriptionClasseHelp=Registration fee for a student of this class (0 = no fee)
+Coefficient=Coefficient
+Bareme=Scale
+NoteMax=Maximum mark
+BaremeSur20=Mark out of 20
+BaremeSurCoef20=Mark out of coefficient × 20
+BaremeAide=Scale "out of coefficient × 20": for example a coefficient of 2.5 gives a mark out of 50 (the teacher enters 45/50). Scale "out of 20": the mark is out of 20 and the coefficient is only used for the average.
+Jour=Day
+Enseignant=Teacher
+Salle=Room
+Surveillant=Invigilator
+DateExamen=Exam date
+Horaire=Time
+
+Fiche=Card
+ResumeClasse=Class summary
+Rubrique=Item
+Nombre=Number
+Gerer=Manage
+TotalCoefficients=Total coefficients
+MatieresCoefficients=Subjects and coefficients
+EmploiDuTempsCours=Course timetable
+EmploiDuTempsExamens=Exam timetable
+AucuneMatiereLiee=No subject is linked to this class.
+AucuneMatiereDisponible=All active subjects are already linked to this class.
+AjouterMatiere=Link a subject to this class
+AucunCreneau=No time slot is defined.
+AjouterCase=Add a course
+ModifierCase=Edit the course
+AucuneSession=No exam session is defined.
+AjouterEpreuve=Add an exam
+ModifierEpreuve=Edit the exam
+AucuneEpreuve=No exam scheduled.
+
+VoirHistorique=View change history
+HistoriqueEmploiDuTemps=Course timetable history
+HistoriqueExamens=Exam timetable history
+Masquer=Hide
+Utilisateur=User
+Action=Action
+AncienneVersion=Previous version
+ActionSupprime=Deleted
+ActionModifie=Modified
+AucunHistorique=No change recorded.
+
+JoursOuvrables=Working days
+JoursOuvrablesAide=Days shown in the course timetables.
+
+ErrorEcoleAlreadyExists=%s "%s" already exists.
+ErrorEcoleObjectUsed=Cannot delete: used by "%s" (%s).
+ClasseEleves=Students assigned to the class
+ClasseHistoriqueEleves=Student history (class changes)
+ClasseAppels=Attendance calls
+ClasseEvaluations=Assessments
+ClasseBulletins=Report cards
+ErrorEcoleBadTime=%s: invalid time (format HH:MM).
+ErrorEcoleFinAvantDebut=The end time must be after the start time.
+ErrorEcoleCreneauChevauche=This slot overlaps slot %s (%s - %s).
+ErrorEcoleDateFinAvantDebut=The end date cannot be before the start date.
+ErrorEcoleBadValue=Invalid value for "%s".
+ErrorEcoleSectionRequired=Level "%s" requires a section.
+ErrorEcoleCoefficient=The coefficient must be greater than zero.
+ErrorEcoleMatiereDejaLiee=This subject is already linked to this class.
+ErrorEcoleMatiereUtilisee=Cannot unlink the subject: it is used in "%s" (%s).
+ErrorEcoleMatiereNonLiee=This subject is not linked to this class: add it first in "Subjects and coefficients".
+ErrorEcoleCaseOccupee=This class already has a course on this day and slot.
+ErrorEcoleEnseignantOccupe=%s already teaches class %s on this day and slot.
+ErrorEcoleSalleOccupee=This room is already used by class %s at that time.
+ErrorEcoleDateHorsSession=The exam date must be within the session (from %s to %s).
+ErrorEcoleClasseExamenChevauche=This class already has an exam overlapping this time.
+ErrorEcoleSurveillantOccupe=%s already invigilates class %s at that time.
+ErrorEcoleAucunJour=Choose at least one working day.
+
+# Rooms
+Salles=Rooms
+Salle=Room
+NouvelleSalle=New room
+MenuSalles=Rooms
+MenuNouvelleSalle=New room
+MenuDisponibilite=Room availability
+DisponibiliteSalles=Room availability
+TypeSalle=Room type
+SalleTypeClasse=Classroom
+SalleTypeLabo=Laboratory
+SalleTypeInfo=Computer room
+SalleTypeSport=Sports ground / gym
+SalleTypeAutre=Other
+Capacite=Capacity (seats)
+Emplacement=Location
+ClasseAttitree=Assigned class
+AucuneClasseAttitree=No assigned class
+OccupationSalle=Occupancy
+HeuresParSemaine=%s of lessons per week
+VoirOccupation=View weekly occupancy
+Libre=Free
+SallesLibres=Free rooms
+ExamensAVenir=Upcoming exams in this room
+AucuneSalle=No active room.
+
+# Timetables
+MenuEmploisDuTemps=Timetables
+AideEmploisDuTemps=Each class has its own timetable. Click a class to open it and add its lessons.
+AideEmploiDuTemps=Click the "+" of an empty slot to add a lesson, or click a lesson to edit it.
+HeuresSemaine=Hours / week
+AucuneMatiere=No subject
+EdtVide=empty
+VoirEmploiDuTemps=View timetable
+
+# References
+RefCourteHelp=Short reference: 10 characters maximum (e.g. 5C, MATH, S01)
+ErrorEcoleRefTropLongue=The reference must not exceed %s characters.
+ErrorEcoleSalleDesactivation=Cannot deactivate this room: it is still used in %s timetable lessons and %s upcoming exam(s). Change the room of those lessons first.
+ErrorEcoleSalleInactive=Room %s is deactivated: choose an active room.
+EcoleLibelle=Label
+BaremeParDefaut=Default subject scale
+BaremeParDefautHelp=Scale proposed when linking a subject to a class of this level (can be changed per subject). E.g. kindergarten and primary: mark out of coefficient × 20; middle and high school: mark out of 20.
+
+# User categories
+CategorieEcole=Category (school)
+CategorieEcoleHelp=Role of the person in the school. Determines who can be chosen as teacher (lessons) or invigilator (exams). Several choices allowed.
+EcoleCatDirection=Management
+EcoleCatEnseignant=Teacher
+EcoleCatSurveillant=Supervisor
+EcoleCatSecretariat=Secretariat
+EcoleCatComptable=Accountant
+EcoleCatAgent=Cleaning staff / guard
+EcoleCatChauffeur=Driver
+EcoleCatAutre=Other
+AucunUtilisateurCategorie=No user of category "%s". Set the category on the user card:
+ErrorEcoleUserCategorie=%s is not of category "%s" (see the user card).
+
+# Exam period
+PeriodeExamen=Exam period
+DuAu=from %s to %s
+NbJoursExamen=%s days
+ModifierPeriode=Change the period
+PeriodeNonDefinie=The period of this exam is not defined yet.
+DefinirPeriodeAide=First define the exam period (start and end date): exams are then placed day by day within this period.
+EnregistrerPeriode=Save the period
+PeriodeCommuneAide=The period is common to all classes for this term.
+JourExamen=Day
+ErrorEcolePeriodeIncomplete=Enter the start date and the end date of the period.
+ErrorEcoleSessionExamensHorsPeriode=Not possible: %s already scheduled exam(s) would fall outside the new period. Move them first.
+
+# PDF / Excel export
+ExportPdf=PDF
+ExportExcel=Excel
+EcolePdfFooter=Document generated on %s
+NbEnregistrements=%s record(s)
+PdfHeaderStyle=PDF header
+PdfHeaderStyleAide=Style used for all PDFs of the module (lists and timetables). The PDF language follows the user's language.
+PdfHeaderBandeauBleu=Blue band
+PdfHeaderBandeauBleuDesc=Full-width band, logo and school on one side, title on the other.
+PdfHeaderBandeauSombre=Dark band
+PdfHeaderBandeauSombreDesc=Same layout, slate colours and amber line.
+PdfHeaderMinimal=Minimal
+PdfHeaderMinimalDesc=No band: logo, school and title separated by a thin line.
+PdfHeaderCompact=Compact
+PdfHeaderCompactDesc=Thin one-line band, ideal for long lists.
+PdfHeaderClassique=Classic
+PdfHeaderClassiqueDesc=Centred letterhead: logo, school, contact details then title.
+ApercuFr=Preview FR
+ApercuAr=Preview AR
+ApercuDocTitre=Sample document
+EcoleTelephone=Phone
+NombreMax=Max number
+FiltreMin=Min
+FiltreMax=Max
+VoirElevesClasse=See the students of the class
+EffectifMaxHelp=Maximum number of students enrolled in the class. 100 by default.
+EffectifMaxClasses=Class size
+EffectifMaxDefaut=Default maximum number of students
+EffectifMaxDefautAide=suggested when creating a class and used when a class has no maximum. Each class's maximum is set in its record (Modify button, "Maximum number of students" field).
+
+# Police des PDF
+PdfFont=PDF font
+PdfFontAide=Used by all PDFs of the modules (lists, timetables, receipts, certificates). Only fonts that write both French and Arabic are offered.
+PdfFontNom=Font
+PdfFontDocsFr=French documents
+PdfFontDocsAr=Arabic documents
+PdfFontDejavuSans=DejaVu Sans
+PdfFontDejavuSansDesc=Modern and very readable, sans-serif (current font).
+PdfFontDejavuSansCondensed=DejaVu Sans Condensed
+PdfFontDejavuSansCondensedDesc=Same style, narrower: handy for large tables.
+PdfFontFreeSerif=FreeSerif
+PdfFontFreeSerifDesc=Serif, classic style close to Times; naskh-style Arabic.
+PdfFontAeAlArabiya=AE Al Arabiya
+PdfFontAeAlArabiyaDesc=Traditional, elegant Arabic. The symbols "—", "→" and "€" are replaced by "-" and "EUR".
+PdfFontAeFurat=AE Furat
+PdfFontAeFuratDesc=Fine calligraphic Arabic. The symbols "—", "→" and "€" are replaced by "-" and "EUR".
+
+# Teaching language of subjects (bilingual report card)
+LangueEnseignement=Teaching language
+LangueEnseignementHelp=Language in which the subject is taught. On a bilingual report card, the subject is written in this language. Can be changed for one class in the class "Subjects and coefficients" tab.
+LangueFrancais=French
+LangueArabe=Arabic
+CommeLaMatiere=Same as subject
+LangueClasseAide=Teaching language: "Same as subject" uses the language set on the subject card; choose "French" or "Arabic" for an exception in this class.

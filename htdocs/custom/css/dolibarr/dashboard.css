@@ -1,0 +1,19 @@
+/* ============================================================================
+   Styles spécifiques au tableau de bord de l'établissement
+   ============================================================================ */
+.school-dashboard-head {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	flex-wrap: wrap;
+	margin-bottom: 20px;
+}
+.school-dashboard-head img {
+	max-height: 64px;
+	border-radius: var(--school-radius-sm);
+}
+.school-dashboard-head .school-school-name {
+	font-size: 1.2rem;
+	font-weight: 700;
+	color: var(--school-text);
+}

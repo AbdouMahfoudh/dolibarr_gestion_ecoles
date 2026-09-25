@@ -1,0 +1,489 @@
+/**
+ * table.css - Styles personnalisés pour les tableaux du module Etablissement
+ * Design moderne, épuré et intégré au style natif de Dolibarr
+ */
+
+/* ============================================
+   1. TABLEAUX DE BASE
+   ============================================ */
+
+.table-container {
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 12px rgba(247, 245, 245, 0.08);
+    padding: 0;
+    margin-bottom: 25px;
+    border: 1px solid #e8ecf0;
+    overflow: hidden;
+    transition: box-shadow 0.3s ease;
+}
+
+.table-container:hover {
+    box-shadow: 0 4px 20px rgba(229, 226, 226, 0.12);
+}
+
+.table-container .table-header {
+    padding: 16px 20px;
+    background: #f8fafc;
+    border-bottom: 1px solid #e8ecf0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.table-container .table-header .title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #2c3e50;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.table-container .table-header .title .icon {
+    color: #3b82f6;
+}
+
+.table-container .table-header .actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+/* ============================================
+   2. TABLEAU STYLISÉ
+   ============================================ */
+
+.table-custom {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.table-custom thead th {
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 600;
+    color: #374151;
+    background: #f8fafc;
+    border-bottom: 2px solid #e8ecf0;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
+.table-custom tbody td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #f0f2f5;
+    color: #374151;
+    vertical-align: middle;
+}
+
+.table-custom tbody tr {
+    transition: background 0.2s ease;
+}
+
+.table-custom tbody tr:hover {
+    background: #f8fafc;
+}
+
+.table-custom tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Tableau avec lignes alternées */
+.table-custom-striped tbody tr:nth-child(even) {
+    background: #fafbfc;
+}
+
+.table-custom-striped tbody tr:nth-child(even):hover {
+    background: #f1f4f8;
+}
+
+/* ============================================
+   3. TABLEAUX DE FORMULAIRES (Dolibarr style)
+   ============================================ */
+
+.table-form {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table-form tr {
+    transition: background 0.2s ease;
+}
+
+.table-form tr:hover {
+    background: #fafbfc;
+}
+
+.table-form td {
+    padding: 10px 14px;
+    border-bottom: 1px solid #f0f2f5;
+    vertical-align: middle;
+}
+
+.table-form .label-cell {
+    width: 180px;
+    font-weight: 500;
+    color: #34495e;
+    padding-right: 20px;
+    font-size: 13px;
+}
+
+.table-form .label-cell .required {
+    color: #e74c3c;
+    margin-left: 3px;
+    font-weight: 700;
+}
+
+.table-form .label-cell .help-icon {
+    color: #7f8c8d;
+    font-size: 13px;
+    cursor: help;
+    margin-left: 4px;
+    transition: color 0.2s;
+}
+
+.table-form .label-cell .help-icon:hover {
+    color: #3b82f6;
+}
+
+.table-form .field-cell {
+    flex: 1;
+}
+
+/* Ligne de titre */
+.table-form .form-title-row td {
+    padding: 12px 14px;
+    background: #f8fafc;
+    font-weight: 600;
+    font-size: 14px;
+    color: #2c3e50;
+    border-bottom: 2px solid #e8ecf0;
+}
+
+/* ============================================
+   4. CELLULES SPÉCIALES
+   ============================================ */
+
+/* Cellule avec icône */
+.cell-with-icon {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.cell-with-icon .icon {
+    color: #7f8c8d;
+    font-size: 16px;
+    width: 20px;
+    text-align: center;
+}
+
+/* Cellule d'actions */
+.cell-actions {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+/* Cellule de statut */
+.cell-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.cell-status.status-active {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.cell-status.status-inactive {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.cell-status.status-pending {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+.cell-status .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.cell-status.status-active .dot {
+    background: #16a34a;
+}
+
+.cell-status.status-inactive .dot {
+    background: #dc2626;
+}
+
+.cell-status.status-pending .dot {
+    background: #d97706;
+}
+
+/* ============================================
+   5. TABLEAUX COMPACTS
+   ============================================ */
+
+.table-compact thead th {
+    padding: 8px 12px;
+}
+
+.table-compact tbody td {
+    padding: 8px 12px;
+}
+
+/* ============================================
+   6. TABLEAUX RESPONSIVE
+   ============================================ */
+
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 768px) {
+    .table-form .label-cell {
+        width: 100%;
+        display: block;
+        padding-bottom: 4px;
+        padding-top: 8px;
+    }
+
+    .table-form td {
+        display: block;
+        padding: 6px 14px;
+    }
+
+    .table-form tr {
+        display: block;
+        border-bottom: 2px solid #e8ecf0;
+        padding: 8px 0;
+    }
+
+    .table-form tr:last-child {
+        border-bottom: none;
+    }
+
+    .table-custom thead {
+        display: none;
+    }
+
+    .table-custom tbody tr {
+        display: block;
+        border-bottom: 2px solid #e8ecf0;
+        padding: 12px 0;
+    }
+
+    .table-custom tbody td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 6px 14px;
+        border-bottom: none;
+    }
+
+    .table-custom tbody td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: #6b7280;
+        font-size: 12px;
+        margin-right: 10px;
+    }
+
+    .cell-actions {
+        justify-content: flex-end;
+    }
+}
+
+/* ============================================
+   7. TRI DES TABLEAUX
+   ============================================ */
+
+.table-sortable th {
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+    padding-right: 24px !important;
+}
+
+.table-sortable th::after {
+    content: "↕";
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af;
+    font-size: 12px;
+}
+
+.table-sortable th.sort-asc::after {
+    content: "↑";
+    color: #3b82f6;
+}
+
+.table-sortable th.sort-desc::after {
+    content: "↓";
+    color: #3b82f6;
+}
+
+.table-sortable th:hover {
+    background: #f0f2f5;
+}
+
+/* ============================================
+   8. PAGINATION
+   ============================================ */
+
+.table-pagination {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: #f8fafc;
+    border-top: 1px solid #e8ecf0;
+    flex-wrap: wrap;
+}
+
+.table-pagination .info {
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.table-pagination .btn-page {
+    padding: 5px 12px;
+    border: 1px solid #dce1e8;
+    background: #ffffff;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.2s ease;
+    color: #374151;
+}
+
+.table-pagination .btn-page:hover {
+    background: #f3f4f6;
+    border-color: #3b82f6;
+}
+
+.table-pagination .btn-page.active {
+    background: #3b82f6;
+    color: #ffffff;
+    border-color: #3b82f6;
+}
+
+.table-pagination .btn-page:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ============================================
+   9. THÈME SOMBRE
+   ============================================ */
+
+@media (prefers-color-scheme: dark) {
+    .table-container {
+        background: #1f2937;
+        border-color: #374151;
+    }
+
+    .table-container .table-header {
+        background: #111827;
+        border-bottom-color: #374151;
+    }
+
+    .table-container .table-header .title {
+        color: #e5e7eb;
+    }
+
+    .table-custom thead th {
+        background: #111827;
+        color: #d1d5db;
+        border-bottom-color: #374151;
+    }
+
+    .table-custom tbody td {
+        color: #e5e7eb;
+        border-bottom-color: #374151;
+    }
+
+    .table-custom tbody tr:hover {
+        background: #111827;
+    }
+
+    .table-custom-striped tbody tr:nth-child(even) {
+        background: #111827;
+    }
+
+    .table-custom-striped tbody tr:nth-child(even):hover {
+        background: #1a2433;
+    }
+
+    .table-form td {
+        border-bottom-color: #374151;
+    }
+
+    .table-form .label-cell {
+        color: #d1d5db;
+    }
+
+    .table-form tr:hover {
+        background: #111827;
+    }
+
+    .table-form .form-title-row td {
+        background: #111827;
+        color: #e5e7eb;
+        border-bottom-color: #374151;
+    }
+
+    .table-pagination {
+        background: #111827;
+        border-top-color: #374151;
+    }
+
+    .table-pagination .info {
+        color: #9ca3af;
+    }
+
+    .table-pagination .btn-page {
+        background: #374151;
+        color: #d1d5db;
+        border-color: #4b5563;
+    }
+
+    .table-pagination .btn-page:hover {
+        background: #4b5563;
+    }
+
+    .cell-status.status-active {
+        background: #052e16;
+        color: #4ade80;
+    }
+
+    .cell-status.status-inactive {
+        background: #450a0a;
+        color: #f87171;
+    }
+
+    .cell-status.status-pending {
+        background: #451a03;
+        color: #fbbf24;
+    }
+}

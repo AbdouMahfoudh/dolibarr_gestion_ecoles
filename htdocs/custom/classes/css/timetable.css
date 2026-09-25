@@ -1,0 +1,172 @@
+/*
+ * Emploi du temps visuel du module Classes (cours et examens).
+ * Fichier : custom/classes/css/timetable.css
+ */
+
+.ecole-tt-wrap {
+	overflow-x: auto;
+	margin: 6px 0 22px;
+}
+
+.ecole-tt {
+	display: grid;
+	grid-template-columns: 96px repeat(var(--tt-cols), minmax(135px, 1fr));
+	min-width: calc(96px + var(--tt-cols) * 135px);
+	border: 1px solid #d5d5d5;
+	border-radius: 6px;
+	overflow: hidden;
+	background: #fff;
+}
+
+/* En-têtes */
+.ecole-tt-corner,
+.ecole-tt-head {
+	background: var(--colorbacktitle1, #f1f1f1);
+	border-bottom: 1px solid #d5d5d5;
+	padding: 9px 4px;
+}
+.ecole-tt-head {
+	text-align: center;
+	font-weight: bold;
+	border-inline-start: 1px solid #e3e3e3;
+}
+.ecole-tt-sub {
+	font-weight: normal;
+	font-size: .85em;
+	opacity: .7;
+}
+.ecole-tt-headadd {
+	margin-inline-start: 4px;
+}
+
+/* Axe horaire */
+.ecole-tt-axis,
+.ecole-tt-col {
+	position: relative;
+	height: var(--tt-h);
+}
+.ecole-tt-axis {
+	background: #fafafa;
+}
+.ecole-tt-axislabel {
+	position: absolute;
+	inset-inline: 0;
+	box-sizing: border-box;
+	padding: 3px 7px;
+	border-top: 1px dashed #dcdcdc;
+	font-size: .85em;
+	color: #555;
+	overflow: hidden;
+	line-height: 1.25;
+}
+.ecole-tt-axislabel span,
+.ecole-tt-axislabel em {
+	display: block;
+	opacity: .75;
+}
+.ecole-tt-axislabel em {
+	font-size: .9em;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+/* Colonnes et créneaux */
+.ecole-tt-col {
+	border-inline-start: 1px solid #e3e3e3;
+}
+.ecole-tt-hours {
+	background-image: repeating-linear-gradient(to bottom, #ececec 0, #ececec 1px, transparent 1px, transparent var(--tt-hour));
+}
+.ecole-tt-band {
+	position: absolute;
+	inset-inline: 0;
+	box-sizing: border-box;
+	border-top: 1px dashed #e2e2e2;
+	background: rgba(0, 0, 0, .012);
+}
+a.ecole-tt-add,
+.ecole-tt-free {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-decoration: none;
+}
+a.ecole-tt-add {
+	font-size: 1.6em;
+	color: #cfcfcf;
+}
+a.ecole-tt-add:hover {
+	color: #666;
+	background: rgba(0, 0, 0, .05);
+}
+.ecole-tt-free {
+	color: #2e9e4f;
+	font-size: .85em;
+	background: rgba(46, 158, 79, .05);
+}
+
+/* Cours */
+.ecole-tt-ev {
+	position: absolute;
+	inset-inline: 4px;
+	box-sizing: border-box;
+	padding: 4px 7px;
+	border-radius: 5px;
+	border-inline-start: 4px solid;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, .1);
+	overflow: hidden;
+	font-size: .86em;
+	line-height: 1.28;
+	color: #2b2b2b;
+}
+.ecole-tt-ev:hover {
+	box-shadow: 0 2px 6px rgba(0, 0, 0, .18);
+}
+.ecole-tt-title {
+	font-weight: bold;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.ecole-tt-line {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	opacity: .78;
+}
+.ecole-tt-time {
+	font-size: .92em;
+}
+.ecole-tt-edit {
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+}
+.ecole-tt-del {
+	position: absolute;
+	top: 2px;
+	inset-inline-end: 3px;
+	z-index: 2;
+	display: none;
+}
+.ecole-tt-ev:hover .ecole-tt-del {
+	display: block;
+}
+
+/* Couleurs par matière */
+.ecole-tt-c0 { background: #e3f0fd; border-color: #1e78d2; }
+.ecole-tt-c1 { background: #e6f6ea; border-color: #2e9e4f; }
+.ecole-tt-c2 { background: #fdf0e0; border-color: #e0891c; }
+.ecole-tt-c3 { background: #f3e8fb; border-color: #8a4fc4; }
+.ecole-tt-c4 { background: #fde8ec; border-color: #d23f5c; }
+.ecole-tt-c5 { background: #e2f6f6; border-color: #1b9a9a; }
+.ecole-tt-c6 { background: #fbf6d9; border-color: #b59a10; }
+.ecole-tt-c7 { background: #ebeefa; border-color: #4f60c4; }
+.ecole-tt-c8 { background: #f7ebe3; border-color: #a0603a; }
+.ecole-tt-c9 { background: #eef5e0; border-color: #6b8e23; }
+
+@media print {
+	.ecole-tt-add, .ecole-tt-del, .ecole-tt-headadd { display: none !important; }
+	.ecole-tt-wrap { overflow: visible; }
+}

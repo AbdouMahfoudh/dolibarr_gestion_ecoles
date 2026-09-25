@@ -1,0 +1,367 @@
+# Dolibarr language file - Source file is en_US - notes
+# Module "Marks and report cards"
+
+Module104800Name=Marks and report cards
+Module104800Desc=Student marks, term report cards, annual transcripts
+
+# Permissions
+Permission104801=Marks: view the marks of all classes
+Permission104802=Marks: enter the marks of own classes and subjects (teacher, from the timetable)
+Permission104803=Marks: enter the marks of all classes (office, management)
+Permission104804=Marks: change the marks of a closed term (with a reason, kept in the history)
+Permission104811=Closing: close and reopen a term
+Permission104891=Setup: calculation rules, grades, distinctions, report card models
+
+# Menus
+MenuNotes=Marks
+MenuSaisieNotes=Enter marks
+MenuCloture=Close terms
+MenuHistoriqueNotes=Marks history
+MenuConfiguration=Setup
+MenuReglesCalcul=Calculation rules
+
+# Assessments
+Devoir=Test
+Devoirs=Tests
+DevoirNum=Test %s
+Composition=Exam
+Evaluation=Assessment
+NouvelleEvaluation=New assessment:
+DateEvaluation=Assessment date
+LibelleFacultatif=Label (optional)
+CreerEtSaisir=Create and enter marks
+SupprimerEvaluation=Delete assessment
+ConfirmSupprimerEvaluation=Delete "%s"? Its marks will no longer count (they stay visible in the history).
+EvaluationSupprimee="%s" deleted.
+EvaluationSupprimeeCourt=deleted
+NoteAbsent=Absent
+NoteDispense=Exempted
+NoteAbsentCourt=Abs
+NoteDispenseCourt=Exe
+AbsentDispense=Absent (Abs) or exempted (Exe)
+
+# Entry
+SaisieNotes=Enter marks
+ChoisirMatiere=Choose the subject
+NbElevesCol=Students
+TrimestreCloture=Term closed
+AucuneClasse=No active class.
+AucuneClasseEnseignant=No class in your name: your classes and subjects come from the timetable (teacher of each lesson). Ask the management to add you.
+SuiviDevoirsCompos=%s tests · %s / %s exams
+AideSuiviClasses=For each term: number of tests and exams created / number of subjects. Padlock = term closed. Click a class to see its subjects.
+TrimestreClotureLe=%s closed on %s by %s: marks can no longer be changed.
+TrimestreClotureCorrection=You are allowed to correct them: a reason will be asked and kept in the history.
+TrimestreClotureLectureSeule=The term is closed: marks are read only.
+AucuneMatiereClasse=No subject is linked to this class.
+NoteSur=Out of
+Enseignant=Teacher
+NoteDevoirs=Tests mark
+ExceptionMatiere=Exception for this subject of the class (Setup > Calculation rules)
+PasEncore=not yet
+SaisirNotes=Enter marks
+VoirNotes=View marks
+AideMatieresClasse=Exam: marks entered / students of the class. Teacher: from the timetable.
+CoefficientNoteSur=coefficient %s · out of %s
+RegleCalcul=Calculation rule
+NoteTrimestreFormule=Term mark = (tests × %s + exam × %s) ÷ %s
+AucuneEvaluation=No assessment for this term.
+AucuneEvaluationCreer=No assessment for this term: create a test or the exam above.
+AucunEleveClasse=No student enrolled in this class.
+AideSaisieNotes=Type the mark (out of %s, comma or dot), then Enter to go to the next student. Type "a" for absent, "d" for exempted, or choose from the list. Clearing a box deletes the mark.
+ChangeDeClasse=changed class
+NotesSaisies=Marks entered
+MoyenneEvaluation=Class average
+MotifCorrection=Reason for the correction:
+MotifCorrectionAide=(required: the term is closed)
+EnregistrerNotes=Save the marks of "%s"
+AideChoisirColonne=To enter or correct marks, click the pencil of a column.
+VoirHistoriqueMatiere=Marks history of this subject
+NotesEnregistrees=%s mark(s) saved for "%s".
+AucuneNoteChangee=No mark changed.
+
+# Closing
+ClotureTrimestres=Close terms
+CloturerTrimestre=Close the term
+ConfirmCloturer=Close %s for class %s? Marks will no longer be changeable (except with a special permission, with a reason) and report cards can be printed.
+TrimestreClotureOk=%s closed for class %s.
+TrimestreRouvertOk=%s reopened for class %s.
+CompositionsSaisies=Exams / subjects
+NotesCompoManquantes=Missing exam marks
+Cloture=Closed
+Ouvert=Open
+ParLe=by %s on %s
+RouvertPar=reopened by %s on %s
+MotifReouverture=Reason for reopening
+Rouvrir=Reopen
+Cloturer=Close
+AideCloture=Missing exam marks = students × subjects − marks entered in exams ("Abs" and "Exe" count as entered). A term can be closed even if some are missing. Reopening requires a reason, kept with the date and user.
+
+# History
+HistoriqueNotes=Marks history
+
+# Setup
+ConfigurationNotes=Marks and report cards setup
+AucunNiveau=No active level: first create the levels in the Classes module.
+AideReglesNiveau=Each level has its own calculation rules. A level marked "default" uses the proposed values until you save it.
+ParDefaut=default
+CalculDevoirs=Tests mark calculation
+CalculDevoirsAide=(can be changed for one subject of a class: see the exceptions below)
+CalculDevoirsMoyenne=Average of the tests
+CalculDevoirsMeilleure=Best test mark
+DevoirAbsent=Missed test (absent)
+DevoirAbsentIgnore=Does not count (calculated on the other tests)
+DevoirAbsentZero=Counts as 0
+NoteTrimestre=Term mark (per subject)
+PoidsDevoirsCompo=Tests / exam weight
+CompoAbsent=Missed exam (absent)
+CompoAbsentZero=Counts as 0
+CompoAbsentDevoirs=Term mark = tests mark only
+AideDispense="Exempted": the assessment does not count at all for this student.
+MoyenneAnnuelle=Annual average
+PoidsTrimestres=Term weights
+TrimestreSansCompo=Absent from all exams of a term
+TrimestreSansCompoExclure=This term does not count in the annual average
+TrimestreSansCompoGarder=This term still counts
+RangEtDecision=Rank and end-of-year decision
+RangExaequo=Tied students
+RangExaequoMeme=Same rank (e.g. two 3rd, the next is 5th)
+RangExaequoCompo=Split by the exams average
+DecisionFinAnnee=End-of-year decision (annual transcript)
+DecisionAucune=No decision
+DecisionManuelle=Chosen by hand by the management
+DecisionAuto=Proposed from the annual average, can be changed
+SeuilPassage=Passes from
+AppliquerTousNiveaux=Apply these rules to all levels
+ReglesEnregistreesTous=Rules saved for all levels.
+ExceptionsMatieres=Exceptions by subject: %s
+AucuneMatiereNiveau=No subject linked to the classes of this level.
+RegleDuNiveau=Level rule (%s)
+
+# Errors
+ErrorPoidsInvalide=Weights must be between 0 and 100, the threshold between 0 and 20.
+ErrorPoidsTousNuls=Weights cannot all be 0.
+ErrorMotifObligatoire=The reason is required.
+ErrorMotifObligatoireCloture=The term is closed: give the reason for the correction.
+ErrorTrimestreCloture=This term is closed for this class.
+ErrorMatiereNonLiee=This subject is not linked to the class.
+ErrorCompositionExiste=This term's exam already exists for this subject.
+ErrorNoteInvalide="%s" is not a valid mark.
+ErrorNoteTropGrande=%s is above the maximum mark (%s).
+ErrorNotesNonEnregistrees=Nothing was saved: %s mark(s) to correct (in red).
+
+# Step B: results, class council, report cards
+Permission104821=Results: view averages, ranks and struggling students; print report cards, transcripts and certificates
+Permission104822=Class council: comments, distinctions and end-of-year decisions
+MenuResultats=Results
+MenuConseil=Class council
+MenuDifficultes=Struggling students
+MenuMentions=Grades
+MenuDistinctions=Distinctions
+MenuModelesBulletin=Report card models
+MenuConfigSuivi=Student follow-up
+Notes=Marks
+NotesResultats=Marks and results
+Resultats=Results
+Annee=Year
+ToutesLesClasses=All classes
+Rang=Rank
+RangPremier=1st
+RangNieme=%sth
+ExAequo=tied
+Mention=Grade
+Mentions=Grades
+NouvelleMention=New grade
+SeuilMention=Minimum average
+SeuilMentionHelp=General average (out of 20) from which this grade is given. The highest reached threshold wins.
+Distinction=Distinction
+Distinctions=Distinctions
+NouvelleDistinction=New distinction
+SeuilMin=From
+SeuilMinHelp=Minimum average (included), empty = no minimum.
+SeuilMax=Below
+SeuilMaxHelp=Maximum average (excluded), empty = no maximum. E.g. warning: below 8.
+PositionDistinctionHelp=Checking order: the first matching distinction is proposed.
+Bulletins=Report cards
+ReglesNiveaux=Level rules
+ModelesBulletin=Report card models
+ModeleBulletin=Report card model
+NouveauModele=New model
+LangueBulletin=Language
+LangueBulletinHelp=Bilingual: headings in French and Arabic, each subject in its teaching language. Or all in French, or all in Arabic (right to left).
+LangueMixte=Bilingual (each subject in its language)
+LangueToutFrancais=All in French
+LangueToutArabe=All in Arabic
+StyleClassique=Classic (blue)
+StyleModerne=Modern (green)
+StyleSobre=Plain (black and white)
+ModeleSimplifie=Simplified
+ModeleSimplifieHelp=Full marks (e.g. 28 / 30) without coefficient or tests / exam detail: kindergarten and primary.
+AffDetail=Tests and exam columns
+AffCoef=Coefficients and total points
+AffRangMatiere=Rank in each subject
+AffMoyClasse=Class averages
+AffMinMax=Lowest and highest mark per subject
+AffRang=General rank
+AffRappel=Previous terms reminder
+AffDistinction=Distinction
+AffSignatureParent=Parents signature box
+ModeleParDefaut=Report card model
+ModeleParDefautAide=(proposed when printing for this level; another can be chosen)
+PremierModele=First active model
+MoyenneGenerale=General average
+MoyenneClasse=Class average
+MoyClasse=Class avg.
+MoyenneSur20=Average /20
+PlusForte=Highest average
+PlusFaible=Lowest average
+PlusFortePlusFaible=Highest - lowest
+NoteMinClasse=Min. mark
+NoteMaxClasse=Max. mark
+NoteObtenue=Mark obtained
+Coef=Coef.
+ElevesClasses=Ranked students
+TauxReussite=Pass rate (≥ 10)
+EnDifficulte=Struggling
+VoirResultats=View results
+AideSuiviResultats=Ranked students = students with at least one mark. Struggling = general average below %s (Setup > Student follow-up).
+ResultatsProvisoires=Provisional results: term not closed
+ResultatsProvisoiresAnnee=Provisional results: the three terms are not all closed
+ImprimerBulletinsClasse=Class report cards
+ImprimerRelevesClasse=Class annual transcripts
+BulletinsApresCloture=Report cards are printed after the term is closed (Close terms menu).
+BulletinsApresClotureAnnee=Annual transcripts are printed once the three terms are closed.
+ConseilDeClasse=Class council
+ChoisieParConseil=Chosen by the class council
+Aucune=None
+AideResultats=Averages out of 20; in red: below 10 (general average: below the struggling threshold). Click a student for mark details. Each column has its filter.
+AideResultatsAnnee=Annual average = terms average by their weights (level rules). Each column has its filter.
+TableauMoyennesTitre=Averages table - %s
+BulletinDeNotes=Report card
+ReleveAnnuel=Annual transcript
+NomEleve=Student
+Effectif=Ranked students
+ObservationDirection=Management comment
+FaitALe=Done in %s, on %s
+LeDirecteur=The principal
+SignatureParents=Parents signature
+MoyenneDuTrimestre1=1st term average
+MoyenneDuTrimestre2=2nd term average
+TrimestreCourt1=T1
+TrimestreCourt2=T2
+TrimestreCourt3=T3
+TrimestreNonCompte=Term not counted in the annual average (absent from all exams).
+RangAnnuel=Annual rank
+DecisionFinAnneeCourt=Decision
+DecisionAdmis=Promoted to the next class
+DecisionAdmisF=Promoted to the next class
+DecisionRedouble=Repeats the year
+DecisionRedoubleF=Repeats the year
+DecisionProposee=Proposed: %s
+AChoisir=To choose
+DistinctionAuto=Automatic (%s)
+ConseilEnregistre=Class council saved.
+ConseilClotureLectureSeule=This term is closed: the class council can no longer be changed (reopen the term first).
+AideConseil=Distinction proposed from the average (Setup > Distinctions), can be changed; the comment is printed on the report card.
+AideConseilAnnee=End-of-year decision and comment are printed on the annual transcript.
+AideConseilChoisirClasse=Choose a class.
+CertificatScolarite=School certificate
+CertificatTexte=I, the undersigned, principal of %s, certify that the student %s, registration number %s, born on %s in %s, is regularly enrolled in our school in class %s for the school year %s.
+CertificatTexteF=I, the undersigned, principal of %s, certify that the student %s, registration number %s, born on %s in %s, is regularly enrolled in our school in class %s for the school year %s.
+CertificatFin=This certificate is issued for all legal purposes.
+ErrorCertificatNonInscrit=The school certificate is only issued to enrolled students.
+ErrorAucunModele=No active report card model (Setup > Report card models).
+ErrorEleveHorsClasse=This student is not in this class.
+EleveNonClasse=This student is not ranked in the current class (not enrolled or no class).
+ElevesEnDifficulte=Struggling students
+MoyenneInferieureA=Average below %s
+MatieresSous10=Subjects below 10
+AucunEleveEnDifficulte=No student below the threshold.
+AideDifficultes=The WhatsApp button opens a ready message for the parent (Setup > Student follow-up); sending stays manual.
+SeuilDifficulte=Struggling students threshold
+SeuilDifficulteAide=general average under which the student is listed (can also be changed on the page)
+MessageDifficulte=WhatsApp message to parents
+AideMessageDifficulte=Variables: {eleve} {eleve_ar} {classe} {periode} {periode_ar} {moyenne} {matieres} {matieres_ar} {ecole}. Empty the text to go back to the default message.
+ErrorSeuil020=The threshold must be between 0 and 20.
+ErrorDistinctionSansSeuil=Give at least one threshold (from / below).
+ErrorSeuilMinMax=The minimum threshold must be below the maximum threshold.
+
+# Filters
+NbLignesAffichees=%s line(s) shown out of %s
+AucuneEvaluationCourt=No assessment
+EvaluationsCreees=Assessments created
+CompositionsManquantes=Missing exams
+Incomplete=Incomplete
+Complete=Complete
+NonSaisie=Not entered
+Notee=Entered
+SousLaMoyenne=Below average
+Rouvert=Reopened
+AvecMotif=with reason
+AideFiltreNote=Mark (12 or 12.5), abs, disp or vide
+FiltreMin=Min.
+FiltreMax=Max.
+
+# Entry page (new layout)
+Toutes=All
+RechercherClasse=Search a class
+RechercherMatiere=Search a subject or a teacher
+NbMatieresN=%s subject(s)
+NbElevesN=%s student(s)
+NbDevoirsN=%s test(s)
+CompositionsParTrimestre=Exams created per term
+CompositionPasEncore=Exam not created yet
+CompositionIncomplete=Exam incomplete
+CompositionComplete=Exam complete
+MoyenneCourt=avg.
+NouveauDevoir=Test
+NouvelleComposition=Exam
+EnSaisie=being entered
+MinMax=Lowest – highest
+ModifierEvaluation=Date, label, delete
+ToucheEntree=Enter
+ToucheEchap=Esc
+EleveSuivant=next student
+ElevePrecedent=previous student
+AnnulerCase=undo the box
+AideCouleurs=Colors: red below half, orange, green from 70 %%
+MoyTrimestre=Term avg.
+MoyTrimestreAide=Term average in this subject (tests and exam, by the level rules), out of 20
+AucuneModification=No change
+ModificationsNonEnregistrees=%s unsaved change(s)
+AideChoisirEvaluation=To enter or correct marks, click an assessment above.
+
+# Model preview
+Apercu=Preview
+ApercuModeles=Models preview
+ApercuBulletin=Report card preview
+ApercuReleve=Annual transcript preview
+BulletinTrimestriel=Term report card
+ChoisirModele=Model
+ModifierModele=Edit this model
+OuvrirPdf=Open the PDF
+AideApercu=Preview filled with a fictitious student (8 subjects, 28 students) to see the layout. Grades and distinctions come from the setup.
+Exemple=SAMPLE
+
+# Report card look (layout, colour, header)
+StyleBulletin=Layout
+StyleBulletinHelp=Classic: full grid. Lines: horizontal lines only, airy. Framed: rounded tables and frames.
+MiseEnPageClassique=Classic (grid)
+MiseEnPageLignes=Lines (airy)
+MiseEnPageEncadre=Framed (rounded)
+CouleurBulletin=Colour
+CouleurBulletinHelp=Colour of titles and frames. No colour: black and white, no background (photocopy).
+CouleurBleu=Blue
+CouleurVert=Green
+CouleurBordeaux=Burgundy
+CouleurViolet=Purple
+CouleurOrange=Orange
+CouleurGris=Grey
+CouleurAucune=No colour (black and white)
+EnteteBulletin=Header
+EnteteBulletinHelp=School header on the report card. Empty: the one chosen in the Classes module setup.
+EnteteParDefaut=From the setup
+Presentation=Look
+EssaiNonEnregistre=Preview only, not saved yet.
+EnregistrerPresentation=Save for model %s
+PresentationEnregistree=Look saved for model %s.
+EnteteNoirBlanc=Black and white (plain)

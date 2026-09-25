@@ -1,0 +1,8 @@
+# BEGIN espace-parents (module Espace, ne pas modifier)
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteBase /ecoles/
+RewriteRule ^espace/?(.*)$ htdocs/custom/espace/portail/router.php?route=$1 [QSA,L]
+RewriteRule ^personnel/?(.*)$ htdocs/custom/espace/portail/personnel.php?route=$1 [QSA,L]
+</IfModule>
+# END espace-parents

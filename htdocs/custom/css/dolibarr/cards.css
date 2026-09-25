@@ -1,0 +1,23 @@
+/* ============================================================================
+   Cartes d'information / statistiques (réutilisables dans les tableaux de bord)
+   ============================================================================ */
+.school-stat-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+	gap: var(--school-gap);
+	margin-bottom: 20px;
+}
+.school-stat {
+	background: var(--school-surface);
+	border: 1px solid var(--school-border);
+	border-left: 4px solid var(--school-primary);
+	border-radius: var(--school-radius);
+	box-shadow: var(--school-shadow);
+	padding: 16px 18px;
+}
+.school-stat-label { color: var(--school-text-muted); font-size: .82rem; }
+.school-stat-value { font-size: 1.6rem; font-weight: 700; color: var(--school-text); margin-top: 4px; }
+.school-stat.is-success { border-left-color: var(--school-success); }
+.school-stat.is-danger  { border-left-color: var(--school-danger); }
+.school-stat.is-warning { border-left-color: var(--school-warning); }
+.school-stat.is-info    { border-left-color: var(--school-info); }

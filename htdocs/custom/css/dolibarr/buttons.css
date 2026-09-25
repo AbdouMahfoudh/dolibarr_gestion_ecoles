@@ -1,0 +1,444 @@
+/* ============================================
+               BOUTONS DOLIBARR - STYLES DE BASE
+               ============================================ */
+            
+            .dolibarr-btn {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                padding: 8px 20px;
+                font-size: 14px;
+                font-weight: 500;
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+                border: 2px solid transparent;
+                border-radius: 4px;
+                cursor: pointer;
+                text-decoration: none;
+                transition: all 0.25s ease;
+                position: relative;
+                white-space: nowrap;
+                user-select: none;
+                line-height: 1.5;
+                min-height: 38px;
+            }
+
+            .dolibarr-btn:focus {
+                outline: none;
+                box-shadow: 0 0 0 3px rgba(74, 144, 217, 0.3);
+            }
+
+            .dolibarr-btn:disabled,
+            .dolibarr-btn.disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+                pointer-events: none;
+            }
+
+            /* ============================================
+               TAILLES
+               ============================================ */
+            
+            .dolibarr-btn.small {
+                padding: 4px 12px;
+                font-size: 12px;
+                min-height: 30px;
+            }
+
+            .dolibarr-btn.medium {
+                padding: 8px 20px;
+                font-size: 14px;
+                min-height: 38px;
+            }
+
+            .dolibarr-btn.large {
+                padding: 12px 28px;
+                font-size: 16px;
+                min-height: 46px;
+            }
+
+            /* ============================================
+               PLEINE LARGEUR
+               ============================================ */
+            
+            .dolibarr-btn.full-width {
+                width: 100%;
+                display: flex;
+            }
+
+            /* ============================================
+               BOUTONS ARRONDIS
+               ============================================ */
+            
+            .dolibarr-btn.rounded {
+                border-radius: 50px;
+            }
+
+            /* ============================================
+               TYPES DE BOUTONS
+               ============================================ */
+
+            /* --- PRIMARY --- */
+            .dolibarr-btn.primary {
+                background: #1a73e8;
+                color: #ffffff;
+                border-color: #1a73e8;
+            }
+            .dolibarr-btn.primary:hover:not(:disabled) {
+                background: #1557b0;
+                border-color: #1557b0;
+                box-shadow: 0 4px 12px rgba(26, 115, 232, 0.3);
+                transform: translateY(-1px);
+            }
+            .dolibarr-btn.primary:active:not(:disabled) {
+                transform: translateY(0);
+            }
+
+            /* PRIMARY OUTLINE */
+            .dolibarr-btn.primary.outline {
+                background: transparent;
+                color: #1a73e8;
+                border-color: #1a73e8;
+            }
+            .dolibarr-btn.primary.outline:hover:not(:disabled) {
+                background: #1a73e8;
+                color: #ffffff;
+            }
+
+            /* --- SECONDARY --- */
+            .dolibarr-btn.secondary {
+                background: #6c757d;
+                color: #ffffff;
+                border-color: #6c757d;
+            }
+            .dolibarr-btn.secondary:hover:not(:disabled) {
+                background: #5a6268;
+                border-color: #5a6268;
+                box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+                transform: translateY(-1px);
+            }
+
+            /* SECONDARY OUTLINE */
+            .dolibarr-btn.secondary.outline {
+                background: transparent;
+                color: #6c757d;
+                border-color: #6c757d;
+            }
+            .dolibarr-btn.secondary.outline:hover:not(:disabled) {
+                background: #6c757d;
+                color: #ffffff;
+            }
+
+            /* --- SUCCESS --- */
+            .dolibarr-btn.success {
+                background: #28a745;
+                color: #ffffff;
+                border-color: #28a745;
+            }
+            .dolibarr-btn.success:hover:not(:disabled) {
+                background: #1e7e34;
+                border-color: #1e7e34;
+                box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+                transform: translateY(-1px);
+            }
+
+            /* SUCCESS OUTLINE */
+            .dolibarr-btn.success.outline {
+                background: transparent;
+                color: #28a745;
+                border-color: #28a745;
+            }
+            .dolibarr-btn.success.outline:hover:not(:disabled) {
+                background: #28a745;
+                color: #ffffff;
+            }
+
+            /* --- DANGER (Supprimer) --- */
+            .dolibarr-btn.danger {
+                background: #dc3545;
+                color: #ffffff;
+                border-color: #dc3545;
+            }
+            .dolibarr-btn.danger:hover:not(:disabled) {
+                background: #c82333;
+                border-color: #c82333;
+                box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+                transform: translateY(-1px);
+            }
+
+            /* DANGER OUTLINE */
+            .dolibarr-btn.danger.outline {
+                background: transparent;
+                color: #dc3545;
+                border-color: #dc3545;
+            }
+            .dolibarr-btn.danger.outline:hover:not(:disabled) {
+                background: #dc3545;
+                color: #ffffff;
+            }
+
+            /* --- WARNING --- */
+            .dolibarr-btn.warning {
+                background: #ffc107;
+                color: #212529;
+                border-color: #ffc107;
+            }
+            .dolibarr-btn.warning:hover:not(:disabled) {
+                background: #e0a800;
+                border-color: #e0a800;
+                box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+                transform: translateY(-1px);
+            }
+
+            /* WARNING OUTLINE */
+            .dolibarr-btn.warning.outline {
+                background: transparent;
+                color: #ffc107;
+                border-color: #ffc107;
+            }
+            .dolibarr-btn.warning.outline:hover:not(:disabled) {
+                background: #ffc107;
+                color: #212529;
+            }
+
+            /* --- INFO --- */
+            .dolibarr-btn.info {
+                background: #17a2b8;
+                color: #ffffff;
+                border-color: #17a2b8;
+            }
+            .dolibarr-btn.info:hover:not(:disabled) {
+                background: #138496;
+                border-color: #138496;
+                box-shadow: 0 4px 12px rgba(23, 162, 184, 0.3);
+                transform: translateY(-1px);
+            }
+
+            /* INFO OUTLINE */
+            .dolibarr-btn.info.outline {
+                background: transparent;
+                color: #17a2b8;
+                border-color: #17a2b8;
+            }
+            .dolibarr-btn.info.outline:hover:not(:disabled) {
+                background: #17a2b8;
+                color: #ffffff;
+            }
+
+            /* --- LIGHT --- */
+            .dolibarr-btn.light {
+                background: #f8f9fa;
+                color: #212529;
+                border-color: #f8f9fa;
+            }
+            .dolibarr-btn.light:hover:not(:disabled) {
+                background: #e2e6ea;
+                border-color: #e2e6ea;
+                box-shadow: 0 4px 12px rgba(248, 249, 250, 0.3);
+                transform: translateY(-1px);
+            }
+
+            /* LIGHT OUTLINE */
+            .dolibarr-btn.light.outline {
+                background: transparent;
+                color: #f8f9fa;
+                border-color: #f8f9fa;
+            }
+            .dolibarr-btn.light.outline:hover:not(:disabled) {
+                background: #f8f9fa;
+                color: #212529;
+            }
+
+            /* --- DARK --- */
+            .dolibarr-btn.dark {
+                background: #343a40;
+                color: #ffffff;
+                border-color: #343a40;
+            }
+            .dolibarr-btn.dark:hover:not(:disabled) {
+                background: #23272b;
+                border-color: #23272b;
+                box-shadow: 0 4px 12px rgba(52, 58, 64, 0.3);
+                transform: translateY(-1px);
+            }
+
+            /* DARK OUTLINE */
+            .dolibarr-btn.dark.outline {
+                background: transparent;
+                color: #343a40;
+                border-color: #343a40;
+            }
+            .dolibarr-btn.dark.outline:hover:not(:disabled) {
+                background: #343a40;
+                color: #ffffff;
+            }
+
+            /* --- LINK --- */
+            .dolibarr-btn.link {
+                background: transparent;
+                color: #1a73e8;
+                border-color: transparent;
+                text-decoration: underline;
+            }
+            .dolibarr-btn.link:hover:not(:disabled) {
+                color: #1557b0;
+                text-decoration: none;
+                background: rgba(26, 115, 232, 0.05);
+            }
+
+            /* --- GHOST (transparent) --- */
+            .dolibarr-btn.ghost {
+                background: transparent;
+                color: #6c757d;
+                border-color: transparent;
+            }
+            .dolibarr-btn.ghost:hover:not(:disabled) {
+                background: rgba(108, 117, 125, 0.1);
+                color: #343a40;
+            }
+
+            /* ============================================
+               BOUTON AVEC ICÔNE
+               ============================================ */
+            
+            .dolibarr-btn .btn-icon {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.2em;
+                line-height: 1;
+            }
+
+            .dolibarr-btn .btn-icon.left {
+                margin-right: 4px;
+            }
+
+            .dolibarr-btn .btn-icon.right {
+                margin-left: 4px;
+            }
+
+            /* ============================================
+               BOUTON AVEC CHARGEMENT (LOADING)
+               ============================================ */
+            
+            .dolibarr-btn.loading {
+                position: relative;
+                color: transparent !important;
+                pointer-events: none;
+            }
+
+            .dolibarr-btn.loading::after {
+                content: "";
+                position: absolute;
+                width: 18px;
+                height: 18px;
+                border: 2px solid rgba(255, 255, 255, 0.3);
+                border-top-color: #ffffff;
+                border-radius: 50%;
+                animation: dolibarr-spin 0.7s linear infinite;
+            }
+
+            .dolibarr-btn.loading.outline::after {
+                border-color: rgba(0, 0, 0, 0.1);
+                border-top-color: currentColor;
+            }
+
+            @keyframes dolibarr-spin {
+                to { transform: rotate(360deg); }
+            }
+
+            /* ============================================
+               BOUTON AVEC ICÔNE UNIQUEMENT
+               ============================================ */
+            
+            .dolibarr-btn.icon-only {
+                padding: 8px;
+                min-width: 38px;
+                min-height: 38px;
+                border-radius: 50%;
+            }
+
+            .dolibarr-btn.icon-only.small {
+                padding: 4px;
+                min-width: 30px;
+                min-height: 30px;
+                font-size: 14px;
+            }
+
+            .dolibarr-btn.icon-only.large {
+                padding: 12px;
+                min-width: 46px;
+                min-height: 46px;
+                font-size: 20px;
+            }
+
+            /* ============================================
+               GROUPE DE BOUTONS
+               ============================================ */
+            
+            .dolibarr-btn-group {
+                display: inline-flex;
+                gap: 8px;
+                flex-wrap: wrap;
+            }
+
+            .dolibarr-btn-group .dolibarr-btn {
+                border-radius: 4px;
+            }
+
+            /* ============================================
+               BOUTON AVEC BADGE
+               ============================================ */
+            
+            .dolibarr-btn .btn-badge {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                background: rgba(255, 255, 255, 0.3);
+                color: inherit;
+                font-size: 0.75em;
+                padding: 1px 8px;
+                border-radius: 50px;
+                margin-left: 6px;
+                font-weight: 600;
+            }
+
+            .dolibarr-btn.outline .btn-badge {
+                background: rgba(0, 0, 0, 0.1);
+            }
+
+            /* ============================================
+               RESPONSIVE
+               ============================================ */
+            
+            @media (max-width: 768px) {
+                .dolibarr-btn {
+                    font-size: 13px;
+                    padding: 6px 16px;
+                    min-height: 36px;
+                }
+                .dolibarr-btn.large {
+                    font-size: 14px;
+                    padding: 10px 20px;
+                    min-height: 42px;
+                }
+                .dolibarr-btn.small {
+                    font-size: 11px;
+                    padding: 3px 10px;
+                    min-height: 28px;
+                }
+                .dolibarr-btn-group {
+                    flex-direction: column;
+                }
+                .dolibarr-btn-group .dolibarr-btn {
+                    width: 100%;
+                }
+            }
+
+            @media print {
+                .dolibarr-btn {
+                    border: 1px solid #ccc !important;
+                    background: #fff !important;
+                    color: #000 !important;
+                }
+            }

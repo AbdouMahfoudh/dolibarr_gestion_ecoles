@@ -1,0 +1,34 @@
+---
+description: Contexte du projet Plateforme de Gestion Scolaire (Dolibarr)
+alwaysApply: true
+---
+
+# Projet — Gestion Scolaire Mauritanie
+
+## Principe fondamental
+- 1 installation Dolibarr = 1 école = 1 centre de configuration
+- Le module `etablissement` n'est PAS une liste d'écoles (pas de CRUD multi-établissements)
+
+## Stack
+- Dolibarr ERP (finance) + modules custom PHP dans `/custom/`
+- Base MySQL, tables préfixées `llx_`
+
+## Stockage des données
+- Infos école : `llx_societe` via `$mysoc`
+- Paramètres scolaires : `llx_ecoles_config` (code/valeur)
+- Années scolaires : `llx_ecoles_annee_scolaire`
+
+## Module en cours : etablissement
+Menu : Tableau de bord, Informations générales, Année scolaire,
+Paramètres pédagogiques/classes/bulletins/présences/financiers,
+Utilisateurs, Modèles, Notifications, Journal.
+
+## Ordre de développement
+1. Informations générales → 2. Tableau de bord → 3. Année scolaire
+→ 4-8. Paramètres → 9. Documents → 10. Utilisateurs → 11. Notifications/Journal
+→ puis modules : élèves, enseignants, classes, EDT, notes, présences, paiements.
+
+## Conventions code
+- Suivre les patterns Dolibarr existants dans le module
+- CSS via `config.php` + thèmes utilisateur
+- Permissions dans `modEtablissement.class.php`

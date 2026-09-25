@@ -1,0 +1,525 @@
+/* ============================================
+   BOUTONS DOLIBARR - STYLES DARK MODE
+   COULEURS INVERSÉES PAR RAPPORT AU MODE CLAIR
+   ============================================ */
+
+/* ============================================
+   BOUTONS DOLIBARR - STYLES DE BASE (DARK)
+   ============================================ */
+
+.dolibarr-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    border: 2px solid transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    position: relative;
+    white-space: nowrap;
+    user-select: none;
+    line-height: 1.5;
+    min-height: 38px;
+}
+
+.dolibarr-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(74, 144, 217, 0.3);
+}
+
+.dolibarr-btn:disabled,
+.dolibarr-btn.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* ============================================
+   TAILLES
+   ============================================ */
+
+.dolibarr-btn.small {
+    padding: 4px 12px;
+    font-size: 12px;
+    min-height: 30px;
+}
+
+.dolibarr-btn.medium {
+    padding: 8px 20px;
+    font-size: 14px;
+    min-height: 38px;
+}
+
+.dolibarr-btn.large {
+    padding: 12px 28px;
+    font-size: 16px;
+    min-height: 46px;
+}
+
+/* ============================================
+   PLEINE LARGEUR
+   ============================================ */
+
+.dolibarr-btn.full-width {
+    width: 100%;
+    display: flex;
+}
+
+/* ============================================
+   BOUTONS ARRONDIS
+   ============================================ */
+
+.dolibarr-btn.rounded {
+    border-radius: 50px;
+}
+
+/* ============================================
+   TYPES DE BOUTONS - DARK MODE (COULEURS INVERSÉES)
+   ============================================ */
+
+/* --- PRIMARY --- */
+/* Clair: #1a73e8 → Dark: #8ab4f8 */
+.dolibarr-btn.primary {
+    background: #8ab4f8;
+    color: #1a1a1a;
+    border-color: #8ab4f8;
+}
+.dolibarr-btn.primary:hover:not(:disabled) {
+    background: #a8c7f8;
+    border-color: #a8c7f8;
+    box-shadow: 0 4px 12px rgba(138, 180, 248, 0.4);
+    transform: translateY(-1px);
+}
+.dolibarr-btn.primary:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+/* PRIMARY OUTLINE - DARK */
+.dolibarr-btn.primary.outline {
+    background: transparent;
+    color: #8ab4f8;
+    border-color: #8ab4f8;
+}
+.dolibarr-btn.primary.outline:hover:not(:disabled) {
+    background: #8ab4f8;
+    color: #1a1a1a;
+}
+
+/* --- SECONDARY --- */
+/* Clair: #6c757d → Dark: #9aa0a6 */
+.dolibarr-btn.secondary {
+    background: #9aa0a6;
+    color: #1a1a1a;
+    border-color: #9aa0a6;
+}
+.dolibarr-btn.secondary:hover:not(:disabled) {
+    background: #b0b5ba;
+    border-color: #b0b5ba;
+    box-shadow: 0 4px 12px rgba(154, 160, 166, 0.4);
+    transform: translateY(-1px);
+}
+
+/* SECONDARY OUTLINE - DARK */
+.dolibarr-btn.secondary.outline {
+    background: transparent;
+    color: #9aa0a6;
+    border-color: #9aa0a6;
+}
+.dolibarr-btn.secondary.outline:hover:not(:disabled) {
+    background: #9aa0a6;
+    color: #1a1a1a;
+}
+
+/* --- SUCCESS --- */
+/* Clair: #28a745 → Dark: #81c995 */
+.dolibarr-btn.success {
+    background: #81c995;
+    color: #1a1a1a;
+    border-color: #81c995;
+}
+.dolibarr-btn.success:hover:not(:disabled) {
+    background: #9ad6ab;
+    border-color: #9ad6ab;
+    box-shadow: 0 4px 12px rgba(129, 201, 149, 0.4);
+    transform: translateY(-1px);
+}
+
+/* SUCCESS OUTLINE - DARK */
+.dolibarr-btn.success.outline {
+    background: transparent;
+    color: #81c995;
+    border-color: #81c995;
+}
+.dolibarr-btn.success.outline:hover:not(:disabled) {
+    background: #81c995;
+    color: #1a1a1a;
+}
+
+/* --- DANGER (Supprimer) --- */
+/* Clair: #dc3545 → Dark: #f28b82 */
+.dolibarr-btn.danger {
+    background: #f28b82;
+    color: #1a1a1a;
+    border-color: #f28b82;
+}
+.dolibarr-btn.danger:hover:not(:disabled) {
+    background: #f5a098;
+    border-color: #f5a098;
+    box-shadow: 0 4px 12px rgba(242, 139, 130, 0.4);
+    transform: translateY(-1px);
+}
+
+/* DANGER OUTLINE - DARK */
+.dolibarr-btn.danger.outline {
+    background: transparent;
+    color: #f28b82;
+    border-color: #f28b82;
+}
+.dolibarr-btn.danger.outline:hover:not(:disabled) {
+    background: #f28b82;
+    color: #1a1a1a;
+}
+
+/* --- WARNING --- */
+/* Clair: #ffc107 → Dark: #fdd663 */
+.dolibarr-btn.warning {
+    background: #fdd663;
+    color: #1a1a1a;
+    border-color: #fdd663;
+}
+.dolibarr-btn.warning:hover:not(:disabled) {
+    background: #fddf82;
+    border-color: #fddf82;
+    box-shadow: 0 4px 12px rgba(253, 214, 99, 0.4);
+    transform: translateY(-1px);
+}
+
+/* WARNING OUTLINE - DARK */
+.dolibarr-btn.warning.outline {
+    background: transparent;
+    color: #fdd663;
+    border-color: #fdd663;
+}
+.dolibarr-btn.warning.outline:hover:not(:disabled) {
+    background: #fdd663;
+    color: #1a1a1a;
+}
+
+/* --- INFO --- */
+/* Clair: #17a2b8 → Dark: #7dd6e8 */
+.dolibarr-btn.info {
+    background: #7dd6e8;
+    color: #1a1a1a;
+    border-color: #7dd6e8;
+}
+.dolibarr-btn.info:hover:not(:disabled) {
+    background: #99dfee;
+    border-color: #99dfee;
+    box-shadow: 0 4px 12px rgba(125, 214, 232, 0.4);
+    transform: translateY(-1px);
+}
+
+/* INFO OUTLINE - DARK */
+.dolibarr-btn.info.outline {
+    background: transparent;
+    color: #7dd6e8;
+    border-color: #7dd6e8;
+}
+.dolibarr-btn.info.outline:hover:not(:disabled) {
+    background: #7dd6e8;
+    color: #1a1a1a;
+}
+
+/* --- LIGHT --- */
+/* Clair: #f8f9fa → Dark: #3d3d3d */
+.dolibarr-btn.light {
+    background: #3d3d3d;
+    color: #e0e0e0;
+    border-color: #3d3d3d;
+}
+.dolibarr-btn.light:hover:not(:disabled) {
+    background: #4d4d4d;
+    border-color: #4d4d4d;
+    box-shadow: 0 4px 12px rgba(61, 61, 61, 0.4);
+    transform: translateY(-1px);
+}
+
+/* LIGHT OUTLINE - DARK */
+.dolibarr-btn.light.outline {
+    background: transparent;
+    color: #8a8a8a;
+    border-color: #3d3d3d;
+}
+.dolibarr-btn.light.outline:hover:not(:disabled) {
+    background: #3d3d3d;
+    color: #e0e0e0;
+}
+
+/* --- DARK --- */
+/* Clair: #343a40 → Dark: #d0d0d0 */
+.dolibarr-btn.dark {
+    background: #d0d0d0;
+    color: #1a1a1a;
+    border-color: #d0d0d0;
+}
+.dolibarr-btn.dark:hover:not(:disabled) {
+    background: #e0e0e0;
+    border-color: #e0e0e0;
+    box-shadow: 0 4px 12px rgba(208, 208, 208, 0.4);
+    transform: translateY(-1px);
+}
+
+/* DARK OUTLINE - DARK */
+.dolibarr-btn.dark.outline {
+    background: transparent;
+    color: #d0d0d0;
+    border-color: #d0d0d0;
+}
+.dolibarr-btn.dark.outline:hover:not(:disabled) {
+    background: #d0d0d0;
+    color: #1a1a1a;
+}
+
+/* --- LINK --- */
+/* Clair: #1a73e8 → Dark: #8ab4f8 */
+.dolibarr-btn.link {
+    background: transparent;
+    color: #8ab4f8;
+    border-color: transparent;
+    text-decoration: underline;
+}
+.dolibarr-btn.link:hover:not(:disabled) {
+    color: #a8c7f8;
+    text-decoration: none;
+    background: rgba(138, 180, 248, 0.1);
+}
+
+/* --- GHOST (transparent) --- */
+/* Clair: #6c757d → Dark: #9aa0a6 */
+.dolibarr-btn.ghost {
+    background: transparent;
+    color: #9aa0a6;
+    border-color: transparent;
+}
+.dolibarr-btn.ghost:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.05);
+    color: #d0d0d0;
+}
+
+/* ============================================
+   BOUTON AVEC ICÔNE - DARK
+   ============================================ */
+
+.dolibarr-btn .btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2em;
+    line-height: 1;
+}
+
+.dolibarr-btn .btn-icon.left {
+    margin-right: 4px;
+}
+
+.dolibarr-btn .btn-icon.right {
+    margin-left: 4px;
+}
+
+/* ============================================
+   BOUTON AVEC CHARGEMENT (LOADING) - DARK
+   ============================================ */
+
+.dolibarr-btn.loading {
+    position: relative;
+    color: transparent !important;
+    pointer-events: none;
+}
+
+.dolibarr-btn.loading::after {
+    content: "";
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: dolibarr-spin 0.7s linear infinite;
+}
+
+.dolibarr-btn.loading.outline::after {
+    border-color: rgba(255, 255, 255, 0.1);
+    border-top-color: currentColor;
+}
+
+@keyframes dolibarr-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ============================================
+   BOUTON AVEC ICÔNE UNIQUEMENT - DARK
+   ============================================ */
+
+.dolibarr-btn.icon-only {
+    padding: 8px;
+    min-width: 38px;
+    min-height: 38px;
+    border-radius: 50%;
+}
+
+.dolibarr-btn.icon-only.small {
+    padding: 4px;
+    min-width: 30px;
+    min-height: 30px;
+    font-size: 14px;
+}
+
+.dolibarr-btn.icon-only.large {
+    padding: 12px;
+    min-width: 46px;
+    min-height: 46px;
+    font-size: 20px;
+}
+
+/* ============================================
+   GROUPE DE BOUTONS - DARK
+   ============================================ */
+
+.dolibarr-btn-group {
+    display: inline-flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.dolibarr-btn-group .dolibarr-btn {
+    border-radius: 4px;
+}
+
+/* ============================================
+   BOUTON AVEC BADGE - DARK
+   ============================================ */
+
+.dolibarr-btn .btn-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.15);
+    color: inherit;
+    font-size: 0.75em;
+    padding: 1px 8px;
+    border-radius: 50px;
+    margin-left: 6px;
+    font-weight: 600;
+}
+
+.dolibarr-btn.outline .btn-badge {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* ============================================
+   RESPONSIVE - DARK
+   ============================================ */
+
+@media (max-width: 768px) {
+    .dolibarr-btn {
+        font-size: 13px;
+        padding: 6px 16px;
+        min-height: 36px;
+    }
+    .dolibarr-btn.large {
+        font-size: 14px;
+        padding: 10px 20px;
+        min-height: 42px;
+    }
+    .dolibarr-btn.small {
+        font-size: 11px;
+        padding: 3px 10px;
+        min-height: 28px;
+    }
+    .dolibarr-btn-group {
+        flex-direction: column;
+    }
+    .dolibarr-btn-group .dolibarr-btn {
+        width: 100%;
+    }
+}
+
+@media print {
+    .dolibarr-btn {
+        border: 1px solid #666 !important;
+        background: #1a1a1a !important;
+        color: #e0e0e0 !important;
+    }
+}
+
+/* ============================================
+   CONTEXTE DARK MODE
+   ============================================ */
+
+/* Appliquer le thème dark quand la classe .dark-mode est présente */
+.dark-mode .dolibarr-btn.primary {
+    background: #8ab4f8;
+    color: #1a1a1a;
+    border-color: #8ab4f8;
+}
+
+.dark-mode .dolibarr-btn.secondary {
+    background: #9aa0a6;
+    color: #1a1a1a;
+    border-color: #9aa0a6;
+}
+
+.dark-mode .dolibarr-btn.success {
+    background: #81c995;
+    color: #1a1a1a;
+    border-color: #81c995;
+}
+
+.dark-mode .dolibarr-btn.danger {
+    background: #f28b82;
+    color: #1a1a1a;
+    border-color: #f28b82;
+}
+
+.dark-mode .dolibarr-btn.warning {
+    background: #fdd663;
+    color: #1a1a1a;
+    border-color: #fdd663;
+}
+
+.dark-mode .dolibarr-btn.info {
+    background: #7dd6e8;
+    color: #1a1a1a;
+    border-color: #7dd6e8;
+}
+
+.dark-mode .dolibarr-btn.light {
+    background: #3d3d3d;
+    color: #e0e0e0;
+    border-color: #3d3d3d;
+}
+
+.dark-mode .dolibarr-btn.dark {
+    background: #d0d0d0;
+    color: #1a1a1a;
+    border-color: #d0d0d0;
+}
+
+.dark-mode .dolibarr-btn.link {
+    color: #8ab4f8;
+}
+
+.dark-mode .dolibarr-btn.ghost {
+    color: #9aa0a6;
+}
+
+.dark-mode .dolibarr-btn.ghost:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.05);
+    color: #d0d0d0;
+}

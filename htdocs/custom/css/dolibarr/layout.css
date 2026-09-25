@@ -1,0 +1,218 @@
+/* ============================================================================
+   Composants de mise en page communs du module scolaire
+   Classes school-* utilisées par core/lib/ui.lib.php
+   ============================================================================ */
+
+/* --- En-tête de page --------------------------------------------------------- */
+.school-page-header {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: var(--school-gap);
+	flex-wrap: wrap;
+	margin: 4px 0 18px;
+	padding-bottom: 12px;
+	border-bottom: 2px solid var(--school-primary);
+}
+.school-page-header-title h1 {
+	margin: 0;
+	font-size: 1.35rem;
+	color: var(--school-text);
+}
+.school-page-header-sub { margin-top: 6px; }
+.school-page-header-actions {
+	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
+	align-items: center;
+}
+
+/* --- Carte générique ------------------------------------------------------- */
+.school-card {
+	background: var(--school-surface);
+	border: 1px solid var(--school-border);
+	border-radius: var(--school-radius);
+	box-shadow: var(--school-shadow);
+	margin-bottom: 20px;
+	overflow: hidden;
+}
+
+/* --- Écran de liste ------------------------------------------------------- */
+.school-list-bar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--school-gap);
+	flex-wrap: wrap;
+	padding: 12px 16px;
+	background: var(--school-surface-alt);
+	border-bottom: 1px solid var(--school-border);
+}
+.school-list-bar-title { font-weight: 600; color: var(--school-text); }
+.school-list-bar-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.school-list-filters {
+	padding: 12px 16px;
+	border-bottom: 1px solid var(--school-border);
+	display: flex;
+	gap: 12px;
+	flex-wrap: wrap;
+	align-items: flex-end;
+}
+.school-list-footer {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--school-gap);
+	flex-wrap: wrap;
+	padding: 10px 16px;
+	color: var(--school-text-muted);
+	font-size: .85rem;
+	border-top: 1px solid var(--school-border);
+}
+
+.school-badge {
+	display: inline-block;
+	min-width: 20px;
+	padding: 1px 8px;
+	border-radius: 11px;
+	background: var(--school-primary);
+	color: #fff;
+	font-size: .75rem;
+	text-align: center;
+}
+
+/* --- Tableau de données ------------------------------------------------------ */
+.school-table-wrap { overflow-x: auto; }
+.school-table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: .9rem;
+}
+.school-table thead th {
+	text-align: left;
+	padding: 10px 14px;
+	background: var(--school-surface-alt);
+	color: var(--school-text-muted);
+	font-weight: 600;
+	border-bottom: 1px solid var(--school-border);
+	white-space: nowrap;
+}
+.school-table tbody td {
+	padding: 10px 14px;
+	border-bottom: 1px solid var(--school-border);
+	color: var(--school-text);
+}
+.school-table tbody tr:hover { background: var(--school-surface-alt); }
+.school-empty {
+	text-align: center;
+	padding: 34px 14px;
+	color: var(--school-text-muted);
+}
+.school-cell-actions {
+	display: flex;
+	gap: 6px;
+	flex-wrap: wrap;
+	justify-content: center;
+}
+
+/* --- Écran de fiche (formulaire) ------------------------------------------- */
+.school-form { padding: 0; }
+.school-form form { padding: 18px; }
+.school-form-section {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin: 18px 0 10px;
+	font-weight: 600;
+	color: var(--school-primary-dark);
+}
+.school-form-section:first-child { margin-top: 4px; }
+.school-form-section-icon { font-size: 1.1rem; }
+
+.school-fields { width: 100%; border-collapse: collapse; }
+.school-fields td { padding: 8px 6px; vertical-align: top; }
+.school-fields-label {
+	width: 230px;
+	color: var(--school-text-muted);
+	padding-top: 14px !important;
+}
+.school-required::after { content: " *"; color: var(--school-danger); }
+.school-fields-value input[type=text],
+.school-fields-value input[type=email],
+.school-fields-value input[type=url],
+.school-fields-value input[type=date],
+.school-fields-value input[type=number],
+.school-fields-value select,
+.school-fields-value textarea {
+	width: 100%;
+	max-width: 460px;
+	padding: 8px 10px;
+	border: 1px solid var(--school-border);
+	border-radius: var(--school-radius-sm);
+	background: var(--school-surface);
+	color: var(--school-text);
+	font: inherit;
+}
+.school-fields-value input:focus,
+.school-fields-value select:focus,
+.school-fields-value textarea:focus {
+	outline: none;
+	border-color: var(--school-primary);
+	box-shadow: 0 0 0 3px rgba(37, 99, 235, .15);
+}
+.school-fields-help {
+	margin-top: 4px;
+	font-size: .8rem;
+	color: var(--school-text-muted);
+}
+.school-form-actions {
+	display: flex;
+	gap: 10px;
+	flex-wrap: wrap;
+	margin-top: 20px;
+	padding-top: 16px;
+	border-top: 1px solid var(--school-border);
+}
+
+/* --- Encart "à venir" (pages placeholder) -------------------------------- */
+.school-soon {
+	margin: 24px auto;
+	max-width: 640px;
+	padding: 40px 28px;
+	text-align: center;
+	background: var(--school-surface);
+	border: 1px dashed var(--school-border);
+	border-radius: var(--school-radius);
+	color: var(--school-text-muted);
+}
+.school-soon .school-soon-icon { font-size: 2.4rem; display: block; margin-bottom: 10px; }
+
+/* --- Champs bilingues (FR + AR) ------------------------------------------- */
+.school-bilingual {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	max-width: 460px;
+}
+.school-bilingual-item {
+	display: flex;
+	align-items: flex-start;
+	gap: 8px;
+}
+.school-bilingual-item input,
+.school-bilingual-item textarea { flex: 1; }
+.school-lang-tag {
+	flex: 0 0 auto;
+	min-width: 26px;
+	margin-top: 8px;
+	padding: 2px 6px;
+	border-radius: 4px;
+	background: var(--school-surface-alt);
+	border: 1px solid var(--school-border);
+	color: var(--school-text-muted);
+	font-size: .72rem;
+	font-weight: 600;
+	text-align: center;
+}
+.school-bilingual-item input[dir="rtl"],
+.school-bilingual-item textarea[dir="rtl"] { text-align: right; }

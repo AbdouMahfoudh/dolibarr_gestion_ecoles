@@ -1,0 +1,367 @@
+# Dolibarr language file - Source file is en_US - notes
+# Module « Notes et bulletins »
+
+Module104800Name=Notes et bulletins
+Module104800Desc=Notes des élèves, bulletins trimestriels, relevés annuels
+
+# Droits
+Permission104801=Notes : voir les notes de toutes les classes
+Permission104802=Notes : saisir les notes de ses classes et matières (enseignant, d'après l'emploi du temps)
+Permission104803=Notes : saisir les notes de toutes les classes (secrétariat, direction)
+Permission104804=Notes : modifier les notes d'un trimestre clôturé (avec motif, gardé dans l'historique)
+Permission104811=Clôture : clôturer et rouvrir un trimestre
+Permission104891=Configuration : règles de calcul, mentions, distinctions, modèles de bulletin
+
+# Menus
+MenuNotes=Notes
+MenuSaisieNotes=Saisie des notes
+MenuCloture=Clôture des trimestres
+MenuHistoriqueNotes=Historique des notes
+MenuConfiguration=Configuration
+MenuReglesCalcul=Règles de calcul
+
+# Évaluations
+Devoir=Devoir
+Devoirs=Devoirs
+DevoirNum=Devoir %s
+Composition=Composition
+Evaluation=Évaluation
+NouvelleEvaluation=Nouvelle évaluation :
+DateEvaluation=Date de l'évaluation
+LibelleFacultatif=Libellé (facultatif)
+CreerEtSaisir=Créer et saisir les notes
+SupprimerEvaluation=Supprimer l'évaluation
+ConfirmSupprimerEvaluation=Supprimer « %s » ? Ses notes ne compteront plus (elles restent visibles dans l'historique).
+EvaluationSupprimee=« %s » supprimé.
+EvaluationSupprimeeCourt=supprimée
+NoteAbsent=Absent
+NoteDispense=Dispensé
+NoteAbsentCourt=Abs
+NoteDispenseCourt=Disp
+AbsentDispense=Absent (Abs) ou dispensé (Disp)
+
+# Saisie
+SaisieNotes=Saisie des notes
+ChoisirMatiere=Choisir la matière
+NbElevesCol=Élèves
+TrimestreCloture=Trimestre clôturé
+AucuneClasse=Aucune classe active.
+AucuneClasseEnseignant=Aucune classe à votre nom : vos classes et matières viennent de l'emploi du temps des cours (enseignant de chaque cours). Demandez à la direction de vous y inscrire.
+SuiviDevoirsCompos=%s dev. · %s / %s compo.
+AideSuiviClasses=Pour chaque trimestre : nombre de devoirs créés et compositions créées / nombre de matières. Cadenas = trimestre clôturé. Cliquez sur une classe pour voir ses matières.
+TrimestreClotureLe=%s clôturé le %s par %s : les notes ne sont plus modifiables.
+TrimestreClotureCorrection=Vous avez le droit de les corriger : un motif vous sera demandé et gardé dans l'historique.
+TrimestreClotureLectureSeule=Le trimestre est clôturé : notes en lecture seule.
+AucuneMatiereClasse=Aucune matière n'est liée à cette classe.
+NoteSur=Note sur
+Enseignant=Enseignant
+NoteDevoirs=Note de devoirs
+ExceptionMatiere=Exception pour cette matière de la classe (Configuration > Règles de calcul)
+PasEncore=pas encore
+SaisirNotes=Saisir les notes
+VoirNotes=Voir les notes
+AideMatieresClasse=Composition : notes saisies / élèves de la classe. Enseignant : d'après l'emploi du temps des cours.
+CoefficientNoteSur=coefficient %s · note sur %s
+RegleCalcul=Règle de calcul
+NoteTrimestreFormule=Note du trimestre = (devoirs × %s + composition × %s) ÷ %s
+AucuneEvaluation=Aucune évaluation pour ce trimestre.
+AucuneEvaluationCreer=Aucune évaluation pour ce trimestre : créez un devoir ou la composition ci-dessus.
+AucunEleveClasse=Aucun élève inscrit dans cette classe.
+AideSaisieNotes=Tapez la note (sur %s, virgule ou point), puis Entrée pour passer à l'élève suivant. Tapez « a » pour absent, « d » pour dispensé, ou choisissez dans la liste. Une case vidée efface la note.
+ChangeDeClasse=a changé de classe
+NotesSaisies=Notes saisies
+MoyenneEvaluation=Moyenne de la classe
+MotifCorrection=Motif de la correction :
+MotifCorrectionAide=(obligatoire : le trimestre est clôturé)
+EnregistrerNotes=Enregistrer les notes « %s »
+AideChoisirColonne=Pour saisir ou corriger des notes, cliquez sur le crayon d'une colonne.
+VoirHistoriqueMatiere=Historique des notes de cette matière
+NotesEnregistrees=%s note(s) enregistrée(s) pour « %s ».
+AucuneNoteChangee=Aucune note n'a changé.
+
+# Clôture
+ClotureTrimestres=Clôture des trimestres
+CloturerTrimestre=Clôturer le trimestre
+ConfirmCloturer=Clôturer le %s de la classe %s ? Les notes ne pourront plus être modifiées (sauf droit spécial, avec motif) et les bulletins pourront être imprimés.
+TrimestreClotureOk=%s clôturé pour la classe %s.
+TrimestreRouvertOk=%s rouvert pour la classe %s.
+CompositionsSaisies=Compositions / matières
+NotesCompoManquantes=Notes de composition manquantes
+Cloture=Clôturé
+Ouvert=Ouvert
+ParLe=par %s le %s
+RouvertPar=rouvert par %s le %s
+MotifReouverture=Motif de la réouverture
+Rouvrir=Rouvrir
+Cloturer=Clôturer
+AideCloture=Notes de composition manquantes = élèves × matières − notes saisies aux compositions (« Abs » et « Disp » comptent comme saisies). On peut clôturer même s'il en manque. Rouvrir demande un motif, gardé avec la date et l'utilisateur.
+
+# Historique
+HistoriqueNotes=Historique des notes
+
+# Configuration
+ConfigurationNotes=Configuration des notes et bulletins
+AucunNiveau=Aucun niveau actif : créez d'abord les niveaux dans le module Classes.
+AideReglesNiveau=Chaque niveau a ses règles de calcul. Un niveau marqué « par défaut » utilise les valeurs proposées tant que vous ne l'avez pas enregistré.
+ParDefaut=par défaut
+CalculDevoirs=Calcul de la note de devoirs
+CalculDevoirsAide=(modifiable pour une matière d'une classe : voir les exceptions plus bas)
+CalculDevoirsMoyenne=Moyenne des devoirs
+CalculDevoirsMeilleure=Meilleure note de devoir
+DevoirAbsent=Devoir manqué (absent)
+DevoirAbsentIgnore=Ne compte pas (calcul sur les autres devoirs)
+DevoirAbsentZero=Compte 0
+NoteTrimestre=Note du trimestre (par matière)
+PoidsDevoirsCompo=Poids devoirs / composition
+CompoAbsent=Composition manquée (absent)
+CompoAbsentZero=Compte 0
+CompoAbsentDevoirs=Note du trimestre = note de devoirs seule
+AideDispense=« Dispensé » : l'évaluation ne compte pas du tout pour cet élève.
+MoyenneAnnuelle=Moyenne annuelle
+PoidsTrimestres=Poids des trimestres
+TrimestreSansCompo=Absent à toutes les compositions d'un trimestre
+TrimestreSansCompoExclure=Ce trimestre ne compte pas dans la moyenne annuelle
+TrimestreSansCompoGarder=Ce trimestre compte quand même
+RangEtDecision=Rang et décision de fin d'année
+RangExaequo=Élèves ex aequo
+RangExaequoMeme=Même rang (ex. deux 3es, le suivant est 5e)
+RangExaequoCompo=Départagés par la moyenne des compositions
+DecisionFinAnnee=Décision de fin d'année (relevé annuel)
+DecisionAucune=Pas de décision
+DecisionManuelle=Choisie à la main par la direction
+DecisionAuto=Proposée selon la moyenne annuelle, modifiable
+SeuilPassage=Admis à partir de
+AppliquerTousNiveaux=Appliquer ces règles à tous les niveaux
+ReglesEnregistreesTous=Règles enregistrées pour tous les niveaux.
+ExceptionsMatieres=Exceptions par matière : %s
+AucuneMatiereNiveau=Aucune matière liée aux classes de ce niveau.
+RegleDuNiveau=Règle du niveau (%s)
+
+# Erreurs
+ErrorPoidsInvalide=Les poids doivent être compris entre 0 et 100, le seuil entre 0 et 20.
+ErrorPoidsTousNuls=Les poids ne peuvent pas être tous à 0.
+ErrorMotifObligatoire=Le motif est obligatoire.
+ErrorMotifObligatoireCloture=Le trimestre est clôturé : indiquez le motif de la correction.
+ErrorTrimestreCloture=Ce trimestre est clôturé pour cette classe.
+ErrorMatiereNonLiee=Cette matière n'est pas liée à la classe.
+ErrorCompositionExiste=La composition de ce trimestre existe déjà pour cette matière.
+ErrorNoteInvalide=« %s » n'est pas une note valide.
+ErrorNoteTropGrande=%s dépasse la note maximale (%s).
+ErrorNotesNonEnregistrees=Rien n'a été enregistré : %s note(s) à corriger (en rouge).
+
+# Étape B : résultats, conseil de classe, bulletins
+Permission104821=Résultats : voir les moyennes, les rangs et les élèves en difficulté ; imprimer bulletins, relevés et certificats
+Permission104822=Conseil de classe : observations, distinctions et décisions de fin d'année
+MenuResultats=Résultats
+MenuConseil=Conseil de classe
+MenuDifficultes=Élèves en difficulté
+MenuMentions=Mentions
+MenuDistinctions=Distinctions
+MenuModelesBulletin=Modèles de bulletin
+MenuConfigSuivi=Suivi des élèves
+Notes=Notes
+NotesResultats=Notes et résultats
+Resultats=Résultats
+Annee=Année
+ToutesLesClasses=Toutes les classes
+Rang=Rang
+RangPremier=1er
+RangNieme=%se
+ExAequo=ex æquo
+Mention=Mention
+Mentions=Mentions
+NouvelleMention=Nouvelle mention
+SeuilMention=Moyenne minimale
+SeuilMentionHelp=Moyenne générale (sur 20) à partir de laquelle cette mention est donnée. La mention retenue est celle du seuil le plus haut atteint.
+Distinction=Distinction
+Distinctions=Distinctions
+NouvelleDistinction=Nouvelle distinction
+SeuilMin=À partir de
+SeuilMinHelp=Moyenne minimale (comprise), vide = pas de minimum.
+SeuilMax=En dessous de
+SeuilMaxHelp=Moyenne maximale (non comprise), vide = pas de maximum. Ex. avertissement : en dessous de 8.
+PositionDistinctionHelp=Ordre d'examen : la première distinction qui convient est proposée.
+Bulletins=Bulletins
+ReglesNiveaux=Règles des niveaux
+ModelesBulletin=Modèles de bulletin
+ModeleBulletin=Modèle de bulletin
+NouveauModele=Nouveau modèle
+LangueBulletin=Langue
+LangueBulletinHelp=Bilingue : titres en français et en arabe, chaque matière écrite dans sa langue d'enseignement (réglée sur la matière). Tout en français ou tout en arabe (de droite à gauche).
+LangueMixte=Bilingue (chaque matière dans sa langue)
+LangueToutFrancais=Tout en français
+LangueToutArabe=Tout en arabe
+StyleClassique=Classique (bleu)
+StyleModerne=Moderne (vert)
+StyleSobre=Sobre (noir et blanc)
+ModeleSimplifie=Simplifié
+ModeleSimplifieHelp=Notes complètes (ex. 28 / 30) sans coefficient ni détail devoirs / composition : maternelle et primaire.
+AffDetail=Colonnes devoirs et composition
+AffCoef=Coefficients et total des points
+AffRangMatiere=Rang dans chaque matière
+AffMoyClasse=Moyennes de la classe
+AffMinMax=Plus faible et plus forte note par matière
+AffRang=Rang général
+AffRappel=Rappel des trimestres précédents
+AffDistinction=Distinction
+AffSignatureParent=Case « signature des parents »
+ModeleParDefaut=Modèle de bulletin
+ModeleParDefautAide=(proposé à l'impression pour les classes de ce niveau ; un autre peut être choisi)
+PremierModele=Premier modèle actif
+MoyenneGenerale=Moyenne générale
+MoyenneClasse=Moyenne de la classe
+MoyClasse=Moy. classe
+MoyenneSur20=Moyenne /20
+PlusForte=Plus forte moyenne
+PlusFaible=Plus faible moyenne
+PlusFortePlusFaible=Plus forte - plus faible
+NoteMinClasse=Note min.
+NoteMaxClasse=Note max.
+NoteObtenue=Note obtenue
+Coef=Coef.
+ElevesClasses=Élèves classés
+TauxReussite=Réussite (≥ 10)
+EnDifficulte=En difficulté
+VoirResultats=Voir les résultats
+AideSuiviResultats=Élèves classés = élèves ayant au moins une note. En difficulté = moyenne générale sous %s (réglable dans Configuration > Suivi des élèves).
+ResultatsProvisoires=Résultats provisoires : trimestre non clôturé
+ResultatsProvisoiresAnnee=Résultats provisoires : les trois trimestres ne sont pas tous clôturés
+ImprimerBulletinsClasse=Bulletins de la classe
+ImprimerRelevesClasse=Relevés annuels de la classe
+BulletinsApresCloture=Les bulletins s'impriment après la clôture du trimestre (menu Clôture des trimestres).
+BulletinsApresClotureAnnee=Les relevés annuels s'impriment quand les trois trimestres sont clôturés.
+ConseilDeClasse=Conseil de classe
+ChoisieParConseil=Choisie par le conseil de classe
+Aucune=Aucune
+AideResultats=Moyennes sur 20 ; en rouge : sous 10 (moyenne générale : sous le seuil des élèves en difficulté). Cliquez sur un élève pour le détail de ses notes. Chaque colonne a son filtre.
+AideResultatsAnnee=Moyenne annuelle = moyenne des trimestres selon leurs poids (règles du niveau). Chaque colonne a son filtre.
+TableauMoyennesTitre=Tableau des moyennes - %s
+BulletinDeNotes=Bulletin de notes
+ReleveAnnuel=Relevé annuel
+NomEleve=Élève
+Effectif=Élèves classés
+ObservationDirection=Observation de la direction
+FaitALe=Fait à %s, le %s
+LeDirecteur=Le directeur
+SignatureParents=Signature des parents
+MoyenneDuTrimestre1=Moyenne du 1er trimestre
+MoyenneDuTrimestre2=Moyenne du 2ème trimestre
+TrimestreCourt1=1er trim.
+TrimestreCourt2=2e trim.
+TrimestreCourt3=3e trim.
+TrimestreNonCompte=Trimestre non compté dans la moyenne annuelle (absent à toutes les compositions).
+RangAnnuel=Rang annuel
+DecisionFinAnneeCourt=Décision
+DecisionAdmis=Admis en classe supérieure
+DecisionAdmisF=Admise en classe supérieure
+DecisionRedouble=Redouble
+DecisionRedoubleF=Redouble
+DecisionProposee=Proposée : %s
+AChoisir=À choisir
+DistinctionAuto=Automatique (%s)
+ConseilEnregistre=Conseil de classe enregistré.
+ConseilClotureLectureSeule=Ce trimestre est clôturé : le conseil de classe n'est plus modifiable (rouvrir le trimestre pour changer).
+AideConseil=Distinction proposée automatiquement selon la moyenne (Configuration > Distinctions), modifiable ; l'observation est imprimée sur le bulletin.
+AideConseilAnnee=Décision de fin d'année et observation imprimées sur le relevé annuel. La décision est proposée selon la moyenne annuelle si les règles du niveau le prévoient.
+AideConseilChoisirClasse=Choisissez une classe.
+CertificatScolarite=Certificat de scolarité
+CertificatTexte=Je soussigné, directeur de l'établissement %s, certifie que l'élève %s, matricule %s, né le %s à %s, est régulièrement inscrit dans notre établissement en classe de %s pour l'année scolaire %s.
+CertificatTexteF=Je soussigné, directeur de l'établissement %s, certifie que l'élève %s, matricule %s, née le %s à %s, est régulièrement inscrite dans notre établissement en classe de %s pour l'année scolaire %s.
+CertificatFin=En foi de quoi, le présent certificat lui est délivré pour servir et valoir ce que de droit.
+ErrorCertificatNonInscrit=Le certificat de scolarité n'est délivré qu'aux élèves inscrits.
+ErrorAucunModele=Aucun modèle de bulletin actif (Configuration > Modèles de bulletin).
+ErrorEleveHorsClasse=Cet élève n'est pas dans cette classe.
+EleveNonClasse=Cet élève n'est pas classé dans sa classe actuelle (pas inscrit ou sans classe).
+ElevesEnDifficulte=Élèves en difficulté
+MoyenneInferieureA=Moyenne inférieure à %s
+MatieresSous10=Matières sous 10
+AucunEleveEnDifficulte=Aucun élève en dessous du seuil.
+AideDifficultes=Le bouton WhatsApp ouvre un message prêt pour le responsable (modifiable dans Configuration > Suivi des élèves) ; l'envoi reste manuel.
+SeuilDifficulte=Seuil des élèves en difficulté
+SeuilDifficulteAide=moyenne générale en dessous de laquelle l'élève apparaît dans la liste (modifiable aussi sur la page)
+MessageDifficulte=Message WhatsApp aux parents
+AideMessageDifficulte=Variables : {eleve} {eleve_ar} {classe} {periode} {periode_ar} {moyenne} {matieres} {matieres_ar} {ecole}. Vider le texte pour revenir au message par défaut.
+ErrorSeuil020=Le seuil doit être compris entre 0 et 20.
+ErrorDistinctionSansSeuil=Indiquez au moins un seuil (à partir de / en dessous de).
+ErrorSeuilMinMax=Le seuil minimum doit être inférieur au seuil maximum.
+
+# Filtres
+NbLignesAffichees=%s ligne(s) affichée(s) sur %s
+AucuneEvaluationCourt=Aucune évaluation
+EvaluationsCreees=Évaluations créées
+CompositionsManquantes=Compositions manquantes
+Incomplete=Incomplète
+Complete=Complète
+NonSaisie=Non saisie
+Notee=Notée
+SousLaMoyenne=Sous la moyenne
+Rouvert=Rouvert
+AvecMotif=avec motif
+AideFiltreNote=Note (12 ou 12,5), « abs », « disp » ou « vide »
+FiltreMin=Min.
+FiltreMax=Max.
+
+# Page de saisie (nouvelle présentation)
+Toutes=Toutes
+RechercherClasse=Rechercher une classe
+RechercherMatiere=Rechercher une matière ou un enseignant
+NbMatieresN=%s matière(s)
+NbElevesN=%s élève(s)
+NbDevoirsN=%s devoir(s)
+CompositionsParTrimestre=Compositions créées par trimestre
+CompositionPasEncore=Composition pas encore créée
+CompositionIncomplete=Composition incomplète
+CompositionComplete=Composition complète
+MoyenneCourt=moy.
+NouveauDevoir=Devoir
+NouvelleComposition=Composition
+EnSaisie=en cours de saisie
+MinMax=Plus faible – plus forte
+ModifierEvaluation=Date, libellé, suppression
+ToucheEntree=Entrée
+ToucheEchap=Échap
+EleveSuivant=élève suivant
+ElevePrecedent=élève précédent
+AnnulerCase=annuler la case
+AideCouleurs=Couleurs : rouge sous la moitié, orange, vert à partir de 70 %%
+MoyTrimestre=Moy. trimestre
+MoyTrimestreAide=Moyenne du trimestre dans cette matière (devoirs et composition, selon les règles du niveau), sur 20
+AucuneModification=Aucune modification
+ModificationsNonEnregistrees=%s modification(s) non enregistrée(s)
+AideChoisirEvaluation=Pour saisir ou corriger des notes, cliquez sur une évaluation ci-dessus.
+
+# Aperçu des modèles
+Apercu=Aperçu
+ApercuModeles=Aperçu des modèles
+ApercuBulletin=Aperçu du bulletin
+ApercuReleve=Aperçu du relevé annuel
+BulletinTrimestriel=Bulletin trimestriel
+ChoisirModele=Modèle
+ModifierModele=Modifier ce modèle
+OuvrirPdf=Ouvrir le PDF
+AideApercu=Aperçu rempli avec un élève fictif (8 matières, 28 élèves) pour voir la présentation. Les mentions et distinctions sont celles de la configuration.
+Exemple=EXEMPLE
+
+# Présentation des bulletins (mise en page, couleur, en-tête)
+StyleBulletin=Mise en page
+StyleBulletinHelp=Classique : grille complète. Lignes : traits horizontaux seulement, aéré. Encadré : tableaux et cadres arrondis.
+MiseEnPageClassique=Classique (grille)
+MiseEnPageLignes=Lignes (aéré)
+MiseEnPageEncadre=Encadré (cadres arrondis)
+CouleurBulletin=Couleur
+CouleurBulletinHelp=Couleur des titres et des cadres. « Sans couleur » : noir et blanc, sans aucun fond (photocopie).
+CouleurBleu=Bleu
+CouleurVert=Vert
+CouleurBordeaux=Bordeaux
+CouleurViolet=Violet
+CouleurOrange=Orange
+CouleurGris=Gris
+CouleurAucune=Sans couleur (noir et blanc)
+EnteteBulletin=En-tête
+EnteteBulletinHelp=En-tête de l'établissement sur le bulletin. Vide : celui choisi dans la configuration du module Classes (noir et blanc automatiquement si la couleur est « Sans couleur »).
+EnteteParDefaut=Celui de la configuration
+Presentation=Présentation
+EssaiNonEnregistre=Essai affiché, pas encore enregistré.
+EnregistrerPresentation=Enregistrer pour le modèle %s
+PresentationEnregistree=Présentation enregistrée pour le modèle %s.
+EnteteNoirBlanc=Noir et blanc (sobre)

@@ -1,0 +1,367 @@
+# Dolibarr language file - Source file is en_US - notes
+# وحدة « النقاط وكشوف النقاط »
+
+Module104800Name=النقاط وكشوف النقاط
+Module104800Desc=نقاط التلاميذ، الكشوف الفصلية، الكشوف السنوية
+
+# الصلاحيات
+Permission104801=النقاط: عرض نقاط جميع الأقسام
+Permission104802=النقاط: إدخال نقاط أقسامه ومواده (الأستاذ، حسب جدول الحصص)
+Permission104803=النقاط: إدخال نقاط جميع الأقسام (السكرتارية، الإدارة)
+Permission104804=النقاط: تعديل نقاط فصل مغلق (مع ذكر السبب، يحفظ في السجل)
+Permission104811=الإغلاق: إغلاق فصل وإعادة فتحه
+Permission104891=الإعدادات: قواعد الحساب، التقديرات، التنويهات، نماذج الكشوف
+
+# القوائم
+MenuNotes=النقاط
+MenuSaisieNotes=إدخال النقاط
+MenuCloture=إغلاق الفصول
+MenuHistoriqueNotes=سجل النقاط
+MenuConfiguration=الإعدادات
+MenuReglesCalcul=قواعد الحساب
+
+# التقييمات
+Devoir=فرض
+Devoirs=الفروض
+DevoirNum=فرض %s
+Composition=امتحان
+Evaluation=التقييم
+NouvelleEvaluation=تقييم جديد :
+DateEvaluation=تاريخ التقييم
+LibelleFacultatif=العنوان (اختياري)
+CreerEtSaisir=إنشاء وإدخال النقاط
+SupprimerEvaluation=حذف التقييم
+ConfirmSupprimerEvaluation=حذف « %s » ؟ لن تحتسب نقاطه بعد الآن (تبقى ظاهرة في السجل).
+EvaluationSupprimee=تم حذف « %s ».
+EvaluationSupprimeeCourt=محذوف
+NoteAbsent=غائب
+NoteDispense=معفى
+NoteAbsentCourt=غ
+NoteDispenseCourt=مع
+AbsentDispense=غائب (غ) أو معفى (مع)
+
+# الإدخال
+SaisieNotes=إدخال النقاط
+ChoisirMatiere=اختر المادة
+NbElevesCol=التلاميذ
+TrimestreCloture=فصل مغلق
+AucuneClasse=لا يوجد قسم نشط.
+AucuneClasseEnseignant=لا يوجد قسم باسمك : أقسامك وموادك مأخوذة من جدول الحصص (أستاذ كل حصة). اطلب من الإدارة تسجيلك فيه.
+SuiviDevoirsCompos=%s فرض · %s / %s امتحان
+AideSuiviClasses=لكل فصل : عدد الفروض المنشأة والامتحانات المنشأة / عدد المواد. القفل = فصل مغلق. انقر على قسم لعرض مواده.
+TrimestreClotureLe=%s مغلق بتاريخ %s من طرف %s : لم يعد تعديل النقاط ممكنا.
+TrimestreClotureCorrection=لديك صلاحية التصحيح : سيطلب منك سبب يحفظ في السجل.
+TrimestreClotureLectureSeule=الفصل مغلق : النقاط للقراءة فقط.
+AucuneMatiereClasse=لا توجد مادة مرتبطة بهذا القسم.
+NoteSur=النقطة على
+Enseignant=الأستاذ
+NoteDevoirs=نقطة الفروض
+ExceptionMatiere=استثناء لهذه المادة في هذا القسم (الإعدادات > قواعد الحساب)
+PasEncore=ليس بعد
+SaisirNotes=إدخال النقاط
+VoirNotes=عرض النقاط
+AideMatieresClasse=الامتحان : النقاط المدخلة / تلاميذ القسم. الأستاذ : حسب جدول الحصص.
+CoefficientNoteSur=المعامل %s · النقطة على %s
+RegleCalcul=قاعدة الحساب
+NoteTrimestreFormule=نقطة الفصل = (الفروض × %s + الامتحان × %s) ÷ %s
+AucuneEvaluation=لا يوجد تقييم لهذا الفصل.
+AucuneEvaluationCreer=لا يوجد تقييم لهذا الفصل : أنشئ فرضا أو الامتحان أعلاه.
+AucunEleveClasse=لا يوجد تلميذ مسجل في هذا القسم.
+AideSaisieNotes=اكتب النقطة (على %s، بفاصلة أو نقطة)، ثم « إدخال » للانتقال إلى التلميذ الموالي. اكتب « a » للغائب و« d » للمعفى، أو اختر من القائمة. مسح الخانة يحذف النقطة.
+ChangeDeClasse=غير القسم
+NotesSaisies=النقاط المدخلة
+MoyenneEvaluation=معدل القسم
+MotifCorrection=سبب التصحيح :
+MotifCorrectionAide=(إجباري : الفصل مغلق)
+EnregistrerNotes=حفظ نقاط « %s »
+AideChoisirColonne=لإدخال النقاط أو تصحيحها، انقر على قلم العمود.
+VoirHistoriqueMatiere=سجل نقاط هذه المادة
+NotesEnregistrees=تم حفظ %s نقطة لـ « %s ».
+AucuneNoteChangee=لم تتغير أي نقطة.
+
+# الإغلاق
+ClotureTrimestres=إغلاق الفصول
+CloturerTrimestre=إغلاق الفصل
+ConfirmCloturer=إغلاق %s للقسم %s ؟ لن يمكن تعديل النقاط بعد ذلك (إلا بصلاحية خاصة مع ذكر السبب) ويمكن طباعة الكشوف.
+TrimestreClotureOk=تم إغلاق %s للقسم %s.
+TrimestreRouvertOk=تمت إعادة فتح %s للقسم %s.
+CompositionsSaisies=الامتحانات / المواد
+NotesCompoManquantes=نقاط امتحان ناقصة
+Cloture=مغلق
+Ouvert=مفتوح
+ParLe=من طرف %s بتاريخ %s
+RouvertPar=أعيد فتحه من طرف %s بتاريخ %s
+MotifReouverture=سبب إعادة الفتح
+Rouvrir=إعادة الفتح
+Cloturer=إغلاق
+AideCloture=نقاط الامتحان الناقصة = التلاميذ × المواد − النقاط المدخلة في الامتحانات (« غ » و« مع » تحتسب مدخلة). يمكن الإغلاق حتى مع وجود نقص. إعادة الفتح تتطلب سببا يحفظ مع التاريخ والمستخدم.
+
+# السجل
+HistoriqueNotes=سجل النقاط
+
+# الإعدادات
+ConfigurationNotes=إعدادات النقاط والكشوف
+AucunNiveau=لا يوجد مستوى نشط : أنشئ المستويات أولا في وحدة الأقسام.
+AideReglesNiveau=لكل مستوى قواعد حسابه. المستوى المعلم « افتراضي » يستعمل القيم المقترحة ما لم تحفظه.
+ParDefaut=افتراضي
+CalculDevoirs=حساب نقطة الفروض
+CalculDevoirsAide=(يمكن تغييره لمادة في قسم : انظر الاستثناءات أسفله)
+CalculDevoirsMoyenne=معدل الفروض
+CalculDevoirsMeilleure=أحسن نقطة فرض
+DevoirAbsent=فرض فائت (غياب)
+DevoirAbsentIgnore=لا يحتسب (الحساب على الفروض الأخرى)
+DevoirAbsentZero=يحتسب 0
+NoteTrimestre=نقطة الفصل (لكل مادة)
+PoidsDevoirsCompo=وزن الفروض / الامتحان
+CompoAbsent=امتحان فائت (غياب)
+CompoAbsentZero=يحتسب 0
+CompoAbsentDevoirs=نقطة الفصل = نقطة الفروض وحدها
+AideDispense=« معفى » : لا يحتسب التقييم إطلاقا لهذا التلميذ.
+MoyenneAnnuelle=المعدل السنوي
+PoidsTrimestres=وزن الفصول
+TrimestreSansCompo=غائب عن كل امتحانات فصل
+TrimestreSansCompoExclure=لا يحتسب هذا الفصل في المعدل السنوي
+TrimestreSansCompoGarder=يحتسب هذا الفصل رغم ذلك
+RangEtDecision=الرتبة وقرار نهاية السنة
+RangExaequo=التلاميذ المتساوون
+RangExaequoMeme=نفس الرتبة (مثلا اثنان في الرتبة 3، والموالي 5)
+RangExaequoCompo=الترجيح بمعدل الامتحانات
+DecisionFinAnnee=قرار نهاية السنة (الكشف السنوي)
+DecisionAucune=بدون قرار
+DecisionManuelle=تختاره الإدارة يدويا
+DecisionAuto=مقترح حسب المعدل السنوي، قابل للتعديل
+SeuilPassage=ناجح ابتداء من
+AppliquerTousNiveaux=تطبيق هذه القواعد على كل المستويات
+ReglesEnregistreesTous=تم حفظ القواعد لكل المستويات.
+ExceptionsMatieres=استثناءات حسب المادة : %s
+AucuneMatiereNiveau=لا توجد مادة مرتبطة بأقسام هذا المستوى.
+RegleDuNiveau=قاعدة المستوى (%s)
+
+# الأخطاء
+ErrorPoidsInvalide=يجب أن تكون الأوزان بين 0 و 100، والعتبة بين 0 و 20.
+ErrorPoidsTousNuls=لا يمكن أن تكون كل الأوزان 0.
+ErrorMotifObligatoire=السبب إجباري.
+ErrorMotifObligatoireCloture=الفصل مغلق : اذكر سبب التصحيح.
+ErrorTrimestreCloture=هذا الفصل مغلق لهذا القسم.
+ErrorMatiereNonLiee=هذه المادة غير مرتبطة بالقسم.
+ErrorCompositionExiste=امتحان هذا الفصل موجود مسبقا لهذه المادة.
+ErrorNoteInvalide=« %s » ليست نقطة صحيحة.
+ErrorNoteTropGrande=%s تتجاوز النقطة القصوى (%s).
+ErrorNotesNonEnregistrees=لم يحفظ شيء : %s نقطة يجب تصحيحها (بالأحمر).
+
+# المرحلة ب : النتائج، مجلس القسم، الكشوف
+Permission104821=النتائج : عرض المعدلات والرتب والتلاميذ المتعثرين ؛ طباعة الكشوف والشهادات
+Permission104822=مجلس القسم : الملاحظات والتنويهات وقرارات نهاية السنة
+MenuResultats=النتائج
+MenuConseil=مجلس القسم
+MenuDifficultes=التلاميذ المتعثرون
+MenuMentions=التقديرات
+MenuDistinctions=التنويهات
+MenuModelesBulletin=نماذج الكشوف
+MenuConfigSuivi=متابعة التلاميذ
+Notes=النقاط
+NotesResultats=النقاط والنتائج
+Resultats=النتائج
+Annee=السنة
+ToutesLesClasses=كل الأقسام
+Rang=الرتبة
+RangPremier=1
+RangNieme=%s
+ExAequo=مكرر
+Mention=التقدير
+Mentions=التقديرات
+NouvelleMention=تقدير جديد
+SeuilMention=المعدل الأدنى
+SeuilMentionHelp=المعدل العام (على 20) الذي يعطى ابتداء منه هذا التقدير. التقدير المعتمد هو صاحب أعلى عتبة محققة.
+Distinction=التنويه
+Distinctions=التنويهات
+NouvelleDistinction=تنويه جديد
+SeuilMin=ابتداء من
+SeuilMinHelp=المعدل الأدنى (محتسب)، فارغ = بدون حد أدنى.
+SeuilMax=أقل من
+SeuilMaxHelp=المعدل الأقصى (غير محتسب)، فارغ = بدون حد أقصى. مثلا الإنذار : أقل من 8.
+PositionDistinctionHelp=ترتيب الفحص : يقترح أول تنويه مناسب.
+Bulletins=الكشوف
+ReglesNiveaux=قواعد المستويات
+ModelesBulletin=نماذج الكشوف
+ModeleBulletin=نموذج الكشف
+NouveauModele=نموذج جديد
+LangueBulletin=اللغة
+LangueBulletinHelp=ثنائي اللغة : العناوين بالفرنسية والعربية، وكل مادة تكتب بلغة تدريسها (تضبط في بطاقة المادة). أو كله بالفرنسية أو كله بالعربية (من اليمين إلى اليسار).
+LangueMixte=ثنائي اللغة (كل مادة بلغتها)
+LangueToutFrancais=كله بالفرنسية
+LangueToutArabe=كله بالعربية
+StyleClassique=كلاسيكي (أزرق)
+StyleModerne=عصري (أخضر)
+StyleSobre=بسيط (أبيض وأسود)
+ModeleSimplifie=مبسط
+ModeleSimplifieHelp=نقاط كاملة (مثلا 28 / 30) بدون معامل ولا تفصيل الفروض / الامتحان : الروضة والابتدائي.
+AffDetail=عمودا الفروض والامتحان
+AffCoef=المعاملات ومجموع النقاط
+AffRangMatiere=الرتبة في كل مادة
+AffMoyClasse=معدلات القسم
+AffMinMax=أدنى وأعلى نقطة لكل مادة
+AffRang=الرتبة العامة
+AffRappel=تذكير بالفصول السابقة
+AffDistinction=التنويه
+AffSignatureParent=خانة « توقيع الولي »
+ModeleParDefaut=نموذج الكشف
+ModeleParDefautAide=(يقترح عند الطباعة لأقسام هذا المستوى ؛ يمكن اختيار غيره)
+PremierModele=أول نموذج نشط
+MoyenneGenerale=المعدل العام
+MoyenneClasse=معدل القسم
+MoyClasse=معدل القسم
+MoyenneSur20=المعدل /20
+PlusForte=أعلى معدل
+PlusFaible=أدنى معدل
+PlusFortePlusFaible=أعلى - أدنى
+NoteMinClasse=أدنى نقطة
+NoteMaxClasse=أعلى نقطة
+NoteObtenue=النقطة المحصل عليها
+Coef=المعامل
+ElevesClasses=التلاميذ المرتبون
+TauxReussite=النجاح (≥ 10)
+EnDifficulte=متعثرون
+VoirResultats=عرض النتائج
+AideSuiviResultats=التلاميذ المرتبون = التلاميذ الذين لديهم نقطة واحدة على الأقل. المتعثرون = معدل عام أقل من %s (يضبط في الإعدادات > متابعة التلاميذ).
+ResultatsProvisoires=نتائج مؤقتة : الفصل غير مغلق
+ResultatsProvisoiresAnnee=نتائج مؤقتة : الفصول الثلاثة ليست كلها مغلقة
+ImprimerBulletinsClasse=كشوف القسم
+ImprimerRelevesClasse=الكشوف السنوية للقسم
+BulletinsApresCloture=تطبع الكشوف بعد إغلاق الفصل (قائمة إغلاق الفصول).
+BulletinsApresClotureAnnee=تطبع الكشوف السنوية عندما تغلق الفصول الثلاثة.
+ConseilDeClasse=مجلس القسم
+ChoisieParConseil=اختاره مجلس القسم
+Aucune=لا شيء
+AideResultats=المعدلات على 20 ؛ بالأحمر : أقل من 10 (المعدل العام : أقل من عتبة التعثر). انقر على تلميذ لتفاصيل نقاطه. لكل عمود مرشحه.
+AideResultatsAnnee=المعدل السنوي = معدل الفصول حسب أوزانها (قواعد المستوى). لكل عمود مرشحه.
+TableauMoyennesTitre=جدول المعدلات - %s
+BulletinDeNotes=كشف النقاط
+ReleveAnnuel=الكشف السنوي
+NomEleve=التلميذ
+Effectif=التلاميذ المرتبون
+ObservationDirection=ملاحظة الإدارة
+FaitALe=حرر في %s بتاريخ %s
+LeDirecteur=المدير
+SignatureParents=توقيع الولي
+MoyenneDuTrimestre1=معدل الفصل الأول
+MoyenneDuTrimestre2=معدل الفصل الثاني
+TrimestreCourt1=ف1
+TrimestreCourt2=ف2
+TrimestreCourt3=ف3
+TrimestreNonCompte=فصل غير محتسب في المعدل السنوي (غياب عن كل الامتحانات).
+RangAnnuel=الرتبة السنوية
+DecisionFinAnneeCourt=القرار
+DecisionAdmis=ينتقل إلى القسم الأعلى
+DecisionAdmisF=تنتقل إلى القسم الأعلى
+DecisionRedouble=يعيد السنة
+DecisionRedoubleF=تعيد السنة
+DecisionProposee=مقترح : %s
+AChoisir=للاختيار
+DistinctionAuto=تلقائي (%s)
+ConseilEnregistre=تم حفظ مجلس القسم.
+ConseilClotureLectureSeule=هذا الفصل مغلق : لم يعد تعديل مجلس القسم ممكنا (أعد فتح الفصل للتغيير).
+AideConseil=التنويه يقترح تلقائيا حسب المعدل (الإعدادات > التنويهات) ويمكن تغييره ؛ الملاحظة تطبع في الكشف.
+AideConseilAnnee=قرار نهاية السنة والملاحظة يطبعان في الكشف السنوي. يقترح القرار حسب المعدل السنوي إذا نصت عليه قواعد المستوى.
+AideConseilChoisirClasse=اختر قسما.
+CertificatScolarite=شهادة مدرسية
+CertificatTexte=أنا الموقع أدناه، مدير المؤسسة %s، أشهد بأن التلميذ %s، رقم التسجيل %s، المولود بتاريخ %s في %s، مسجل بصفة منتظمة في مؤسستنا في قسم %s للسنة الدراسية %s.
+CertificatTexteF=أنا الموقع أدناه، مدير المؤسسة %s، أشهد بأن التلميذة %s، رقم التسجيل %s، المولودة بتاريخ %s في %s، مسجلة بصفة منتظمة في مؤسستنا في قسم %s للسنة الدراسية %s.
+CertificatFin=وقد سلمت له هذه الشهادة للإدلاء بها عند الحاجة.
+ErrorCertificatNonInscrit=لا تسلم الشهادة المدرسية إلا للتلاميذ المسجلين.
+ErrorAucunModele=لا يوجد نموذج كشف نشط (الإعدادات > نماذج الكشوف).
+ErrorEleveHorsClasse=هذا التلميذ ليس في هذا القسم.
+EleveNonClasse=هذا التلميذ غير مرتب في قسمه الحالي (غير مسجل أو بدون قسم).
+ElevesEnDifficulte=التلاميذ المتعثرون
+MoyenneInferieureA=معدل أقل من %s
+MatieresSous10=المواد تحت 10
+AucunEleveEnDifficulte=لا يوجد تلميذ تحت العتبة.
+AideDifficultes=زر واتساب يفتح رسالة جاهزة للولي (تعدل في الإعدادات > متابعة التلاميذ) ؛ الإرسال يبقى يدويا.
+SeuilDifficulte=عتبة التلاميذ المتعثرين
+SeuilDifficulteAide=المعدل العام الذي يظهر التلميذ في القائمة تحته (يمكن تغييره في الصفحة أيضا)
+MessageDifficulte=رسالة واتساب إلى الأولياء
+AideMessageDifficulte=المتغيرات : {eleve} {eleve_ar} {classe} {periode} {periode_ar} {moyenne} {matieres} {matieres_ar} {ecole}. أفرغ النص للعودة إلى الرسالة الافتراضية.
+ErrorSeuil020=يجب أن تكون العتبة بين 0 و 20.
+ErrorDistinctionSansSeuil=أدخل عتبة واحدة على الأقل (ابتداء من / أقل من).
+ErrorSeuilMinMax=يجب أن تكون العتبة الدنيا أقل من العتبة القصوى.
+
+# المرشحات
+NbLignesAffichees=%s سطر معروض من %s
+AucuneEvaluationCourt=لا تقييم
+EvaluationsCreees=تقييمات منشأة
+CompositionsManquantes=امتحانات ناقصة
+Incomplete=ناقص
+Complete=كامل
+NonSaisie=غير مدخلة
+Notee=مدخلة
+SousLaMoyenne=تحت المعدل
+Rouvert=أعيد فتحه
+AvecMotif=مع سبب
+AideFiltreNote=نقطة (12 أو 12,5)، « abs »، « disp » أو « vide »
+FiltreMin=من
+FiltreMax=إلى
+
+# صفحة الإدخال (العرض الجديد)
+Toutes=الكل
+RechercherClasse=ابحث عن قسم
+RechercherMatiere=ابحث عن مادة أو أستاذ
+NbMatieresN=%s مادة
+NbElevesN=%s تلميذ
+NbDevoirsN=%s فرض
+CompositionsParTrimestre=الامتحانات المنشأة لكل فصل
+CompositionPasEncore=الامتحان لم ينشأ بعد
+CompositionIncomplete=امتحان ناقص
+CompositionComplete=امتحان كامل
+MoyenneCourt=المعدل
+NouveauDevoir=فرض
+NouvelleComposition=امتحان
+EnSaisie=قيد الإدخال
+MinMax=أدنى – أعلى
+ModifierEvaluation=التاريخ، العنوان، الحذف
+ToucheEntree=إدخال
+ToucheEchap=Échap
+EleveSuivant=التلميذ الموالي
+ElevePrecedent=التلميذ السابق
+AnnulerCase=إلغاء الخانة
+AideCouleurs=الألوان : أحمر تحت النصف، برتقالي، أخضر ابتداء من 70 %%
+MoyTrimestre=معدل الفصل
+MoyTrimestreAide=معدل الفصل في هذه المادة (الفروض والامتحان حسب قواعد المستوى) على 20
+AucuneModification=لا تغيير
+ModificationsNonEnregistrees=%s تغيير غير محفوظ
+AideChoisirEvaluation=لإدخال النقاط أو تصحيحها، انقر على تقييم أعلاه.
+
+# معاينة النماذج
+Apercu=معاينة
+ApercuModeles=معاينة النماذج
+ApercuBulletin=معاينة الكشف
+ApercuReleve=معاينة الكشف السنوي
+BulletinTrimestriel=الكشف الفصلي
+ChoisirModele=النموذج
+ModifierModele=تعديل هذا النموذج
+OuvrirPdf=فتح ملف PDF
+AideApercu=معاينة بتلميذ افتراضي (8 مواد، 28 تلميذا) لرؤية الشكل. التقديرات والتنويهات هي تلك المضبوطة في الإعدادات.
+Exemple=نموذج
+
+# شكل الكشوف (التنسيق، اللون، الترويسة)
+StyleBulletin=التنسيق
+StyleBulletinHelp=كلاسيكي : جدول كامل. خطوط : خطوط أفقية فقط. مؤطر : جداول وإطارات مستديرة.
+MiseEnPageClassique=كلاسيكي (جدول)
+MiseEnPageLignes=خطوط (خفيف)
+MiseEnPageEncadre=مؤطر (إطارات مستديرة)
+CouleurBulletin=اللون
+CouleurBulletinHelp=لون العناوين والإطارات. « بدون لون » : أبيض وأسود بدون أي خلفية (للنسخ).
+CouleurBleu=أزرق
+CouleurVert=أخضر
+CouleurBordeaux=عنابي
+CouleurViolet=بنفسجي
+CouleurOrange=برتقالي
+CouleurGris=رمادي
+CouleurAucune=بدون لون (أبيض وأسود)
+EnteteBulletin=الترويسة
+EnteteBulletinHelp=ترويسة المؤسسة في الكشف. فارغ : المختارة في إعدادات وحدة الأقسام.
+EnteteParDefaut=حسب الإعدادات
+Presentation=الشكل
+EssaiNonEnregistre=معاينة غير محفوظة بعد.
+EnregistrerPresentation=حفظ للنموذج %s
+PresentationEnregistree=تم حفظ الشكل للنموذج %s.
+EnteteNoirBlanc=أبيض وأسود (بسيط)

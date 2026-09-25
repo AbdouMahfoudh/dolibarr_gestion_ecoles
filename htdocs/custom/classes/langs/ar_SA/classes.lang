@@ -1,0 +1,275 @@
+# Dolibarr language file - ar_SA - classes
+# وحدة « الأقسام »
+
+Module104600Name=الأقسام
+Module104600Desc=الأقسام والمواد والمعاملات والرسوم الشهرية والجداول الزمنية للمؤسسة
+
+# القوائم
+Classes=الأقسام
+MenuClasses=الأقسام
+MenuNouvelleClasse=قسم جديد
+MenuMatieres=المواد
+MenuNouvelleMatiere=مادة جديدة
+MenuConfiguration=الإعدادات
+MenuNiveaux=المستويات
+MenuSections=الشعب
+MenuCreneaux=الفترات الزمنية
+MenuSessions=دورات الامتحانات
+MenuReglages=الضبط
+AccesRapides=وصول سريع
+EcoleClasses=الأقسام
+EcoleMatieres=المواد
+EcoleExamens=الامتحانات
+EcoleEmploiDuTemps=الجدول الزمني
+
+# الحالات
+EcoleActif=نشط
+EcoleInactif=غير نشط
+EcoleFiltreStatuts=عدة حالات
+
+# الكائنات
+Niveaux=المستويات
+Niveau=المستوى
+NouveauNiveau=مستوى جديد
+Sections=الشعب
+Section=الشعبة
+NouvelleSection=شعبة جديدة
+Creneaux=الفترات الزمنية
+Creneau=الفترة
+NouveauCreneau=فترة جديدة
+SessionsExamen=دورات الامتحانات
+SessionExamen=دورة الامتحان
+NouvelleSession=دورة امتحان جديدة
+Matieres=المواد
+Matiere=المادة
+NouvelleMatiere=مادة جديدة
+Classe=القسم
+NouvelleClasse=قسم جديد
+
+# الحقول
+LabelFr=التسمية (بالفرنسية)
+LabelAr=التسمية (بالعربية)
+AvecSections=يستعمل الشعب
+AvecSectionsHelp=إذا تم التحديد، يجب على كل قسم في هذا المستوى اختيار شعبة (مثال: الثانوي)
+CodeMatiere=الرمز
+CodeMatiereHelp=رمز قصير اختياري (مثال: MATH, FR, ARB)
+HeureDebut=ساعة البداية
+HeureFin=ساعة النهاية
+Trimestre=الفصل
+Trimestre1=الفصل الأول
+Trimestre2=الفصل الثاني
+Trimestre3=الفصل الثالث
+DateDebut=تاريخ البداية
+DateFin=تاريخ النهاية
+SectionHelp=إجبارية فقط للمستويات التي تستعمل الشعب
+EffectifMax=العدد الأقصى للتلاميذ
+SalleAttitree=القاعة المخصصة
+Mensualite=الرسوم الشهرية
+MensualiteHelp=الثمن الشهري للدراسة بالنسبة لتلميذ في هذا القسم
+FraisInscriptionClasse=رسوم التسجيل
+FraisInscriptionClasseHelp=مبلغ رسوم التسجيل لتلميذ في هذا القسم (0 = بدون رسوم)
+Coefficient=المعامل
+Bareme=سلم التنقيط
+NoteMax=النقطة القصوى
+BaremeSur20=النقطة على 20
+BaremeSurCoef20=النقطة على المعامل × 20
+BaremeAide=سلم « على المعامل × 20 » : مثلا معامل 2,5 يعطي نقطة على 50 (يدخل الأستاذ 45/50). سلم « على 20 » : النقطة على 20 ويستعمل المعامل فقط لحساب المعدل.
+Jour=اليوم
+Enseignant=الأستاذ
+Salle=القاعة
+Surveillant=المراقب
+DateExamen=تاريخ الاختبار
+Horaire=التوقيت
+
+# بطاقة القسم
+Fiche=البطاقة
+ResumeClasse=ملخص القسم
+Rubrique=البند
+Nombre=العدد
+Gerer=إدارة
+TotalCoefficients=مجموع المعاملات
+MatieresCoefficients=المواد والمعاملات
+EmploiDuTempsCours=الجدول الزمني
+EmploiDuTempsExamens=جدول الامتحانات
+AucuneMatiereLiee=لم يتم ربط أي مادة بهذا القسم.
+AucuneMatiereDisponible=جميع المواد النشطة مرتبطة بهذا القسم بالفعل.
+AjouterMatiere=ربط مادة بهذا القسم
+AucunCreneau=لم يتم تحديد أي فترة زمنية.
+AjouterCase=إضافة درس
+ModifierCase=تعديل الدرس
+AucuneSession=لم يتم تحديد أي دورة امتحان.
+AjouterEpreuve=إضافة اختبار
+ModifierEpreuve=تعديل الاختبار
+AucuneEpreuve=لا يوجد اختبار مبرمج.
+
+# السجل
+VoirHistorique=عرض سجل التعديلات
+HistoriqueEmploiDuTemps=سجل الجدول الزمني
+HistoriqueExamens=سجل جدول الامتحانات
+Masquer=إخفاء
+Utilisateur=المستخدم
+Action=الإجراء
+AncienneVersion=النسخة السابقة
+ActionSupprime=محذوف
+ActionModifie=معدّل
+AucunHistorique=لا يوجد أي تعديل مسجل.
+
+# الضبط
+JoursOuvrables=أيام العمل
+JoursOuvrablesAide=الأيام المعروضة في جداول الدروس.
+
+# الأخطاء
+ErrorEcoleAlreadyExists=%s « %s » موجود مسبقا.
+ErrorEcoleObjectUsed=تعذر الحذف : مستعمل في « %s » (%s).
+ClasseEleves=التلاميذ المسجلون في القسم
+ClasseHistoriqueEleves=سجل التلاميذ (تغيير القسم)
+ClasseAppels=عمليات النداء
+ClasseEvaluations=التقييمات
+ClasseBulletins=كشوف النقاط
+ErrorEcoleBadTime=%s : ساعة غير صالحة (الصيغة HH:MM).
+ErrorEcoleFinAvantDebut=يجب أن تكون ساعة النهاية بعد ساعة البداية.
+ErrorEcoleCreneauChevauche=هذه الفترة تتقاطع مع الفترة %s (%s - %s).
+ErrorEcoleDateFinAvantDebut=لا يمكن أن يسبق تاريخ النهاية تاريخ البداية.
+ErrorEcoleBadValue=قيمة غير صالحة للحقل « %s ».
+ErrorEcoleSectionRequired=المستوى « %s » يتطلب اختيار شعبة.
+ErrorEcoleCoefficient=يجب أن يكون المعامل أكبر من الصفر.
+ErrorEcoleMatiereDejaLiee=هذه المادة مرتبطة بهذا القسم بالفعل.
+ErrorEcoleMatiereUtilisee=تعذر فك ارتباط المادة : مستعملة في « %s » (%s).
+ErrorEcoleMatiereNonLiee=هذه المادة غير مرتبطة بهذا القسم : أضفها أولا في « المواد والمعاملات ».
+ErrorEcoleCaseOccupee=هذا القسم لديه درس بالفعل في هذا اليوم وهذه الفترة.
+ErrorEcoleEnseignantOccupe=%s يدرّس بالفعل في القسم %s في هذا اليوم وهذه الفترة.
+ErrorEcoleSalleOccupee=هذه القاعة مشغولة بالقسم %s في هذا الوقت.
+ErrorEcoleDateHorsSession=يجب أن يكون تاريخ الاختبار ضمن الدورة (من %s إلى %s).
+ErrorEcoleClasseExamenChevauche=هذا القسم لديه اختبار يتقاطع مع هذا التوقيت.
+ErrorEcoleSurveillantOccupe=%s يراقب بالفعل القسم %s في هذا الوقت.
+ErrorEcoleAucunJour=اختر يوم عمل واحدا على الأقل.
+
+# القاعات
+Salles=القاعات
+Salle=القاعة
+NouvelleSalle=قاعة جديدة
+MenuSalles=القاعات
+MenuNouvelleSalle=قاعة جديدة
+MenuDisponibilite=توفر القاعات
+DisponibiliteSalles=توفر القاعات
+TypeSalle=نوع القاعة
+SalleTypeClasse=قاعة دراسة
+SalleTypeLabo=مختبر
+SalleTypeInfo=قاعة المعلوماتية
+SalleTypeSport=ملعب / قاعة رياضة
+SalleTypeAutre=أخرى
+Capacite=السعة (عدد المقاعد)
+Emplacement=الموقع
+ClasseAttitree=القسم المخصص
+AucuneClasseAttitree=لا يوجد قسم مخصص
+OccupationSalle=الاستغلال
+HeuresParSemaine=%s من الدروس في الأسبوع
+VoirOccupation=عرض استغلال الأسبوع
+Libre=شاغرة
+SallesLibres=القاعات الشاغرة
+ExamensAVenir=الامتحانات القادمة في هذه القاعة
+AucuneSalle=لا توجد قاعة نشطة.
+
+# الجداول الزمنية
+MenuEmploisDuTemps=الجداول الزمنية
+AideEmploisDuTemps=لكل قسم جدوله الزمني. انقر على القسم لفتحه وإضافة دروسه.
+AideEmploiDuTemps=انقر على « + » في خانة فارغة لإضافة درس، أو على درس لتعديله.
+HeuresSemaine=الساعات / الأسبوع
+AucuneMatiere=لا توجد مادة
+EdtVide=فارغ
+VoirEmploiDuTemps=عرض الجدول الزمني
+
+# المراجع
+RefCourteHelp=مرجع قصير : 10 أحرف على الأكثر (مثال: 5C, MATH, S01)
+ErrorEcoleRefTropLongue=يجب ألا يتجاوز المرجع %s أحرف.
+ErrorEcoleSalleDesactivation=تعذر تعطيل هذه القاعة : ما زالت مستعملة في %s درس من الجدول الزمني و %s امتحان قادم. غيّر قاعة هذه الدروس أولا.
+ErrorEcoleSalleInactive=القاعة %s معطلة : اختر قاعة نشطة.
+EcoleLibelle=التسمية
+BaremeParDefaut=سلم التنقيط الافتراضي للمواد
+BaremeParDefautHelp=السلم المقترح عند ربط مادة بقسم من هذا المستوى (قابل للتعديل لكل مادة). مثال: الروضة والابتدائي : النقطة على المعامل × 20 ؛ الإعدادي والثانوي : النقطة على 20.
+
+# فئات المستخدمين
+CategorieEcole=الفئة (المدرسة)
+CategorieEcoleHelp=دور الشخص في المؤسسة. تحدد من يمكن اختياره أستاذا (للدروس) أو مراقبا (للامتحانات). يمكن اختيار أكثر من فئة.
+EcoleCatDirection=الإدارة
+EcoleCatEnseignant=أستاذ
+EcoleCatSurveillant=مراقب
+EcoleCatSecretariat=السكرتارية
+EcoleCatComptable=محاسب
+EcoleCatAgent=عامل نظافة / حارس
+EcoleCatChauffeur=سائق
+EcoleCatAutre=أخرى
+AucunUtilisateurCategorie=لا يوجد مستخدم من فئة « %s ». حدد الفئة في بطاقة المستخدم :
+ErrorEcoleUserCategorie=%s ليس من فئة « %s » (انظر بطاقة المستخدم).
+
+# فترة الامتحان
+PeriodeExamen=فترة الامتحان
+DuAu=من %s إلى %s
+NbJoursExamen=%s أيام
+ModifierPeriode=تعديل الفترة
+PeriodeNonDefinie=لم يتم تحديد فترة هذا الامتحان بعد.
+DefinirPeriodeAide=حدد أولا فترة الامتحان (تاريخ البداية والنهاية) : توضع الاختبارات بعد ذلك يوما بيوم داخل هذه الفترة.
+EnregistrerPeriode=حفظ الفترة
+PeriodeCommuneAide=الفترة مشتركة بين جميع الأقسام في هذا الفصل.
+JourExamen=اليوم
+ErrorEcolePeriodeIncomplete=حدد تاريخ البداية وتاريخ النهاية للفترة.
+ErrorEcoleSessionExamensHorsPeriode=غير ممكن : %s اختبار مبرمج سيصبح خارج الفترة الجديدة. انقله أولا.
+
+# التصدير PDF / Excel
+ExportPdf=PDF
+ExportExcel=Excel
+EcolePdfFooter=وثيقة صادرة بتاريخ %s
+NbEnregistrements=%s سجل
+PdfHeaderStyle=ترويسة ملفات PDF
+PdfHeaderStyleAide=النمط المستعمل في جميع ملفات PDF للوحدة (القوائم والجداول الزمنية). لغة الملف تتبع لغة المستخدم.
+PdfHeaderBandeauBleu=شريط أزرق
+PdfHeaderBandeauBleuDesc=شريط بعرض الصفحة، الشعار والمؤسسة في جهة والعنوان في الجهة الأخرى.
+PdfHeaderBandeauSombre=شريط داكن
+PdfHeaderBandeauSombreDesc=نفس التصميم بألوان داكنة وخط كهرماني.
+PdfHeaderMinimal=بسيط
+PdfHeaderMinimalDesc=بدون شريط : الشعار والمؤسسة والعنوان يفصل بينها خط رفيع.
+PdfHeaderCompact=مختصر
+PdfHeaderCompactDesc=شريط رفيع بسطر واحد، مناسب للقوائم الطويلة.
+PdfHeaderClassique=كلاسيكي
+PdfHeaderClassiqueDesc=ورقة رسمية في الوسط : الشعار والمؤسسة والعنوان ثم عنوان الوثيقة.
+ApercuFr=معاينة بالفرنسية
+ApercuAr=معاينة بالعربية
+ApercuDocTitre=وثيقة نموذجية
+EcoleTelephone=الهاتف
+
+
+# Modes de paiement
+Sedad = السداد
+NombreMax=العدد الأقصى
+FiltreMin=الأدنى
+FiltreMax=الأقصى
+VoirElevesClasse=عرض تلاميذ القسم
+EffectifMaxHelp=أقصى عدد للتلاميذ المسجلين في القسم. الافتراضي 100.
+EffectifMaxClasses=عدد تلاميذ الأقسام
+EffectifMaxDefaut=العدد الأقصى الافتراضي للتلاميذ
+EffectifMaxDefautAide=يُقترح عند إنشاء قسم ويُستعمل حين لا يكون للقسم حد أقصى. أما الحد الأقصى لكل قسم فيُضبط في بطاقته (زر تعديل، حقل «العدد الأقصى للتلاميذ»).
+
+# Police des PDF
+PdfFont=خط ملفات PDF
+PdfFontAide=يُستعمل في كل ملفات PDF للوحدات (القوائم، الجداول الزمنية، الوصولات، الشهادات). لا تُقترح إلا الخطوط التي تكتب الفرنسية والعربية معا.
+PdfFontNom=الخط
+PdfFontDocsFr=الوثائق بالفرنسية
+PdfFontDocsAr=الوثائق بالعربية
+PdfFontDejavuSans=DejaVu Sans
+PdfFontDejavuSansDesc=خط عصري وواضح جدا (الخط الحالي).
+PdfFontDejavuSansCondensed=DejaVu Sans Condensed
+PdfFontDejavuSansCondensedDesc=نفس النمط لكنه أضيق : مفيد للجداول الكبيرة.
+PdfFontFreeSerif=FreeSerif
+PdfFontFreeSerifDesc=خط كلاسيكي قريب من Times ؛ عربية بنمط النسخ.
+PdfFontAeAlArabiya=AE Al Arabiya
+PdfFontAeAlArabiyaDesc=عربية تقليدية أنيقة. تُستبدل الرموز « — » و« → » و« € » بـ « - » و« EUR ».
+PdfFontAeFurat=AE Furat
+PdfFontAeFuratDesc=عربية بخط رفيع. تُستبدل الرموز « — » و« → » و« € » بـ « - » و« EUR ».
+
+# لغة تدريس المواد (كشف النقاط ثنائي اللغة)
+LangueEnseignement=لغة التدريس
+LangueEnseignementHelp=اللغة التي تدرس بها المادة. في كشف النقاط ثنائي اللغة تكتب المادة بهذه اللغة (المادة المدرسة بالفرنسية تكتب بالفرنسية والمادة المدرسة بالعربية تكتب بالعربية). يمكن تغييرها لقسم معين في تبويب « المواد والمعاملات » للقسم.
+LangueFrancais=الفرنسية
+LangueArabe=العربية
+CommeLaMatiere=مثل المادة
+LangueClasseAide=لغة التدريس : « مثل المادة » تأخذ اللغة المختارة في بطاقة المادة ؛ اختر « الفرنسية » أو « العربية » لاستثناء في هذا القسم (مثلا الرياضيات بالعربية في شعبة عربية).

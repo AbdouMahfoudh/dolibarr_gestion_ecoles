@@ -1,0 +1,193 @@
+# Dolibarr language file - Source file is en_US - espace
+# Module « Espace parents et élèves »
+
+Module104900Name=Espace parents et élèves
+Module104900Desc=Espace parents et élèves : notes, bulletins, emploi du temps, absences, paiements, certificat
+
+# Droits
+Permission104901=Espace parents : voir les accès (fiches, liste, dernières connexions)
+Permission104902=Espace parents : créer un accès, réinitialiser le mot de passe, désactiver ou réactiver
+Permission104991=Espace parents : configuration (langue, message WhatsApp, accès des élèves)
+
+# Menus
+MenuEspaceParents=Espace parents
+MenuJamaisConnectes=Jamais connectés
+MenuConfigEspace=Configuration de l'espace
+
+# Espace : connexion et mot de passe
+TitreEspace=Espace parents et élèves
+Connexion=Connexion
+AideConnexion=Connectez-vous avec l'identifiant et le mot de passe donnés par l'école.
+Identifiant=Identifiant
+MotDePasse=Mot de passe
+AfficherMotDePasse=Afficher le mot de passe
+SeConnecter=Se connecter
+SeDeconnecter=Se déconnecter
+VousEtesDeconnecte=Vous êtes déconnecté.
+ErreurIdentifiants=Identifiant ou mot de passe incorrect.
+AccesPlusActif=Votre accès n'est pas actif. Contactez l'école.
+MotDePasseOublieAide=Mot de passe oublié ? Contactez l'école : elle vous donnera un nouveau mot de passe provisoire.
+ChangerMotDePasse=Changer le mot de passe
+AideMotDePasseProvisoire=Pour votre sécurité, choisissez votre propre mot de passe avant de continuer.
+MotDePasseProvisoire=Mot de passe provisoire
+MotDePasseActuel=Mot de passe actuel
+NouveauMotDePasse=Nouveau mot de passe
+ConfirmerMotDePasse=Confirmer le nouveau mot de passe
+AideNouveauMotDePasse=Au moins %s caractères. Ne le donnez à personne.
+ErreurMotDePasseActuel=Le mot de passe actuel est incorrect.
+ErreurMotDePasseCourt=Le nouveau mot de passe doit avoir au moins %s caractères.
+ErreurMotDePasseConfirm=Les deux nouveaux mots de passe ne sont pas identiques.
+ErreurMotDePasseIdentique=Le nouveau mot de passe doit être différent de l'ancien.
+MotDePasseChange=Votre mot de passe a été changé.
+Enregistrer=Enregistrer
+Retour=Retour
+
+# Espace : accueil et élève
+Bonjour=Bonjour
+VosEnfants=Vos enfants inscrits cette année :
+VotreEnfant=Votre enfant inscrit cette année :
+PaiementsAJour=Paiements à jour
+NbAbsencesNonJustifiees=%s absence(s) non justifiée(s)
+NbRetardsNonJustifies=%s retard(s) non justifié(s)
+DernieresNotes=Dernières notes
+OngletNotes=Notes
+EmploiDuTemps=Emploi du temps
+AbsencesEtSanctions=Absences
+DossierPieces=Dossier
+TrimestreCourt=T%s
+BilanAnnuelApresCloture=Le bilan de l'année (moyennes annuelles, rang, relevé) sera disponible quand les trois trimestres seront clôturés.
+MoyennesApresCloture=Les notes s'affichent dès qu'elles sont saisies. Les moyennes, le rang et le bulletin seront disponibles après la clôture du trimestre.
+AucuneMatiere=Aucune matière pour cette classe.
+PasEncoreDeNote=Pas encore de note.
+ResultatsTrimestre=Résultats du trimestre
+ResultatsAnnee=Résultats de l'année
+Aujourdhui=Aujourd'hui
+PasDeCours=Pas de cours.
+RenvoisCours=Renvois de cours
+DontNonJustifiees=dont %s non justifiée(s)
+DontNonJustifies=dont %s non justifié(s)
+MoisEnRetard=Mois en retard
+SituationMoisParMois=Situation mois par mois
+AideJourLimite=Un mois est en retard s'il n'est pas payé le %s du mois.
+RecusDePaiement=Reçus de paiement
+PiecesManquantesAide=%s pièce(s) du dossier manquent encore. Merci de les apporter à l'école.
+DossierComplet=Le dossier est complet.
+PieceFournie=Fournie
+PieceManquante=Manquante
+Document=Document
+DocumentIndisponible=Ce document n'est pas disponible.
+
+# Gestion des accès
+AccesEspace=Accès à l'espace parents et élèves
+AccesEspaceParents=Accès à l'espace parents
+AccesEspaceEleve=Accès de l'élève à l'espace
+AccesEspaceOnglet=Accès espace
+RetourFicheResponsable=Retour à la fiche du responsable
+EtatAcces=État de l'accès
+EtatAccesActif=Actif
+EtatAccesJamais=Jamais connecté
+EtatAccesCoupe=Coupé
+EtatAccesDesactive=Désactivé
+EtatAccesAucun=Pas d'accès
+AideEtatAucun=Aucun accès n'a encore été créé.
+AideEtatCoupeParent=Coupé automatiquement : aucun enfant n'est inscrit (départ, abandon, exclusion...). L'accès revient tout seul si un enfant est de nouveau inscrit.
+AideEtatCoupeEleve=Coupé automatiquement : l'élève n'est plus inscrit. L'accès revient tout seul s'il est de nouveau inscrit.
+AideEtatDesactive=Désactivé par l'école (ou accès des élèves fermé dans la configuration).
+AideMotDePasseProvisoireEcole=Pas encore changé par l'utilisateur : la fiche d'accès peut être réimprimée. Il devra le changer à sa première connexion.
+MotDePassePersonnel=Choisi par l'utilisateur
+DerniereConnexion=Dernière connexion
+Connexions=Connexions
+NbConnexions=%s connexion(s)
+JamaisConnecte=Jamais connecté
+AccesCreeLe=Accès créé le
+DerniereReinitialisation=Dernière réinitialisation
+LangueChoisie=Langue choisie
+AdresseEspace=Adresse de l'espace
+ElevesVisibles=Élèves visibles
+AucunEnfantInscrit=Aucun enfant inscrit (ou suspendu).
+EleveNonInscrit=L'élève n'est pas inscrit (ou suspendu).
+AideElevesVisibles=Seuls les élèves inscrits ou suspendus sont visibles dans l'espace.
+CreerAcces=Créer l'accès
+GererAcces=Gérer l'accès
+FicheAcces=Fiche d'accès (PDF)
+EnvoyerWhatsApp=Envoyer par WhatsApp
+ReinitialiserMotDePasse=Réinitialiser le mot de passe
+ConfirmReinitialiser=Un nouveau mot de passe provisoire va être créé ; l'ancien ne fonctionnera plus. Continuer ?
+DesactiverAcces=Désactiver l'accès
+ConfirmDesactiver=L'utilisateur ne pourra plus se connecter à l'espace. Continuer ?
+ReactiverAcces=Réactiver l'accès
+AccesCree=Accès créé. Imprimez la fiche d'accès ou envoyez-la par WhatsApp.
+MotDePasseReinitialise=Nouveau mot de passe provisoire créé. Imprimez la fiche d'accès ou envoyez-la par WhatsApp.
+AccesDesactiveMsg=Accès désactivé.
+AccesReactiveMsg=Accès réactivé.
+AccesExisteDeja=Cet accès existe déjà.
+AccesElevesFermes=Les accès des élèves sont fermés dans la configuration de l'espace.
+AccesImpossibleAucunEnfant=Impossible : aucun enfant de ce responsable n'est inscrit.
+AccesImpossibleNonInscrit=Impossible : l'élève n'est pas inscrit.
+ErrorLoginDejaPris=L'identifiant %s est déjà utilisé par un autre utilisateur du système.
+NoteCompteParent=Compte de l'espace parents, créé automatiquement (aucun droit dans le système).
+NoteCompteEleve=Compte de l'espace élèves, créé automatiquement (aucun droit dans le système).
+FicheAccesIndisponible=La fiche d'accès n'est plus disponible : le mot de passe a déjà été changé. Réinitialisez le mot de passe pour en imprimer une nouvelle.
+FicheAccesParent=Accès à l'espace parents
+FicheAccesEleve=Accès à l'espace élèves
+MarcheASuivre=Marche à suivre
+EtapeFiche1=Ouvrez l'adresse ci-dessus sur votre téléphone ou votre ordinateur.
+EtapeFiche2=Tapez l'identifiant et le mot de passe provisoire.
+EtapeFiche3=Choisissez votre propre mot de passe (au moins 6 caractères).
+EtapeFiche4=Vous voyez ensuite les notes, l'emploi du temps, les absences et les paiements.
+FicheConfidentielle=Document personnel : ne le donnez à personne. En cas d'oubli du mot de passe, contactez l'école.
+AideListeAcces=chaque accès se crée depuis la fiche du responsable ou l'onglet « Accès espace » de l'élève.
+TypeAcces=Type
+TypeParent=Parent
+TypeEleve=Élève
+AucunAcces=Aucun accès.
+NbAccesListe=%s accès
+
+# Configuration
+ConfigurationEspace=Configuration de l'espace parents et élèves
+Reglages=Réglages
+LangueParDefaut=Langue par défaut
+LangueParDefautAide=Langue de l'espace à la première visite. Chacun peut ensuite changer de langue avec le bouton en haut de l'écran.
+AccesDesEleves=Accès des élèves
+AccesDesElevesOui=Les élèves peuvent avoir leur propre accès
+AccesDesElevesAide=Décoché : les accès des élèves existants sont désactivés et aucun nouvel accès élève ne peut être créé.
+AdresseEspaceAide=Adresse imprimée sur la fiche d'accès et envoyée par WhatsApp. Vide = adresse de ce serveur.
+MessageAccesParent=Message WhatsApp : accès d'un responsable
+MessageAccesEleve=Message WhatsApp : accès d'un élève
+AideMessageAcces=Variables : {nom} {nom_ar} (nom du responsable ou de l'élève), {identifiant}, {motdepasse} (mot de passe provisoire), {lien} (adresse de l'espace), {ecole}. Vider le texte remet le message par défaut.
+
+# Adresses propres
+PageIntrouvable=Page introuvable
+PageIntrouvableAide=Cette page n'existe pas. Revenez à l'accueil de l'espace.
+AdressesPropres=Adresses de l'espace
+AdressesPropresActives=Adresses propres actives
+AdressesPropresInactives=Adresses de secours (règle du serveur absente)
+AdressesPropresInstaller=Installer / vérifier la règle
+AdressesPropresDesactiver=Revenir aux adresses de secours
+AdressesPropresAide=Les adresses de l'espace ne montrent ni nom de fichier ni numéro d'élève (ex. .../espace/eleve/3f9c0a.../notes). La règle est ajoutée automatiquement dans le fichier .htaccess de la racine (aucun fichier du système modifié).
+AdressesPropresInstallees=Règle installée : les adresses propres sont actives.
+AdressesPropresErreur=Impossible d'écrire le fichier .htaccess de la racine. Ajoutez la règle ci-dessous à la main, puis cliquez de nouveau.
+RegleServeur=Règle du serveur
+RegleServeurAide=En ligne avec une adresse dédiée (ex. https://parents.ecole.mr) : mettre cette adresse dans « Adresse de l'espace » et envoyer toutes les adresses du sous-domaine vers router.php?route=... dans la configuration du serveur.
+AdressesPropresServeur=L'adresse de l'espace est à la racine d'un domaine ou sur un autre serveur : ajoutez la règle dans la configuration de ce serveur, puis cliquez sur « Installer / vérifier la règle ». En attendant, les adresses de secours sont utilisées.
+AdressesPropresIgnorees=La règle est écrite mais le serveur ne l'applique pas (réécriture désactivée ou fichiers .htaccess interdits). Les adresses de secours sont utilisées en attendant.
+RegleEmplacement=Emplacement :
+
+# Espace du personnel (module Personnel)
+TypeEmploye=Employé
+AccesEspaceEmploye=Accès de l'employé à son espace
+AccesImpossibleEmployeParti=Impossible : l'employé a quitté l'école.
+AccesImpossibleSansCompte=Impossible : l'employé n'a pas encore de compte utilisateur (enregistrez sa fiche).
+AideEtatCoupeEmploye=Coupé automatiquement : l'employé est parti. L'accès revient tout seul s'il est réembauché.
+AideEtatDesactiveEmploye=Désactivé par l'école (son compte dans le système n'est pas touché).
+MotDePasseDolibarr=Mot de passe du système
+AideAccesGestion=Direction, secrétariat, comptabilité et administrateurs gardent l'interface de gestion et leur mot de passe : ils ouvrent leur espace par le menu Personnel > Mon espace (ou avec leur matricule et leur mot de passe).
+RubriquesEspace=Ce que l'employé voit dans son espace
+AideRubriquesEspace=Selon ses catégories (plusieurs catégories = toutes les rubriques réunies).
+FicheAccesEmploye=Accès à l'espace du personnel
+EtapeFiche4Employe=Vous voyez ensuite vos cours, votre emploi du temps, l'appel ou la saisie des notes selon votre fonction, vos heures et votre paie.
+MessageAccesEmploye=Message d'accès (employés)
+TitreEspacePersonnel=Espace du personnel
+AideConnexionPersonnel=Connectez-vous avec votre matricule et le mot de passe donnés par l'école.
+AdresseEspacePersonnel=Adresse de l'espace du personnel
+AdresseEspacePersonnelAide=Adresse à donner aux employés, différente de celle des parents. Vide = même dossier que l'espace des parents, avec « personnel » (ex. http://localhost/ecoles/personnel).

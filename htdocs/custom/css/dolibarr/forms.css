@@ -1,0 +1,248 @@
+/* =====================================================
+   FORMULAIRES ETABLISSEMENT
+   Compatible style Dolibarr
+   ===================================================== */
+
+/* Conteneur principal */
+.form-container {
+    background: #fff;
+    border: 1px solid #dcdcdc;
+    border-radius: 4px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+/* Animation légère */
+.form-animated {
+    transition: all 0.2s ease;
+}
+
+/* Titre de section */
+.form-section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #444;
+}
+
+.form-section-title .icon {
+    font-size: 20px;
+}
+
+.badge {
+    background: #0073aa;
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* Tableau formulaire */
+.form-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.form-table td {
+    padding: 10px;
+    vertical-align: middle;
+}
+
+/* Colonne libellé */
+.label-cell {
+    width: 220px;
+    font-weight: 600;
+    color: #444;
+}
+
+.required-cell label::after {
+    content: " *";
+    color: #d9534f;
+}
+
+/* Champs */
+.form-control,
+.form-textarea {
+    width: 100%;
+    max-width: 700px;
+    box-sizing: border-box;
+}
+
+.form-control {
+    height: 36px;
+    padding: 6px 10px;
+}
+
+.form-textarea {
+    min-height: 80px;
+    padding: 8px 10px;
+    resize: vertical;
+}
+
+/* Icônes */
+.cell-with-icon {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.cell-with-icon .icon {
+    min-width: 20px;
+    font-size: 16px;
+}
+
+/* Upload */
+.form-upload {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.file-preview {
+    max-width: 150px;
+    max-height: 100px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 4px;
+    background: #fff;
+}
+
+.file-input-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.file-input-wrapper input[type=file] {
+    margin-top: 5px;
+}
+
+.file-input-label {
+    font-weight: 600;
+    color: #444;
+}
+
+.file-name {
+    font-size: 11px;
+    color: #777;
+}
+
+/* Boutons */
+.form-actions {
+    margin-top: 25px;
+    padding-top: 15px;
+    border-top: 1px solid #e5e5e5;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+/* Boutons génériques */
+.btn-primary,
+.btn-secondary,
+.btn-danger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    padding: 8px 16px;
+    min-height: 38px;
+
+    border-radius: 4px;
+    border: 1px solid transparent;
+
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+/* Bouton principal */
+.btn-primary {
+    background: #0073aa;
+    border-color: #006799;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background: #006799;
+    border-color: #005b87;
+    color: #fff;
+    text-decoration: none;
+}
+
+/* Bouton secondaire */
+.btn-secondary {
+    background: #f8f8f8;
+    border-color: #d5d5d5;
+    color: #444;
+}
+
+.btn-secondary:hover {
+    background: #ececec;
+    border-color: #c5c5c5;
+    color: #222;
+    text-decoration: none;
+}
+
+/* Bouton suppression */
+.btn-danger {
+    background: #e74c3c;
+    border-color: #d43f30;
+    color: #fff;
+}
+
+.btn-danger:hover {
+    background: #d43f30;
+    border-color: #c0392b;
+    color: #fff;
+    text-decoration: none;
+}
+
+/* Petit bouton */
+.btn-sm {
+    padding: 5px 10px;
+    min-height: 28px;
+    font-size: 12px;
+}
+
+/* Effet clic */
+.btn-primary:active,
+.btn-secondary:active,
+.btn-danger:active {
+    transform: translateY(1px);
+}
+
+.btn-sm {
+    font-size: 12px;
+    padding: 4px 8px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+
+    .form-table,
+    .form-table tbody,
+    .form-table tr,
+    .form-table td {
+        display: block;
+        width: 100%;
+    }
+
+    .label-cell {
+        width: 100%;
+        padding-bottom: 4px;
+    }
+
+    .form-control,
+    .form-textarea {
+        max-width: 100%;
+    }
+}

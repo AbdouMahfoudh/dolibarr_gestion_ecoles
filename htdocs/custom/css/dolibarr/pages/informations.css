@@ -1,0 +1,25 @@
+/* ============================================================================
+   Style dédié à la page « Informations générales » (thème dolibarr / clair)
+   Chargé APRÈS le jeu de composants commun par etablissement_load_css('informations')
+   ============================================================================ */
+
+/* La fiche établissement est dense : on élargit les champs et on aère */
+.school-form .school-fields-value input[type=text],
+.school-form .school-fields-value input[type=email],
+.school-form .school-fields-value input[type=url],
+.school-form .school-fields-value input[type=date],
+.school-form .school-fields-value textarea,
+.school-form .school-bilingual { max-width: 560px; }
+
+.school-form-section {
+	margin-top: 26px;
+	padding-bottom: 6px;
+	border-bottom: 1px dashed var(--school-border);
+}
+
+/* Champ synchronisé avec la société Dolibarr : petit repère visuel */
+.school-fields-label[data-synced]::after {
+	content: " ⇄";
+	color: var(--school-info);
+	font-size: .85em;
+}

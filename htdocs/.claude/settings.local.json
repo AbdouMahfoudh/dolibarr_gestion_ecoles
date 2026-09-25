@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Skill(update-config)",
+      "Skill(update-config:*)",
+      "Read",
+      "Edit",
+      "Write",
+      "Bash",
+      "Bash(php:*)",
+      "Bash(C:/xampp_new/php/php.exe:*)"
+    ],
+    "additionalDirectories": [
+      "C:/xampp_new/htdocs"
+    ]
+  }
+}

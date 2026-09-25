@@ -1,0 +1,271 @@
+# Dolibarr language file - Source file is en_US - classes
+# Module « Classes »
+
+Module104600Name=Classes
+Module104600Desc=Classes, matières, coefficients, mensualités et emplois du temps de l'établissement
+
+# Menus
+Classes=Classes
+MenuClasses=Classes
+MenuNouvelleClasse=Nouvelle classe
+MenuMatieres=Matières
+MenuNouvelleMatiere=Nouvelle matière
+MenuConfiguration=Configuration
+MenuNiveaux=Niveaux
+MenuSections=Sections
+MenuCreneaux=Créneaux horaires
+MenuSessions=Sessions d'examen
+MenuReglages=Réglages
+AccesRapides=Accès rapides
+EcoleClasses=Classes
+EcoleMatieres=Matières
+EcoleExamens=Examens
+EcoleEmploiDuTemps=Emploi du temps
+
+# Statuts
+EcoleActif=Actif
+EcoleInactif=Inactif
+EcoleFiltreStatuts=Plusieurs statuts
+
+# Objets
+Niveaux=Niveaux
+Niveau=Niveau
+NouveauNiveau=Nouveau niveau
+Sections=Sections
+Section=Section
+NouvelleSection=Nouvelle section
+Creneaux=Créneaux horaires
+Creneau=Créneau
+NouveauCreneau=Nouveau créneau
+SessionsExamen=Sessions d'examen
+SessionExamen=Session d'examen
+NouvelleSession=Nouvelle session d'examen
+Matieres=Matières
+Matiere=Matière
+NouvelleMatiere=Nouvelle matière
+Classe=Classe
+NouvelleClasse=Nouvelle classe
+
+# Champs
+LabelFr=Libellé (français)
+LabelAr=Libellé (arabe)
+AvecSections=Utilise des sections
+AvecSectionsHelp=Si coché, chaque classe de ce niveau doit choisir une section (ex. lycée : Série C, D, A)
+CodeMatiere=Code
+CodeMatiereHelp=Code court facultatif (ex. MATH, FR, ARB)
+HeureDebut=Heure de début
+HeureFin=Heure de fin
+Trimestre=Trimestre
+Trimestre1=1er trimestre
+Trimestre2=2ème trimestre
+Trimestre3=3ème trimestre
+DateDebut=Date de début
+DateFin=Date de fin
+SectionHelp=Obligatoire seulement pour les niveaux qui utilisent des sections
+EffectifMax=Effectif maximum
+SalleAttitree=Salle attitrée
+Mensualite=Mensualité
+MensualiteHelp=Prix mensuel de la scolarité pour un élève de cette classe
+FraisInscriptionClasse=Frais d'inscription
+FraisInscriptionClasseHelp=Montant des frais d'inscription pour un élève de cette classe (0 = pas de frais)
+Coefficient=Coefficient
+Bareme=Barème
+NoteMax=Note maximale
+BaremeSur20=Note sur 20
+BaremeSurCoef20=Note sur coefficient × 20
+BaremeAide=Barème « sur coefficient × 20 » : par exemple un coefficient de 2,5 donne une note sur 50 (l'enseignant saisit 45/50). Barème « sur 20 » : la note est sur 20, le coefficient sert seulement au calcul de la moyenne.
+Jour=Jour
+Enseignant=Enseignant
+Salle=Salle
+Surveillant=Surveillant
+DateExamen=Date de l'épreuve
+Horaire=Horaire
+
+# Fiche classe
+Fiche=Fiche
+ResumeClasse=Résumé de la classe
+Rubrique=Rubrique
+Nombre=Nombre
+Gerer=Gérer
+TotalCoefficients=Total des coefficients
+MatieresCoefficients=Matières et coefficients
+EmploiDuTempsCours=Emploi du temps des cours
+EmploiDuTempsExamens=Emploi du temps des examens
+AucuneMatiereLiee=Aucune matière n'est liée à cette classe.
+AucuneMatiereDisponible=Toutes les matières actives sont déjà liées à cette classe.
+AjouterMatiere=Lier une matière à cette classe
+AucunCreneau=Aucun créneau horaire n'est défini.
+AjouterCase=Ajouter un cours
+ModifierCase=Modifier le cours
+AucuneSession=Aucune session d'examen n'est définie.
+AjouterEpreuve=Ajouter une épreuve
+ModifierEpreuve=Modifier l'épreuve
+AucuneEpreuve=Aucune épreuve programmée.
+
+# Historique
+VoirHistorique=Voir l'historique des modifications
+HistoriqueEmploiDuTemps=Historique de l'emploi du temps des cours
+HistoriqueExamens=Historique de l'emploi du temps des examens
+Masquer=Masquer
+Utilisateur=Utilisateur
+Action=Action
+AncienneVersion=Ancienne version
+ActionSupprime=Supprimé
+ActionModifie=Modifié
+AucunHistorique=Aucune modification enregistrée.
+
+# Réglages
+JoursOuvrables=Jours ouvrables
+JoursOuvrablesAide=Jours affichés dans les emplois du temps des cours.
+
+# Erreurs
+ErrorEcoleAlreadyExists=%s « %s » existe déjà.
+ErrorEcoleObjectUsed=Suppression impossible : utilisé par « %s » (%s).
+ClasseEleves=Élèves rattachés à la classe
+ClasseHistoriqueEleves=Historique des élèves (changements de classe)
+ClasseAppels=Appels
+ClasseEvaluations=Évaluations
+ClasseBulletins=Bulletins
+ErrorEcoleBadTime=%s : heure invalide (format HH:MM).
+ErrorEcoleFinAvantDebut=L'heure de fin doit être après l'heure de début.
+ErrorEcoleCreneauChevauche=Ce créneau chevauche le créneau %s (%s - %s).
+ErrorEcoleDateFinAvantDebut=La date de fin ne peut pas précéder la date de début.
+ErrorEcoleBadValue=Valeur invalide pour « %s ».
+ErrorEcoleSectionRequired=Le niveau « %s » exige le choix d'une section.
+ErrorEcoleCoefficient=Le coefficient doit être supérieur à zéro.
+ErrorEcoleMatiereDejaLiee=Cette matière est déjà liée à cette classe.
+ErrorEcoleMatiereUtilisee=Impossible de délier la matière : elle est utilisée dans « %s » (%s).
+ErrorEcoleMatiereNonLiee=Cette matière n'est pas liée à cette classe : ajoutez-la d'abord dans « Matières et coefficients ».
+ErrorEcoleCaseOccupee=Cette classe a déjà un cours sur ce jour et ce créneau.
+ErrorEcoleEnseignantOccupe=%s enseigne déjà dans la classe %s sur ce jour et ce créneau.
+ErrorEcoleSalleOccupee=Cette salle est déjà occupée par la classe %s à ce moment.
+ErrorEcoleDateHorsSession=La date de l'épreuve doit être comprise dans la session (du %s au %s).
+ErrorEcoleClasseExamenChevauche=Cette classe a déjà une épreuve qui chevauche cet horaire.
+ErrorEcoleSurveillantOccupe=%s surveille déjà la classe %s à ce moment.
+ErrorEcoleAucunJour=Choisissez au moins un jour ouvrable.
+
+# Salles
+Salles=Salles
+Salle=Salle
+NouvelleSalle=Nouvelle salle
+MenuSalles=Salles
+MenuNouvelleSalle=Nouvelle salle
+MenuDisponibilite=Disponibilité des salles
+DisponibiliteSalles=Disponibilité des salles
+TypeSalle=Type de salle
+SalleTypeClasse=Salle de classe
+SalleTypeLabo=Laboratoire
+SalleTypeInfo=Salle informatique
+SalleTypeSport=Terrain / salle de sport
+SalleTypeAutre=Autre
+Capacite=Capacité (places)
+Emplacement=Emplacement
+ClasseAttitree=Classe attitrée
+AucuneClasseAttitree=Aucune classe attitrée
+OccupationSalle=Occupation
+HeuresParSemaine=%s de cours par semaine
+VoirOccupation=Voir l'occupation de la semaine
+Libre=Libre
+SallesLibres=Salles libres
+ExamensAVenir=Examens à venir dans cette salle
+AucuneSalle=Aucune salle active.
+
+# Emplois du temps
+MenuEmploisDuTemps=Emplois du temps
+AideEmploisDuTemps=Chaque classe a son emploi du temps. Cliquez sur une classe pour l'ouvrir et ajouter ses cours.
+AideEmploiDuTemps=Cliquez sur le « + » d'une case vide pour y ajouter un cours, ou sur un cours pour le modifier.
+HeuresSemaine=Heures / semaine
+AucuneMatiere=Aucune matière
+EdtVide=vide
+VoirEmploiDuTemps=Voir l'emploi du temps
+
+# Références
+RefCourteHelp=Référence courte : 10 caractères au maximum (ex. 5C, MATH, S01)
+ErrorEcoleRefTropLongue=La référence ne doit pas dépasser %s caractères.
+ErrorEcoleSalleDesactivation=Impossible de désactiver cette salle : elle est encore utilisée dans %s cours de l'emploi du temps et %s examen(s) à venir. Changez d'abord la salle de ces cours.
+ErrorEcoleSalleInactive=La salle %s est désactivée : choisissez une salle active.
+EcoleLibelle=Libellé
+BaremeParDefaut=Barème des matières par défaut
+BaremeParDefautHelp=Barème proposé quand on lie une matière à une classe de ce niveau (modifiable matière par matière). Ex. maternelle et primaire : note sur coefficient × 20 ; collège et lycée : note sur 20.
+
+# Catégories d'utilisateurs
+CategorieEcole=Catégorie (école)
+CategorieEcoleHelp=Rôle de la personne dans l'établissement. Détermine qui peut être choisi comme enseignant (cours) ou surveillant (examens). Plusieurs choix possibles.
+EcoleCatDirection=Direction
+EcoleCatEnseignant=Enseignant
+EcoleCatSurveillant=Surveillant
+EcoleCatSecretariat=Secrétariat
+EcoleCatComptable=Comptable
+EcoleCatAgent=Agent d'entretien / gardien
+EcoleCatChauffeur=Chauffeur
+EcoleCatAutre=Autre
+AucunUtilisateurCategorie=Aucun utilisateur de catégorie « %s ». Indiquez la catégorie sur la fiche de l'utilisateur :
+ErrorEcoleUserCategorie=%s n'est pas de catégorie « %s » (voir la fiche de l'utilisateur).
+
+# Période d'examen
+PeriodeExamen=Période de l'examen
+DuAu=du %s au %s
+NbJoursExamen=%s jours
+ModifierPeriode=Modifier la période
+PeriodeNonDefinie=La période de cet examen n'est pas encore définie.
+DefinirPeriodeAide=Définissez d'abord la période de l'examen (date de début et de fin) : les épreuves se placeront ensuite jour par jour dans cette période.
+EnregistrerPeriode=Enregistrer la période
+PeriodeCommuneAide=La période est commune à toutes les classes pour ce trimestre.
+JourExamen=Jour
+ErrorEcolePeriodeIncomplete=Indiquez la date de début et la date de fin de la période.
+ErrorEcoleSessionExamensHorsPeriode=Impossible : %s épreuve(s) déjà programmée(s) se trouveraient en dehors de la nouvelle période. Déplacez-les d'abord.
+
+# Export PDF / Excel
+ExportPdf=PDF
+ExportExcel=Excel
+EcolePdfFooter=Document généré le %s
+NbEnregistrements=%s enregistrement(s)
+PdfHeaderStyle=En-tête des PDF
+PdfHeaderStyleAide=Style utilisé pour tous les PDF du module (listes et emplois du temps). La langue du PDF suit celle de l'utilisateur.
+PdfHeaderBandeauBleu=Bandeau bleu
+PdfHeaderBandeauBleuDesc=Bandeau pleine largeur, logo et établissement d'un côté, titre de l'autre.
+PdfHeaderBandeauSombre=Bandeau sombre
+PdfHeaderBandeauSombreDesc=Même disposition, couleurs ardoise et filet ambre.
+PdfHeaderMinimal=Minimal
+PdfHeaderMinimalDesc=Sans bandeau : logo, établissement et titre séparés par un filet fin.
+PdfHeaderCompact=Compact
+PdfHeaderCompactDesc=Bandeau fin d'une seule ligne, idéal pour les longues listes.
+PdfHeaderClassique=Classique
+PdfHeaderClassiqueDesc=Papier à en-tête centré : logo, établissement, coordonnées puis titre.
+ApercuFr=Aperçu FR
+ApercuAr=Aperçu AR
+ApercuDocTitre=Document d'exemple
+EcoleTelephone=Tél.
+NombreMax=Nombre max
+FiltreMin=Min
+FiltreMax=Max
+VoirElevesClasse=Voir les élèves de la classe
+EffectifMaxHelp=Nombre maximum d'élèves inscrits dans la classe. 100 par défaut.
+EffectifMaxClasses=Effectif des classes
+EffectifMaxDefaut=Effectif maximum par défaut
+EffectifMaxDefautAide=proposé à la création d'une classe et utilisé quand une classe n'a pas de maximum. Le maximum de chaque classe se règle dans sa fiche (bouton Modifier, champ « Effectif maximum »).
+
+# Police des PDF
+PdfFont=Police des PDF
+PdfFontAide=Utilisée par tous les PDF des modules (listes, emplois du temps, reçus, attestations). Seules les polices qui écrivent à la fois le français et l'arabe sont proposées.
+PdfFontNom=Police
+PdfFontDocsFr=Documents en français
+PdfFontDocsAr=Documents en arabe
+PdfFontDejavuSans=DejaVu Sans
+PdfFontDejavuSansDesc=Moderne et très lisible, sans empattement (police actuelle).
+PdfFontDejavuSansCondensed=DejaVu Sans Condensed
+PdfFontDejavuSansCondensedDesc=Même style, plus étroite : pratique pour les grands tableaux.
+PdfFontFreeSerif=FreeSerif
+PdfFontFreeSerifDesc=Avec empattements, style classique proche de Times ; arabe de style naskh.
+PdfFontAeAlArabiya=AE Al Arabiya
+PdfFontAeAlArabiyaDesc=Arabe traditionnel, élégant. Les symboles « — », « → » et « € » sont remplacés par « - » et « EUR ».
+PdfFontAeFurat=AE Furat
+PdfFontAeFuratDesc=Arabe calligraphique fin. Les symboles « — », « → » et « € » sont remplacés par « - » et « EUR ».
+
+# Langue d'enseignement des matières (bulletin bilingue)
+LangueEnseignement=Langue d'enseignement
+LangueEnseignementHelp=Langue dans laquelle la matière est enseignée. Sur un bulletin bilingue, la matière est écrite dans cette langue (matière en français écrite en français, matière en arabe écrite en arabe). Peut être changée pour une classe dans l'onglet « Matières et coefficients » de la classe.
+LangueFrancais=Français
+LangueArabe=Arabe
+CommeLaMatiere=Comme la matière
+LangueClasseAide=Langue d'enseignement : « Comme la matière » reprend la langue choisie sur la fiche de la matière ; choisissez « Français » ou « Arabe » pour une exception dans cette classe (ex. mathématiques enseignées en arabe dans une section arabe).

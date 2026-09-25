@@ -1,0 +1,210 @@
+/* =============================================================
+ * LOGIN CUSTOM - Habillage du cadre d'authentification
+ * Module : custom/login_theme
+ * -------------------------------------------------------------
+ * IMPORTANT : ce fichier ne touche jamais au <body class="bodylogin">
+ * ni au conteneur ".login_center" (c'est la que Dolibarr applique
+ * l'image de fond definie dans Accueil > Configuration > Affichage
+ * > "MAIN_LOGIN_BACKGROUND" / degrade de couleur du theme).
+ * L'image de fond reste donc intacte, visible autour et derriere
+ * le cadre (effet "verre depoli").
+ *
+ * On cible uniquement le cadre qui contient les informations
+ * d'authentification : ".login_table" (logo, identifiant, mot de
+ * passe, bouton de connexion, liens "mot de passe oublie" / aide).
+ * ============================================================= */
+
+:root {
+	--lc-accent: #2563eb;
+	--lc-accent-dark: #1d4ed8;
+	--lc-radius: 22px;
+	--lc-text: #1e293b;
+}
+
+/* ---------------------------------------------------------------
+ * Le cadre principal (carte "verre depoli")
+ * --------------------------------------------------------------- */
+.login_table {
+	background: rgba(255, 255, 255, 0.16) !important;
+	backdrop-filter: blur(18px) saturate(160%);
+	-webkit-backdrop-filter: blur(18px) saturate(160%);
+	border: 1px solid rgba(255, 255, 255, 0.35);
+	border-radius: var(--lc-radius) !important;
+	box-shadow:
+		0 8px 32px rgba(0, 0, 0, 0.25),
+		0 1.5px 0 rgba(255, 255, 255, 0.4) inset;
+	padding: 34px 38px 28px !important;
+	max-width: 400px !important;
+	animation: lc-fade-in 0.6s ease both;
+}
+
+@keyframes lc-fade-in {
+	from {
+		opacity: 0;
+		transform: translateY(18px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+/* ---------------------------------------------------------------
+ * Logo
+ * --------------------------------------------------------------- */
+#img_logo {
+	max-height: 70px;
+	filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.25));
+}
+
+div#login_left,
+div#login_right {
+	padding-top: 4px;
+	padding-bottom: 4px;
+}
+
+/* ---------------------------------------------------------------
+ * Titre + sous-titre
+ * --------------------------------------------------------------- */
+.login_table_title {
+	color: #ffffff !important;
+	font-size: 1.5em;
+	font-weight: 700;
+	text-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+	letter-spacing: 0.3px;
+	padding-bottom: 4px !important;
+}
+
+.login_table_subtitle {
+	color: rgba(255, 255, 255, 0.85);
+	font-size: 0.92em;
+	margin-bottom: 18px;
+	text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* ---------------------------------------------------------------
+ * Champs identifiant / mot de passe
+ * --------------------------------------------------------------- */
+.login_table .trinputlogin {
+	margin: 12px 0;
+}
+
+.login_table .tdinputlogin {
+	background: rgba(255, 255, 255, 0.92) !important;
+	border-radius: 12px !important;
+	border: 1px solid rgba(255, 255, 255, 0.6);
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+	transition: box-shadow 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+	min-width: 260px !important;
+}
+
+.login_table .tdinputlogin:focus-within {
+	border-color: var(--lc-accent);
+	box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25), 0 4px 12px rgba(0, 0, 0, 0.12);
+	transform: translateY(-1px);
+}
+
+.login_table .tdinputlogin .fa {
+	color: var(--lc-accent);
+	width: 20px;
+}
+
+.login_table input#username,
+.login_table input#password,
+.login_table input#securitycode {
+	border: none !important;
+	background: transparent !important;
+	color: var(--lc-text);
+	padding: 10px 6px !important;
+	font-size: 1.02em !important;
+}
+
+.login_table input#username::placeholder,
+.login_table input#password::placeholder {
+	color: #94a3b8;
+}
+
+.login_table input#username:focus,
+.login_table input#password:focus {
+	outline: none !important;
+}
+
+.login_table #tdpasswordlogin #togglepassword {
+	opacity: 0.55;
+}
+
+.login_table #tdpasswordlogin #togglepassword:hover {
+	opacity: 1;
+}
+
+/* ---------------------------------------------------------------
+ * Bouton de connexion
+ * --------------------------------------------------------------- */
+#login-submit-wrapper {
+	margin-top: 20px;
+}
+
+.login_table input.button {
+	background: linear-gradient(135deg, var(--lc-accent) 0%, var(--lc-accent-dark) 100%) !important;
+	border: none !important;
+	color: #ffffff !important;
+	font-weight: 600;
+	letter-spacing: 0.4px;
+	padding: 12px 34px !important;
+	border-radius: 999px !important;
+	box-shadow: 0 6px 18px rgba(37, 99, 235, 0.45);
+	transition: transform 0.18s ease, box-shadow 0.18s ease;
+	cursor: pointer;
+}
+
+.login_table input.button:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 10px 24px rgba(37, 99, 235, 0.55);
+}
+
+.login_table input.button:active {
+	transform: translateY(0);
+}
+
+/* ---------------------------------------------------------------
+ * Liens (mot de passe oublie / aide)
+ * --------------------------------------------------------------- */
+.login_table a.alogin {
+	color: rgba(255, 255, 255, 0.9);
+	font-size: 0.88em;
+	text-decoration: none;
+	border-bottom: 1px solid transparent;
+	transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.login_table a.alogin:hover {
+	color: #ffffff;
+	border-bottom-color: rgba(255, 255, 255, 0.8);
+}
+
+/* ---------------------------------------------------------------
+ * Message d'erreur / avertissement
+ * --------------------------------------------------------------- */
+.login_main_message .error {
+	background: rgba(220, 38, 38, 0.14);
+	border: 1px solid rgba(220, 38, 38, 0.4);
+	border-radius: 10px;
+	color: #fecaca;
+}
+
+.login_main_message .warning {
+	background: rgba(245, 158, 11, 0.14);
+	border: 1px solid rgba(245, 158, 11, 0.4);
+	border-radius: 10px;
+	color: #fde68a;
+}
+
+/* ---------------------------------------------------------------
+ * Responsive
+ * --------------------------------------------------------------- */
+@media (max-width: 576px) {
+	.login_table {
+		max-width: 90% !important;
+		padding: 26px 22px 22px !important;
+	}
+}

@@ -1,0 +1,193 @@
+# Dolibarr language file - Source file is en_US - espace
+# Module « Espace parents et élèves » (arabe)
+
+Module104900Name=فضاء الأولياء والتلاميذ
+Module104900Desc=فضاء الأولياء والتلاميذ : الدرجات، كشوف النقاط، الجدول الزمني، الغيابات، المدفوعات، شهادة مدرسية
+
+# Droits
+Permission104901=فضاء الأولياء : الاطلاع على الحسابات (البطاقات، القائمة، آخر دخول)
+Permission104902=فضاء الأولياء : إنشاء حساب، إعادة تعيين كلمة المرور، تعطيل أو إعادة تفعيل
+Permission104991=فضاء الأولياء : الإعدادات (اللغة، رسالة واتساب، حسابات التلاميذ)
+
+# Menus
+MenuEspaceParents=فضاء الأولياء
+MenuJamaisConnectes=لم يدخلوا أبدا
+MenuConfigEspace=إعدادات الفضاء
+
+# Espace : connexion et mot de passe
+TitreEspace=فضاء الأولياء والتلاميذ
+Connexion=تسجيل الدخول
+AideConnexion=سجّل الدخول باسم المستخدم وكلمة المرور اللذين قدمتهما لك المدرسة.
+Identifiant=اسم المستخدم
+MotDePasse=كلمة المرور
+AfficherMotDePasse=إظهار كلمة المرور
+SeConnecter=دخول
+SeDeconnecter=خروج
+VousEtesDeconnecte=تم تسجيل خروجك.
+ErreurIdentifiants=اسم المستخدم أو كلمة المرور غير صحيح.
+AccesPlusActif=حسابك غير مفعّل. يرجى الاتصال بالمدرسة.
+MotDePasseOublieAide=نسيت كلمة المرور ؟ اتصل بالمدرسة لتمنحك كلمة مرور مؤقتة جديدة.
+ChangerMotDePasse=تغيير كلمة المرور
+AideMotDePasseProvisoire=من أجل أمانك، اختر كلمة مرور خاصة بك قبل المتابعة.
+MotDePasseProvisoire=كلمة المرور المؤقتة
+MotDePasseActuel=كلمة المرور الحالية
+NouveauMotDePasse=كلمة المرور الجديدة
+ConfirmerMotDePasse=تأكيد كلمة المرور الجديدة
+AideNouveauMotDePasse=على الأقل %s أحرف. لا تعطها لأحد.
+ErreurMotDePasseActuel=كلمة المرور الحالية غير صحيحة.
+ErreurMotDePasseCourt=يجب أن تحتوي كلمة المرور الجديدة على %s أحرف على الأقل.
+ErreurMotDePasseConfirm=كلمتا المرور الجديدتان غير متطابقتين.
+ErreurMotDePasseIdentique=يجب أن تختلف كلمة المرور الجديدة عن القديمة.
+MotDePasseChange=تم تغيير كلمة المرور.
+Enregistrer=حفظ
+Retour=رجوع
+
+# Espace : accueil et élève
+Bonjour=مرحبا
+VosEnfants=أبناؤكم المسجلون هذه السنة :
+VotreEnfant=ابنكم المسجل هذه السنة :
+PaiementsAJour=المدفوعات محدّثة
+NbAbsencesNonJustifiees=%s غياب غير مبرر
+NbRetardsNonJustifies=%s تأخر غير مبرر
+DernieresNotes=آخر الدرجات
+OngletNotes=الدرجات
+EmploiDuTemps=الجدول الزمني
+AbsencesEtSanctions=الغيابات
+DossierPieces=الملف
+TrimestreCourt=ف%s
+BilanAnnuelApresCloture=ستتوفر حصيلة السنة (المعدلات السنوية، الرتبة، الكشف) بعد إغلاق الفصول الثلاثة.
+MoyennesApresCloture=تظهر الدرجات فور إدخالها. أما المعدلات والرتبة وكشف النقاط فتتوفر بعد إغلاق الفصل.
+AucuneMatiere=لا توجد مواد لهذا القسم.
+PasEncoreDeNote=لا توجد درجة بعد.
+ResultatsTrimestre=نتائج الفصل
+ResultatsAnnee=نتائج السنة
+Aujourdhui=اليوم
+PasDeCours=لا توجد حصص.
+RenvoisCours=الإخراج من الحصة
+DontNonJustifiees=منها %s غير مبرر
+DontNonJustifies=منها %s غير مبرر
+MoisEnRetard=الأشهر المتأخرة
+SituationMoisParMois=الوضعية شهرا بشهر
+AideJourLimite=يعتبر الشهر متأخرا إذا لم يُدفع قبل يوم %s من الشهر.
+RecusDePaiement=وصولات الدفع
+PiecesManquantesAide=ما زالت %s وثيقة من الملف ناقصة. يرجى إحضارها إلى المدرسة.
+DossierComplet=الملف كامل.
+PieceFournie=مُسلّمة
+PieceManquante=ناقصة
+Document=وثيقة
+DocumentIndisponible=هذه الوثيقة غير متوفرة.
+
+# Gestion des accès
+AccesEspace=حسابات فضاء الأولياء والتلاميذ
+AccesEspaceParents=حساب فضاء الأولياء
+AccesEspaceEleve=حساب التلميذ في الفضاء
+AccesEspaceOnglet=حساب الفضاء
+RetourFicheResponsable=العودة إلى بطاقة ولي الأمر
+EtatAcces=حالة الحساب
+EtatAccesActif=مفعّل
+EtatAccesJamais=لم يدخل أبدا
+EtatAccesCoupe=مقطوع
+EtatAccesDesactive=معطّل
+EtatAccesAucun=لا يوجد حساب
+AideEtatAucun=لم يُنشأ أي حساب بعد.
+AideEtatCoupeParent=مقطوع تلقائيا : لا يوجد أي ابن مسجل (مغادرة، انقطاع، فصل...). يعود الحساب تلقائيا إذا سُجل أحد الأبناء من جديد.
+AideEtatCoupeEleve=مقطوع تلقائيا : التلميذ لم يعد مسجلا. يعود الحساب تلقائيا إذا سُجل من جديد.
+AideEtatDesactive=معطّل من طرف المدرسة (أو حسابات التلاميذ مغلقة في الإعدادات).
+AideMotDePasseProvisoireEcole=لم يغيرها المستخدم بعد : يمكن إعادة طباعة بطاقة الدخول. يجب عليه تغييرها عند أول دخول.
+MotDePassePersonnel=اختارها المستخدم
+DerniereConnexion=آخر دخول
+Connexions=مرات الدخول
+NbConnexions=%s مرة دخول
+JamaisConnecte=لم يدخل أبدا
+AccesCreeLe=تاريخ إنشاء الحساب
+DerniereReinitialisation=آخر إعادة تعيين
+LangueChoisie=اللغة المختارة
+AdresseEspace=رابط الفضاء
+ElevesVisibles=التلاميذ الظاهرون
+AucunEnfantInscrit=لا يوجد ابن مسجل (أو موقوف).
+EleveNonInscrit=التلميذ غير مسجل (أو موقوف).
+AideElevesVisibles=لا يظهر في الفضاء إلا التلاميذ المسجلون أو الموقوفون مؤقتا.
+CreerAcces=إنشاء الحساب
+GererAcces=إدارة الحساب
+FicheAcces=بطاقة الدخول (PDF)
+EnvoyerWhatsApp=إرسال عبر واتساب
+ReinitialiserMotDePasse=إعادة تعيين كلمة المرور
+ConfirmReinitialiser=سيتم إنشاء كلمة مرور مؤقتة جديدة ولن تعمل القديمة. هل تريد المتابعة ؟
+DesactiverAcces=تعطيل الحساب
+ConfirmDesactiver=لن يتمكن المستخدم من الدخول إلى الفضاء. هل تريد المتابعة ؟
+ReactiverAcces=إعادة تفعيل الحساب
+AccesCree=تم إنشاء الحساب. اطبع بطاقة الدخول أو أرسلها عبر واتساب.
+MotDePasseReinitialise=تم إنشاء كلمة مرور مؤقتة جديدة. اطبع بطاقة الدخول أو أرسلها عبر واتساب.
+AccesDesactiveMsg=تم تعطيل الحساب.
+AccesReactiveMsg=تمت إعادة تفعيل الحساب.
+AccesExisteDeja=هذا الحساب موجود مسبقا.
+AccesElevesFermes=حسابات التلاميذ مغلقة في إعدادات الفضاء.
+AccesImpossibleAucunEnfant=غير ممكن : لا يوجد أي ابن مسجل لولي الأمر هذا.
+AccesImpossibleNonInscrit=غير ممكن : التلميذ غير مسجل.
+ErrorLoginDejaPris=اسم المستخدم %s مستعمل من طرف مستخدم آخر في النظام.
+NoteCompteParent=حساب فضاء الأولياء، أُنشئ تلقائيا (بدون أي صلاحية في النظام).
+NoteCompteEleve=حساب فضاء التلاميذ، أُنشئ تلقائيا (بدون أي صلاحية في النظام).
+FicheAccesIndisponible=بطاقة الدخول لم تعد متوفرة : تم تغيير كلمة المرور. أعد تعيين كلمة المرور لطباعة بطاقة جديدة.
+FicheAccesParent=الدخول إلى فضاء الأولياء
+FicheAccesEleve=الدخول إلى فضاء التلاميذ
+MarcheASuivre=طريقة الاستعمال
+EtapeFiche1=افتح الرابط أعلاه على هاتفك أو حاسوبك.
+EtapeFiche2=اكتب اسم المستخدم وكلمة المرور المؤقتة.
+EtapeFiche3=اختر كلمة مرور خاصة بك (6 أحرف على الأقل).
+EtapeFiche4=ستطلع بعد ذلك على الدرجات والجدول الزمني والغيابات والمدفوعات.
+FicheConfidentielle=وثيقة شخصية : لا تعطها لأحد. إذا نسيت كلمة المرور، اتصل بالمدرسة.
+AideListeAcces=يُنشأ كل حساب من بطاقة ولي الأمر أو من تبويب « حساب الفضاء » في بطاقة التلميذ.
+TypeAcces=النوع
+TypeParent=ولي أمر
+TypeEleve=تلميذ
+AucunAcces=لا توجد حسابات.
+NbAccesListe=%s حساب
+
+# Configuration
+ConfigurationEspace=إعدادات فضاء الأولياء والتلاميذ
+Reglages=الإعدادات
+LangueParDefaut=اللغة الافتراضية
+LangueParDefautAide=لغة الفضاء عند أول زيارة. يمكن لكل مستخدم تغيير اللغة بالزر أعلى الشاشة.
+AccesDesEleves=حسابات التلاميذ
+AccesDesElevesOui=يمكن للتلاميذ الحصول على حساب خاص بهم
+AccesDesElevesAide=عند إلغاء التحديد : تُعطَّل حسابات التلاميذ الموجودة ولا يمكن إنشاء حسابات جديدة للتلاميذ.
+AdresseEspaceAide=الرابط المطبوع على بطاقة الدخول والمرسل عبر واتساب. فارغ = رابط هذا الخادم.
+MessageAccesParent=رسالة واتساب : حساب ولي الأمر
+MessageAccesEleve=رسالة واتساب : حساب التلميذ
+AideMessageAcces=المتغيرات : {nom} {nom_ar} (اسم ولي الأمر أو التلميذ)، {identifiant}، {motdepasse} (كلمة المرور المؤقتة)، {lien} (رابط الفضاء)، {ecole}. إفراغ النص يعيد الرسالة الافتراضية.
+
+# Adresses propres
+PageIntrouvable=الصفحة غير موجودة
+PageIntrouvableAide=هذه الصفحة غير موجودة. عد إلى الصفحة الرئيسية للفضاء.
+AdressesPropres=روابط الفضاء
+AdressesPropresActives=الروابط المختصرة مفعّلة
+AdressesPropresInactives=روابط احتياطية (قاعدة الخادم غير موجودة)
+AdressesPropresInstaller=تثبيت / التحقق من القاعدة
+AdressesPropresDesactiver=العودة إلى الروابط الاحتياطية
+AdressesPropresAide=روابط الفضاء لا تُظهر اسم أي ملف ولا رقم التلميذ (مثال : .../espace/eleve/3f9c0a.../notes). تُضاف القاعدة تلقائيا في ملف .htaccess في جذر الموقع (دون تعديل أي ملف من النظام).
+AdressesPropresInstallees=تم تثبيت القاعدة : الروابط المختصرة مفعّلة.
+AdressesPropresErreur=تعذرت الكتابة في ملف .htaccess. أضف القاعدة أدناه يدويا ثم اضغط من جديد.
+RegleServeur=قاعدة الخادم
+RegleServeurAide=عند النشر على الإنترنت برابط خاص (مثال : https://parents.ecole.mr) : ضع هذا الرابط في « رابط الفضاء » ووجّه كل روابط النطاق الفرعي إلى router.php?route=... في إعدادات الخادم.
+AdressesPropresServeur=رابط الفضاء في جذر نطاق أو على خادم آخر : أضف القاعدة في إعدادات ذلك الخادم ثم اضغط على « تثبيت / التحقق من القاعدة ». في الانتظار تُستعمل الروابط الاحتياطية.
+AdressesPropresIgnorees=تمت كتابة القاعدة لكن الخادم لا يطبقها (إعادة الكتابة معطلة أو ملفات .htaccess ممنوعة). في الانتظار تُستعمل الروابط الاحتياطية.
+RegleEmplacement=المكان :
+
+# فضاء الموظفين (وحدة الموظفون)
+TypeEmploye=موظف
+AccesEspaceEmploye=دخول الموظف إلى فضائه
+AccesImpossibleEmployeParti=غير ممكن: الموظف غادر المدرسة.
+AccesImpossibleSansCompte=غير ممكن: ليس للموظف حساب مستخدم بعد (احفظ بطاقته).
+AideEtatCoupeEmploye=مقطوع تلقائيا: الموظف غادر. يعود الدخول تلقائيا إذا أعيد توظيفه.
+AideEtatDesactiveEmploye=معطل من طرف المدرسة (حسابه في النظام لا يتأثر).
+MotDePasseDolibarr=كلمة سر النظام
+AideAccesGestion=الإدارة والسكرتارية والمحاسبة والمسؤولون يحتفظون بواجهة التسيير وبكلمة السر: يفتحون فضاءهم من قائمة الموظفون > فضائي (أو برقمهم التسلسلي وكلمة السر).
+RubriquesEspace=ما يراه الموظف في فضائه
+AideRubriquesEspace=حسب فئاته (عدة فئات = كل الأقسام مجتمعة).
+FicheAccesEmploye=الدخول إلى فضاء الموظفين
+EtapeFiche4Employe=سترون بعد ذلك حصصكم وجدولكم الزمني والمناداة أو إدخال النقاط حسب وظيفتكم، وساعاتكم وراتبكم.
+MessageAccesEmploye=رسالة الدخول (الموظفون)
+TitreEspacePersonnel=فضاء الموظفين
+AideConnexionPersonnel=سجّل الدخول برقمك الوظيفي وكلمة المرور اللذين قدمتهما لك المدرسة.
+AdresseEspacePersonnel=عنوان فضاء الموظفين
+AdresseEspacePersonnelAide=العنوان الذي يُعطى للموظفين، مختلف عن عنوان الأولياء. فارغ = نفس مجلد فضاء الأولياء مع « personnel » (مثال: http://localhost/ecoles/personnel).

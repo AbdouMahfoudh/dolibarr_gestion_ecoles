@@ -1,0 +1,193 @@
+# Dolibarr language file - Source file is en_US - espace
+# Module "Parents and students portal"
+
+Module104900Name=Parents and students portal
+Module104900Desc=Parents and students portal: marks, report cards, timetable, absences, payments, certificate
+
+# Rights
+Permission104901=Portal: see accesses (cards, list, last logins)
+Permission104902=Portal: create an access, reset the password, disable or enable
+Permission104991=Portal: setup (language, WhatsApp message, students access)
+
+# Menus
+MenuEspaceParents=Parents portal
+MenuJamaisConnectes=Never logged in
+MenuConfigEspace=Portal setup
+
+# Portal: login and password
+TitreEspace=Parents and students portal
+Connexion=Login
+AideConnexion=Log in with the login and password given by the school.
+Identifiant=Login
+MotDePasse=Password
+AfficherMotDePasse=Show password
+SeConnecter=Log in
+SeDeconnecter=Log out
+VousEtesDeconnecte=You are logged out.
+ErreurIdentifiants=Wrong login or password.
+AccesPlusActif=Your access is not active. Please contact the school.
+MotDePasseOublieAide=Forgot your password? Contact the school: it will give you a new temporary password.
+ChangerMotDePasse=Change password
+AideMotDePasseProvisoire=For your security, choose your own password before going on.
+MotDePasseProvisoire=Temporary password
+MotDePasseActuel=Current password
+NouveauMotDePasse=New password
+ConfirmerMotDePasse=Confirm new password
+AideNouveauMotDePasse=At least %s characters. Do not give it to anybody.
+ErreurMotDePasseActuel=The current password is wrong.
+ErreurMotDePasseCourt=The new password must have at least %s characters.
+ErreurMotDePasseConfirm=The two new passwords are different.
+ErreurMotDePasseIdentique=The new password must be different from the old one.
+MotDePasseChange=Your password has been changed.
+Enregistrer=Save
+Retour=Back
+
+# Portal: home and student
+Bonjour=Hello
+VosEnfants=Your children enrolled this year:
+VotreEnfant=Your child enrolled this year:
+PaiementsAJour=Payments up to date
+NbAbsencesNonJustifiees=%s unexcused absence(s)
+NbRetardsNonJustifies=%s unexcused late arrival(s)
+DernieresNotes=Latest marks
+OngletNotes=Marks
+EmploiDuTemps=Timetable
+AbsencesEtSanctions=Absences
+DossierPieces=File
+TrimestreCourt=T%s
+BilanAnnuelApresCloture=The year results (annual averages, rank, transcript) will be available when the three terms are closed.
+MoyennesApresCloture=Marks are shown as soon as they are entered. Averages, rank and report card will be available after the term is closed.
+AucuneMatiere=No subject for this class.
+PasEncoreDeNote=No mark yet.
+ResultatsTrimestre=Term results
+ResultatsAnnee=Year results
+Aujourdhui=Today
+PasDeCours=No lesson.
+RenvoisCours=Sent out of class
+DontNonJustifiees=including %s unexcused
+DontNonJustifies=including %s unexcused
+MoisEnRetard=Overdue months
+SituationMoisParMois=Month by month
+AideJourLimite=A month is overdue if it is not paid on the %s of the month.
+RecusDePaiement=Payment receipts
+PiecesManquantesAide=%s document(s) of the file are still missing. Please bring them to the school.
+DossierComplet=The file is complete.
+PieceFournie=Provided
+PieceManquante=Missing
+Document=Document
+DocumentIndisponible=This document is not available.
+
+# Access management
+AccesEspace=Accesses to the parents and students portal
+AccesEspaceParents=Access to the parents portal
+AccesEspaceEleve=Student access to the portal
+AccesEspaceOnglet=Portal access
+RetourFicheResponsable=Back to the guardian card
+EtatAcces=Access status
+EtatAccesActif=Active
+EtatAccesJamais=Never logged in
+EtatAccesCoupe=Cut
+EtatAccesDesactive=Disabled
+EtatAccesAucun=No access
+AideEtatAucun=No access has been created yet.
+AideEtatCoupeParent=Cut automatically: no child is enrolled (left, dropped out, expelled...). The access comes back by itself if a child is enrolled again.
+AideEtatCoupeEleve=Cut automatically: the student is no longer enrolled. The access comes back by itself if enrolled again.
+AideEtatDesactive=Disabled by the school (or students access closed in the setup).
+AideMotDePasseProvisoireEcole=Not changed yet by the user: the access sheet can be printed again. It must be changed at first login.
+MotDePassePersonnel=Chosen by the user
+DerniereConnexion=Last login
+Connexions=Logins
+NbConnexions=%s login(s)
+JamaisConnecte=Never logged in
+AccesCreeLe=Access created on
+DerniereReinitialisation=Last reset
+LangueChoisie=Chosen language
+AdresseEspace=Portal address
+ElevesVisibles=Visible students
+AucunEnfantInscrit=No enrolled (or suspended) child.
+EleveNonInscrit=The student is not enrolled (or suspended).
+AideElevesVisibles=Only enrolled or suspended students are visible in the portal.
+CreerAcces=Create access
+GererAcces=Manage access
+FicheAcces=Access sheet (PDF)
+EnvoyerWhatsApp=Send by WhatsApp
+ReinitialiserMotDePasse=Reset password
+ConfirmReinitialiser=A new temporary password will be created; the old one will stop working. Continue?
+DesactiverAcces=Disable access
+ConfirmDesactiver=The user will no longer be able to log in to the portal. Continue?
+ReactiverAcces=Enable access
+AccesCree=Access created. Print the access sheet or send it by WhatsApp.
+MotDePasseReinitialise=New temporary password created. Print the access sheet or send it by WhatsApp.
+AccesDesactiveMsg=Access disabled.
+AccesReactiveMsg=Access enabled.
+AccesExisteDeja=This access already exists.
+AccesElevesFermes=Students accesses are closed in the portal setup.
+AccesImpossibleAucunEnfant=Not possible: no child of this guardian is enrolled.
+AccesImpossibleNonInscrit=Not possible: the student is not enrolled.
+ErrorLoginDejaPris=The login %s is already used by another system user.
+NoteCompteParent=Parents portal account, created automatically (no right in the system).
+NoteCompteEleve=Students portal account, created automatically (no right in the system).
+FicheAccesIndisponible=The access sheet is no longer available: the password has been changed. Reset the password to print a new one.
+FicheAccesParent=Access to the parents portal
+FicheAccesEleve=Access to the students portal
+MarcheASuivre=How to proceed
+EtapeFiche1=Open the address above on your phone or computer.
+EtapeFiche2=Type the login and the temporary password.
+EtapeFiche3=Choose your own password (at least 6 characters).
+EtapeFiche4=You will then see marks, timetable, absences and payments.
+FicheConfidentielle=Personal document: do not give it to anybody. If you forget the password, contact the school.
+AideListeAcces=each access is created from the guardian card or the "Portal access" tab of the student.
+TypeAcces=Type
+TypeParent=Parent
+TypeEleve=Student
+AucunAcces=No access.
+NbAccesListe=%s access(es)
+
+# Setup
+ConfigurationEspace=Parents and students portal setup
+Reglages=Settings
+LangueParDefaut=Default language
+LangueParDefautAide=Portal language at the first visit. Everyone can then switch with the button at the top of the screen.
+AccesDesEleves=Students access
+AccesDesElevesOui=Students can have their own access
+AccesDesElevesAide=Unchecked: existing students accesses are disabled and no new student access can be created.
+AdresseEspaceAide=Address printed on the access sheet and sent by WhatsApp. Empty = address of this server.
+MessageAccesParent=WhatsApp message: guardian access
+MessageAccesEleve=WhatsApp message: student access
+AideMessageAcces=Variables: {nom} {nom_ar} (name of the guardian or student), {identifiant}, {motdepasse} (temporary password), {lien} (portal address), {ecole}. Emptying the text restores the default message.
+
+# Clean addresses
+PageIntrouvable=Page not found
+PageIntrouvableAide=This page does not exist. Go back to the portal home.
+AdressesPropres=Portal addresses
+AdressesPropresActives=Clean addresses active
+AdressesPropresInactives=Fallback addresses (server rule missing)
+AdressesPropresInstaller=Install / check the rule
+AdressesPropresDesactiver=Go back to fallback addresses
+AdressesPropresAide=Portal addresses show neither file name nor student number (e.g. .../espace/eleve/3f9c0a.../notes). The rule is added automatically in the .htaccess file of the root (no system file modified).
+AdressesPropresInstallees=Rule installed: clean addresses are active.
+AdressesPropresErreur=Cannot write the .htaccess file of the root. Add the rule below by hand, then click again.
+RegleServeur=Server rule
+RegleServeurAide=Online with a dedicated address (e.g. https://parents.ecole.mr): put this address in "Portal address" and send all addresses of the subdomain to router.php?route=... in the server setup.
+AdressesPropresServeur=The portal address is at the root of a domain or on another server: add the rule in that server setup, then click "Install / check the rule". Meanwhile, fallback addresses are used.
+AdressesPropresIgnorees=The rule is written but the server does not apply it (rewriting disabled or .htaccess files not allowed). Meanwhile, fallback addresses are used.
+RegleEmplacement=Location:
+
+# Staff space (Staff module)
+TypeEmploye=Employee
+AccesEspaceEmploye=Employee access to his/her space
+AccesImpossibleEmployeParti=Impossible: the employee has left the school.
+AccesImpossibleSansCompte=Impossible: the employee has no user account yet (save the record).
+AideEtatCoupeEmploye=Automatically cut: the employee has left. Access comes back by itself if rehired.
+AideEtatDesactiveEmploye=Disabled by the school (the account in the system is not affected).
+MotDePasseDolibarr=System password
+AideAccesGestion=Management, secretariat, accounting and administrators keep the back-office and their password: they open their space from the Staff > My space menu (or with their staff number and password).
+RubriquesEspace=What the employee sees in the space
+AideRubriquesEspace=Depends on the categories (several categories = all sections together).
+FicheAccesEmploye=Access to the staff space
+EtapeFiche4Employe=You then see your classes, timetable, roll call or grade entry depending on your job, your hours and your pay.
+MessageAccesEmploye=Access message (employees)
+TitreEspacePersonnel=Staff space
+AideConnexionPersonnel=Log in with your staff number and the password given by the school.
+AdresseEspacePersonnel=Staff space address
+AdresseEspacePersonnelAide=Address given to employees, different from the parents one. Empty = same folder as the parents space, with "personnel" (e.g. http://localhost/ecoles/personnel).

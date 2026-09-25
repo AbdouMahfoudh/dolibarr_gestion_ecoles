@@ -1,0 +1,145 @@
+/*
+ * Styles du module Notes (page de saisie des notes, aperçu des modèles).
+ * Couleurs semi-transparentes : lisibles avec le thème clair et le thème sombre de Dolibarr.
+ *
+ * Fichier : custom/notes/css/notes.css
+ */
+
+/* ---- Barre de navigation : classe › matière, trimestres ---- */
+.nt-toolbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;margin:0 0 14px;border:1px solid rgba(128,128,128,.25);border-radius:10px;background:rgba(66,92,199,.04)}
+.nt-crumbs{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.nt-crumbs .nt-sep{opacity:.45;font-size:1.2em}
+.nt-crumbs a.nt-home{text-decoration:none;font-weight:600}
+.nt-crumbs select{min-width:180px}
+.nt-seg{display:inline-flex;border:1px solid rgba(128,128,128,.35);border-radius:8px;overflow:hidden}
+.nt-seg a{padding:6px 14px;text-decoration:none;color:inherit;border-left:1px solid rgba(128,128,128,.25);white-space:nowrap}
+.nt-seg a:first-child{border-left:0}
+.nt-seg a.on{background:#425cc7;color:#fff !important;font-weight:600}
+.nt-seg a:not(.on):hover{background:rgba(66,92,199,.08)}
+
+/* ---- Filtres des cartes ---- */
+.nt-filterbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 12px}
+.nt-filterbar input[type=search]{min-width:240px;padding:6px 10px;border-radius:18px;border:1px solid rgba(128,128,128,.4)}
+.nt-chip{display:inline-block;padding:4px 12px;border-radius:14px;border:1px solid rgba(128,128,128,.35);cursor:pointer;user-select:none;font-size:.92em}
+.nt-chip.on{background:#425cc7;border-color:#425cc7;color:#fff}
+.nt-count{opacity:.65;font-size:.9em}
+
+/* ---- Cartes (classes, matières) ---- */
+.nt-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.nt-card{display:flex;flex-direction:column;gap:8px;padding:12px 14px;border:1px solid rgba(128,128,128,.25);border-radius:10px;text-decoration:none !important;color:inherit !important;transition:box-shadow .15s,border-color .15s;background:rgba(255,255,255,.02)}
+.nt-card:hover{border-color:#425cc7;box-shadow:0 2px 10px rgba(66,92,199,.18)}
+.nt-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.nt-card-title{font-weight:700;font-size:1.05em;line-height:1.25}
+.nt-card-sub{opacity:.7;font-size:.9em}
+.nt-card-meta{display:flex;flex-wrap:wrap;gap:6px}
+.nt-tag{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:10px;background:rgba(128,128,128,.12);font-size:.85em;white-space:nowrap}
+.nt-tag.nt-accent{background:rgba(66,92,199,.14);color:#2d45a8}
+.nt-tag.nt-warn{background:rgba(240,173,78,.2);color:#8a5a00}
+.nt-tag.nt-ok{background:rgba(46,158,79,.16);color:#1f7a3a}
+.nt-tag.nt-lock{background:rgba(120,120,120,.18)}
+.nt-card-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:auto}
+.nt-trims{display:flex;flex-direction:column;gap:4px}
+.nt-trim-row{display:grid;grid-template-columns:64px 1fr auto;align-items:center;gap:6px;font-size:.85em}
+
+/* ---- Barres de progression ---- */
+.nt-bar{height:7px;border-radius:4px;background:rgba(128,128,128,.18);overflow:hidden}
+.nt-bar > span{display:block;height:100%;border-radius:4px;background:#425cc7;transition:width .2s}
+.nt-bar.nt-bar-ok > span{background:#2e9e4f}
+.nt-bar.nt-bar-big{height:10px}
+
+/* ---- En-tête de la matière ---- */
+.nt-hero{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;margin:0 0 14px;border-radius:10px;border:1px solid rgba(128,128,128,.25);border-left:5px solid #425cc7}
+.nt-hero h2{margin:0 0 4px;font-size:1.35em}
+.nt-hero .nt-ar{font-size:1.05em;opacity:.75;padding:0 12px;font-weight:normal}
+
+/* ---- Évaluations (onglets) ---- */
+.nt-evals{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 12px}
+.nt-eval{display:flex;flex-direction:column;gap:4px;min-width:150px;padding:9px 12px;border-radius:9px;border:1px solid rgba(128,128,128,.3);text-decoration:none !important;color:inherit !important;position:relative}
+.nt-eval:hover{border-color:#425cc7}
+.nt-eval.on{border:2px solid #425cc7;background:rgba(66,92,199,.07)}
+.nt-eval.nt-compo{border-top:4px solid #8a4fc4}
+.nt-eval.nt-devoir{border-top:4px solid #1e78d2}
+.nt-eval-title{font-weight:700}
+.nt-eval-sub{font-size:.82em;opacity:.7}
+.nt-eval-add{justify-content:center;align-items:center;border-style:dashed;min-width:120px;font-weight:600;cursor:pointer;background:transparent}
+.nt-newform{display:none;flex-wrap:wrap;align-items:center;gap:8px;padding:10px 12px;margin:0 0 12px;border:1px dashed #425cc7;border-radius:9px;background:rgba(66,92,199,.04)}
+.nt-newform.open{display:flex}
+
+/* ---- Panneau de saisie : statistiques en direct ---- */
+.nt-panel{display:flex;flex-wrap:wrap;align-items:center;gap:18px;padding:10px 14px;margin:0 0 10px;border-radius:9px;background:rgba(255,196,0,.08);border:1px solid rgba(230,170,0,.35)}
+.nt-stat{display:flex;flex-direction:column;min-width:90px}
+.nt-stat b{font-size:1.25em}
+.nt-stat span{font-size:.8em;opacity:.7}
+.nt-stat-progress{flex:1;min-width:180px}
+.nt-evalprops{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.nt-keys{display:flex;flex-wrap:wrap;gap:10px;font-size:.85em;opacity:.8;margin:0 0 8px}
+.nt-keys kbd{display:inline-block;padding:1px 6px;border:1px solid rgba(128,128,128,.5);border-bottom-width:2px;border-radius:4px;font-family:inherit;font-size:.9em}
+
+/* ---- Grille ---- */
+.nt-gridwrap{max-height:70vh;overflow:auto;border:1px solid rgba(128,128,128,.25);border-radius:9px}
+.nt-grid{border-collapse:separate !important;border-spacing:0;width:100%}
+.nt-grid thead td,.nt-grid tr.liste_titre td,.nt-grid tr.liste_titre_filter td{position:sticky;z-index:2}
+.nt-grid tr.liste_titre_filter td{top:0}
+.nt-grid tr.liste_titre td{top:var(--nt-filter-h,38px)}
+.nt-grid td.nt-num{width:40px;text-align:center}
+.nt-grid td.nt-nom{min-width:220px}
+.nt-grid tr.oddeven:hover td{background:rgba(66,92,199,.05)}
+.nt-grid tr.oddeven.nt-row-focus td{background:rgba(66,92,199,.09) !important}
+.nt-grid td.nt-colcur{background:rgba(255,196,0,.09) !important}
+.nt-grid tr.liste_titre td.nt-colcur{background:rgba(255,196,0,.35) !important}
+.nt-num-badge{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:rgba(128,128,128,.15);font-weight:700;font-size:.9em}
+.nt-name{font-weight:600}
+.nt-name-ar{display:block;opacity:.7;font-size:.92em}
+.nt-grid tr.notes-ancien td{opacity:.55}
+
+/* Notes affichées : pastilles colorées selon la note */
+.nt-pill{display:inline-block;min-width:44px;padding:3px 8px;border-radius:12px;text-align:center;font-weight:600;font-variant-numeric:tabular-nums}
+.nt-pill.nt-bas{background:rgba(217,83,79,.16);color:#b3312c}
+.nt-pill.nt-moy{background:rgba(240,173,78,.2);color:#8a5a00}
+.nt-pill.nt-bon{background:rgba(46,158,79,.16);color:#1f7a3a}
+.nt-pill.nt-abs{background:rgba(217,83,79,.1);color:#b3312c;font-weight:500;font-style:italic}
+.nt-pill.nt-disp{background:rgba(128,128,128,.14);font-weight:500;font-style:italic}
+.nt-vide{opacity:.35}
+
+/* Champ de saisie */
+.nt-cell{display:inline-flex;align-items:center;gap:4px}
+.nt-in{width:78px !important;height:34px;text-align:center;font-size:1.15em !important;font-weight:600;border-radius:7px !important;border:2px solid rgba(128,128,128,.4) !important;font-variant-numeric:tabular-nums}
+.nt-in:focus{border-color:#425cc7 !important;box-shadow:0 0 0 3px rgba(66,92,199,.2);outline:0}
+.nt-in.nt-bas{border-color:#d9534f !important;color:#b3312c}
+.nt-in.nt-moy{border-color:#f0ad4e !important}
+.nt-in.nt-bon{border-color:#2e9e4f !important;color:#1f7a3a}
+.nt-in.nt-err,.nt-in.notes-err{border-color:#d9534f !important;background:rgba(217,83,79,.14) !important}
+.nt-in.nt-mod{box-shadow:0 0 0 3px rgba(255,196,0,.35)}
+.nt-in:disabled{opacity:.35}
+.nt-tog{padding:4px 7px;border-radius:6px;border:1px solid rgba(128,128,128,.4);background:transparent;cursor:pointer;font-size:.8em;line-height:1.2;color:inherit}
+.nt-tog.on.nt-tog-abs{background:#d9534f;border-color:#d9534f;color:#fff}
+.nt-tog.on.nt-tog-disp{background:#6c757d;border-color:#6c757d;color:#fff}
+.nt-errmsg{color:#b3312c;font-size:.8em;display:block}
+
+/* Colonne « moyenne du trimestre » */
+.nt-grid td.nt-moycol{background:rgba(66,92,199,.05)}
+
+/* Barre d'enregistrement fixe */
+.nt-savebar{position:sticky;bottom:0;z-index:5;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;margin-top:10px;border-radius:9px;background:var(--colorbackbody,#fff);border:1px solid rgba(128,128,128,.3);box-shadow:0 -3px 12px rgba(0,0,0,.08)}
+.nt-savebar .nt-dirty{font-weight:600;color:#8a5a00}
+.nt-savebar .nt-dirty.nt-clean{color:inherit;opacity:.6;font-weight:400}
+.nt-savebar .button-save{font-size:1.08em;padding:9px 22px !important}
+.nt-motif{display:flex;align-items:center;gap:8px;flex:1;min-width:280px}
+.nt-motif input{flex:1}
+
+/* ---- Aperçu des modèles de bulletin ---- */
+.nt-preview{display:grid;grid-template-columns:minmax(260px,340px) 1fr;gap:14px;align-items:start}
+.nt-preview-side{display:flex;flex-direction:column;gap:10px;padding:12px;border:1px solid rgba(128,128,128,.25);border-radius:10px}
+.nt-preview-frame{width:100%;height:82vh;border:1px solid rgba(128,128,128,.3);border-radius:10px;background:#525659}
+.nt-model-list{display:flex;flex-direction:column;gap:6px}
+.nt-model{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:8px 10px;border-radius:8px;border:1px solid rgba(128,128,128,.25);text-decoration:none !important;color:inherit !important}
+.nt-model.on{border:2px solid #425cc7;background:rgba(66,92,199,.07)}
+@media (max-width:900px){.nt-preview{grid-template-columns:1fr}.nt-preview-frame{height:70vh}}
+
+.nt-grid tr.liste_titre_filter td{background:var(--colorbackbody,#fff)}
+
+/* Aperçu : pastilles de couleur, essai de présentation */
+.nt-swatches{display:flex;flex-wrap:wrap;gap:8px}
+.nt-swatch{display:inline-block;width:28px;height:28px;border-radius:50%;border:2px solid rgba(128,128,128,.35);box-sizing:border-box}
+.nt-swatch.on{outline:3px solid #425cc7;outline-offset:2px}
+.nt-essai{display:flex;flex-direction:column;gap:6px;padding:8px 10px;border-radius:8px;background:rgba(255,196,0,.1);border:1px dashed rgba(230,170,0,.6)}
