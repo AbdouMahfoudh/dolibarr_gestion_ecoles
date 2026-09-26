@@ -206,6 +206,137 @@ function ecole_pdf_company()
 }
 
 /**
+ * Dossier des images des documents de l'école (signature, cachet, en-tête image, filigrane).
+ *
+ * @return string
+ */
+function ecole_pdf_image_dir()
+{
+	global $conf;
+	return $conf->mycompany->dir_output.'/ecole';
+}
+
+/**
+ * Images réglables dans la configuration : constante => [clé du libellé, clé de l'aide].
+ *
+ * @return array<string,array{0:string,1:string}>
+ */
+function ecole_pdf_images_config()
+{
+	return array(
+		'ECOLE_PDF_SIGNATURE' => array('PdfImageSignature', 'PdfImageSignatureAide'),
+		'ECOLE_PDF_CACHET' => array('PdfImageCachet', 'PdfImageCachetAide'),
+	);
+}
+
+/**
+ * Chemin d'une image réglée dans la configuration (constante = nom du fichier), '' si absente.
+ *
+ * @param  string $const Constante (ECOLE_PDF_SIGNATURE, ECOLE_PDF_CACHET...)
+ * @return string
+ */
+function ecole_pdf_image_path($const)
+{
+	$file = getDolGlobalString($const);
+	if ($file === '') {
+		return '';
+	}
+	$path = ecole_pdf_image_dir().'/'.basename($file);
+	return is_readable($path) ? $path : '';
+}
+
+/**
+ * Enregistre une image envoyée par formulaire dans le dossier des images de l'école
+ * et la règle dans la constante ; l'ancienne image est supprimée.
+ *
+ * @param  DoliDB $db    Handler base
+ * @param  string $input Nom du champ <input type="file">
+ * @param  string $const Constante
+ * @return string        '' si OK ou aucun fichier, sinon message d'erreur
+ */
+function ecole_pdf_image_upload($db, $input, $const)
+{
+	global $conf, $langs;
+	require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
+	require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+	require_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
+	if (empty($_FILES[$input]) || empty($_FILES[$input]['name']) || (int) $_FILES[$input]['error'] === UPLOAD_ERR_NO_FILE) {
+		return '';
+	}
+	if ((int) $_FILES[$input]['error'] !== UPLOAD_ERR_OK) {
+		return $langs->trans('ErrorFileNotUploaded');
+	}
+	$name = dol_sanitizeFileName($_FILES[$input]['name']);
+	if (!image_format_supported($name) || !preg_match('/\.(png|jpe?g)$/i', $name)) {
+		return $langs->trans('ErrorEcoleImagePngJpg');
+	}
+	$dir = ecole_pdf_image_dir();
+	if (dol_mkdir($dir) < 0) {
+		return $langs->trans('ErrorCanNotCreateDir', $dir);
+	}
+	$name = strtolower($const).'_'.dol_print_date(dol_now(), '%Y%m%d%H%M%S').'.'.strtolower(pathinfo($name, PATHINFO_EXTENSION));
+	$res = dol_move_uploaded_file($_FILES[$input]['tmp_name'], $dir.'/'.$name, 1, 0, $_FILES[$input]['error']);
+	if (!is_numeric($res) || $res <= 0) {
+		return $langs->trans(is_string($res) ? $res : 'ErrorFileNotUploaded');
+	}
+	ecole_pdf_image_delete($db, $const);
+	dolibarr_set_const($db, $const, $name, 'chaine', 0, '', $conf->entity);
+	return '';
+}
+
+/**
+ * Supprime l'image réglée dans une constante.
+ *
+ * @param  DoliDB $db    Handler base
+ * @param  string $const Constante
+ * @return void
+ */
+function ecole_pdf_image_delete($db, $const)
+{
+	global $conf;
+	require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
+	$old = ecole_pdf_image_path($const);
+	if ($old !== '') {
+		@unlink($old);
+	}
+	dolibarr_del_const($db, $const, $conf->entity);
+}
+
+/**
+ * Signature et cachet de la direction (images de la configuration), côte à côte sous la position courante,
+ * alignés à droite (à gauche en arabe). Ne dessine rien si aucune image n'est réglée.
+ *
+ * @param  EcolePDF $pdf     PDF
+ * @param  float    $hauteur Hauteur maximale des images (mm)
+ * @return void
+ */
+function ecole_pdf_signature_cachet($pdf, $hauteur = 28.0)
+{
+	$images = array_filter(array(ecole_pdf_image_path('ECOLE_PDF_SIGNATURE'), ecole_pdf_image_path('ECOLE_PDF_CACHET')));
+	if (empty($images)) {
+		return;
+	}
+	$m = $pdf->getMargins();
+	$y = $pdf->GetY() + 1;
+	if ($y + $hauteur > $pdf->getPageHeight() - 18) {
+		$pdf->AddPage();
+		$y = $pdf->GetY();
+	}
+	$largeurs = array();
+	foreach ($images as $i => $img) {
+		$size = @getimagesize($img);
+		$largeurs[$i] = ($size && $size[1] > 0) ? min(55.0, $hauteur * $size[0] / $size[1]) : $hauteur;
+	}
+	$total = array_sum($largeurs) + 4 * (count($largeurs) - 1);
+	$x = $pdf->isRtl ? $m['left'] : $pdf->getPageWidth() - $m['right'] - $total;
+	foreach ($images as $i => $img) {
+		$pdf->Image($img, $x, $y, $largeurs[$i], 0, '', '', '', true, 300);
+		$x += $largeurs[$i] + 4;
+	}
+	$pdf->SetY($y + $hauteur + 2);
+}
+
+/**
  * Styles d'en-tête disponibles : clé => fonction de rendu, marge haute (mm), libellé, description.
  * Pour ajouter un style : un fichier dans core/lib/pdf_headers/ + une entrée ici + ses traductions.
  *

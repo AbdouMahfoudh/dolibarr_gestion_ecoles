@@ -22,6 +22,22 @@ $registry = ecole_pdf_header_registry();
 /*
  * Actions
  */
+// Images des documents (signature et cachet de la direction...)
+$images = ecole_pdf_images_config();
+if ($action == 'delimage' && isset($images[GETPOST('const', 'aZ09')])) {
+	ecole_pdf_image_delete($db, GETPOST('const', 'aZ09'));
+	setEventMessages($langs->trans('SetupSaved'), null, 'mesgs');
+	header('Location: '.$_SERVER['PHP_SELF']);
+	exit;
+}
+if ($action == 'save') {
+	foreach ($images as $const => $def) {
+		$err = ecole_pdf_image_upload($db, 'img_'.strtolower($const), $const);
+		if ($err !== '') {
+			setEventMessages($langs->trans($def[0]).' : '.$err, null, 'errors');
+		}
+	}
+}
 if ($action == 'save') {
 	$jours = array();
 	foreach (array_keys(ecole_jours()) as $j) {
@@ -64,7 +80,7 @@ $linkback = '<a href="'.DOL_URL_ROOT.'/admin/modules.php?restore_lastsearch_valu
 print load_fiche_titre($langs->trans('MenuReglages'), $linkback, 'title_setup');
 
 $actifs = ecole_jours_ouvrables();
-print '<form method="POST" action="'.dol_escape_htmltag($_SERVER['PHP_SELF']).'">';
+print '<form method="POST" action="'.dol_escape_htmltag($_SERVER['PHP_SELF']).'" enctype="multipart/form-data">';
 print '<input type="hidden" name="token" value="'.newToken().'">';
 print '<input type="hidden" name="action" value="save">';
 
@@ -116,6 +132,25 @@ foreach (ecole_pdf_fonts() as $key => $def) {
 	print '<a href="'.$preview.'?pdf_font='.$key.'&lang=fr" target="_blank" rel="noopener">'.img_picto('', 'fa-file-pdf', 'class="pictofixedwidth"').$langs->trans('ApercuFr').'</a> &nbsp; ';
 	print '<a href="'.$preview.'?pdf_font='.$key.'&lang=ar" target="_blank" rel="noopener">'.img_picto('', 'fa-file-pdf', 'class="pictofixedwidth"').$langs->trans('ApercuAr').'</a>';
 	print '</td></tr>';
+}
+print '</table>';
+
+print '<br>';
+
+// Images des documents : signature et cachet de la direction
+print '<table class="noborder centpercent">';
+print '<tr class="liste_titre"><td colspan="3">'.$langs->trans('PdfImages').' <span class="opacitymedium small">— '.$langs->trans('PdfImagesAide').'</span></td></tr>';
+foreach ($images as $const => $def) {
+	$path = ecole_pdf_image_path($const);
+	print '<tr class="oddeven"><td class="titlefield"><b>'.$langs->trans($def[0]).'</b><br><span class="opacitymedium small">'.$langs->trans($def[1]).'</span></td>';
+	print '<td>';
+	if ($path !== '') {
+		print '<img src="'.DOL_URL_ROOT.'/viewimage.php?modulepart=mycompany&file='.urlencode('ecole/'.basename($path)).'" style="max-height:70px;max-width:220px;border:1px solid #ddd;background:#fff" alt=""> ';
+		print '<a class="reposition" href="'.$_SERVER['PHP_SELF'].'?action=delimage&const='.$const.'&token='.newToken().'">'.img_delete().'</a>';
+	} else {
+		print '<span class="opacitymedium">'.$langs->trans('AucuneImage').'</span>';
+	}
+	print '</td><td class="right"><input type="file" name="img_'.strtolower($const).'" accept="image/png,image/jpeg"></td></tr>';
 }
 print '</table>';
 

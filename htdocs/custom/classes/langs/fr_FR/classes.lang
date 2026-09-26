@@ -279,3 +279,13 @@ Enseignants=Enseignants
 MatiereAucuneClasse=Cette matière n'est attribuée à aucune classe.
 MatiereAucunEnseignant=Aucun enseignant n'a cette matière à l'emploi du temps.
 MatiereSourceEdt=Calculé automatiquement depuis l'emploi du temps des cours.
+
+# Images des documents (signature, cachet)
+PdfImages=Signature et cachet des documents
+PdfImagesAide=images PNG ou JPG (fond transparent conseillé), placées en bas des attestations
+PdfImageSignature=Signature de la direction
+PdfImageSignatureAide=Image de la signature du directeur
+PdfImageCachet=Cachet de l'école
+PdfImageCachetAide=Image du cachet (tampon) de l'établissement
+AucuneImage=Aucune image
+ErrorEcoleImagePngJpg=L'image doit être au format PNG ou JPG.

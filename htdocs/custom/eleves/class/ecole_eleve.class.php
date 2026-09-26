@@ -767,6 +767,20 @@ class EcoleEleve extends EcoleObject
 	}
 
 	/**
+	 * Inscription validée (l'élève est ou a été inscrit) : permet d'imprimer l'attestation d'inscription.
+	 *
+	 * @return bool
+	 */
+	public function inscriptionValidee()
+	{
+		$st = (int) $this->status;
+		if (in_array($st, self::statusOccupantPlace(), true)) {
+			return true;
+		}
+		return !empty($this->date_validation) && !in_array($st, array(self::STATUS_PREINSCRIT, self::STATUS_ATTENTE), true);
+	}
+
+	/**
 	 * Places de la classe : effectif maximum (100 par défaut quand la classe n'en fixe pas), places occupées
 	 * (inscrits + suspendus), places libres.
 	 *

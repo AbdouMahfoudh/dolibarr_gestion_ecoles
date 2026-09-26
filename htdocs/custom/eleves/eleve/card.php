@@ -41,6 +41,7 @@ $canstatut = $can('inscription', 'statut');
 $canpaielire = $can('paiement', 'lire');
 $canencaisser = $can('paiement', 'encaisser');
 $canclasse = $can('classe', 'changer');
+$canattestation = $can('eleve', 'attestation');
 $candocread = $can('document', 'lire');
 $canrespread = $can('responsable', 'lire');
 $canrespcreate = $can('responsable', 'creer');
@@ -667,6 +668,10 @@ if ($action == 'create') {
 	print dolGetButtonAction('', $langs->trans('ChangerStatut'), 'default', $page.'&action=statut&token='.newToken(), '', $canstatut);
 	if (!in_array($st, EcoleEleve::statusSortis(), true)) {
 		print dolGetButtonAction('', $langs->trans('ChangerClasse'), 'default', $page.'&action=classe&token='.newToken(), '', $canclasse);
+	}
+	// Attestation d'inscription : après la validation de l'inscription
+	if ($object->inscriptionValidee()) {
+		print dolGetButtonAction('', $langs->trans('AttestationInscription'), 'default', dol_buildpath('/eleves/eleve/attestation_inscription.php', 1).'?id='.((int) $object->id), '', $canattestation, array('attr' => array('target' => '_blank')));
 	}
 	if ($canpaielire) {
 		print dolGetButtonAction('', $langs->trans('Encaisser'), 'default', dol_buildpath('/eleves/eleve/paiements.php', 1).'?id='.((int) $object->id).'&action=encaissement&token='.newToken(), '', $canencaisser);

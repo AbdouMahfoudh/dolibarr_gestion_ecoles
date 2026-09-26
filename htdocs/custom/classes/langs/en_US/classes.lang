@@ -270,3 +270,13 @@ Enseignants=Teachers
 MatiereAucuneClasse=This subject is not assigned to any class.
 MatiereAucunEnseignant=No teacher has this subject in the timetable.
 MatiereSourceEdt=Computed automatically from the lessons timetable.
+
+# Document images (signature, stamp)
+PdfImages=Document signature and stamp
+PdfImagesAide=PNG or JPG images (transparent background recommended), placed at the bottom of certificates
+PdfImageSignature=Management signature
+PdfImageSignatureAide=Image of the principal's signature
+PdfImageCachet=School stamp
+PdfImageCachetAide=Image of the school stamp
+AucuneImage=No image
+ErrorEcoleImagePngJpg=The image must be a PNG or JPG file.

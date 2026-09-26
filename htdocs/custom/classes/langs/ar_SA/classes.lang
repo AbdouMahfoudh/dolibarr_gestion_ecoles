@@ -283,3 +283,13 @@ Enseignants=الأساتذة
 MatiereAucuneClasse=هذه المادة غير مسندة إلى أي قسم.
 MatiereAucunEnseignant=لا يوجد أستاذ لديه هذه المادة في جدول الحصص.
 MatiereSourceEdt=يُحسب تلقائيا من جدول الحصص.
+
+# صور الوثائق (التوقيع، الختم)
+PdfImages=توقيع وختم الوثائق
+PdfImagesAide=صور PNG أو JPG (يُنصح بخلفية شفافة)، توضع أسفل الشهادات
+PdfImageSignature=توقيع الإدارة
+PdfImageSignatureAide=صورة توقيع المدير
+PdfImageCachet=ختم المدرسة
+PdfImageCachetAide=صورة ختم المؤسسة
+AucuneImage=لا توجد صورة
+ErrorEcoleImagePngJpg=يجب أن تكون الصورة بصيغة PNG أو JPG.

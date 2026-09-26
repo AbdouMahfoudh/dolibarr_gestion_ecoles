@@ -607,3 +607,13 @@ RetirerExoneration=Remove exemption
 ConfirmRetirerExoneration=Remove the exemption? Registration fees will be due again.
 ExonerationEnregistree=Exemption saved.
 ExonerationRetiree=Exemption removed.
+
+# Registration certificate
+AttestationInscription=Registration certificate
+AttestationInscriptionTexteM=The management of %s certifies that the student %s is duly registered in class %s for the school year %s.
+AttestationInscriptionTexteF=The management of %s certifies that the student %s is duly registered in class %s for the school year %s.
+AttestationInscriptionFin=This certificate is issued for all legal purposes.
+AttestationInscriptionNonValidee=This student's registration has not been validated yet.
+DateLieuNaissance=Date and place of birth
+NeLeA=%s in %s
+FraisPayesSur=%s paid out of %s

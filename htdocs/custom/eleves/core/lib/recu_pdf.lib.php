@@ -299,6 +299,103 @@ function eleves_pdf_attestation($db, $eleve)
 	$ville = is_object($mysoc) ? ecole_pdf_text($mysoc->town) : '';
 	$pdf->Cell($w, 6, ecole_pdf_trans($outputlangs, 'FaitLe', $ville, dol_print_date($today, 'day', 'tzuser', $outputlangs)), 0, 1, $rtl ? 'L' : 'R');
 	$pdf->Cell($w, 6, ecole_pdf_trans($outputlangs, 'LaDirection'), 0, 1, $rtl ? 'L' : 'R');
+	ecole_pdf_signature_cachet($pdf);
 
 	$pdf->Output(ecole_export_filename('attestation_'.$eleve->ref, 'pdf'), 'I');
+}
+
+/**
+ * Attestation d'inscription d'un élève (remise au parent après la validation de l'inscription) :
+ * identité, matricule, classe, année scolaire, date d'inscription, frais d'inscription payés ou exonérés,
+ * « Fait à ..., le ... », signature et cachet de la direction.
+ *
+ * @param  DoliDB     $db    Handler base
+ * @param  EcoleEleve $eleve Élève
+ * @return void
+ */
+function eleves_pdf_attestation_inscription($db, $eleve)
+{
+	global $langs, $conf, $mysoc;
+	list($pdf, $outputlangs, $rtl) = ecole_pdf_create($langs, 'P', 'A4');
+	$outputlangs->loadLangs(array('eleves@eleves', 'classes@classes'));
+	$today = dol_now();
+	$annee = eleves_annee_label(eleves_annee_scolaire());
+	ecole_pdf_start($pdf, ecole_pdf_trans($outputlangs, 'AttestationInscription'), $annee, $eleve->ref);
+	$m = $pdf->getMargins();
+	$w = $pdf->getPageWidth() - $m['left'] - $m['right'];
+	$align = $rtl ? 'R' : 'L';
+	$pdf->SetTextColor(40, 40, 50);
+	$pdf->Ln(6);
+
+	// Texte d'attestation
+	$classe = ecole_pdf_text(ecole_row_label($db, 'ecole_classe', $eleve->fk_classe));
+	$ecole = is_object($mysoc) ? ecole_pdf_text($mysoc->name) : '';
+	$feminin = ($eleve->sexe === 'F');
+	ecole_pdf_font($pdf, '', 11, $rtl);
+	$texte = ecole_pdf_trans($outputlangs, $feminin ? 'AttestationInscriptionTexteF' : 'AttestationInscriptionTexteM', eleves_pdf_ltr($ecole, $rtl),
+		eleves_pdf_ltr(ecole_pdf_text(ecole_label($eleve)), $rtl), eleves_pdf_ltr($classe, $rtl), eleves_pdf_ltr($annee, $rtl));
+	$pdf->MultiCell($w, 7, $texte, 0, $align, false, 1, $m['left']);
+	$pdf->Ln(4);
+
+	// Fiche d'identité et de scolarité
+	$naissance = '';
+	if (!empty($eleve->date_naissance)) {
+		$naissance = dol_print_date($eleve->date_naissance, 'day', 'tzuser', $outputlangs);
+		if (!empty($eleve->lieu_naissance)) {
+			$naissance = ecole_pdf_trans($outputlangs, 'NeLeA', $naissance, ecole_pdf_text($eleve->lieu_naissance));
+		}
+	}
+	$lignes = array(
+		array(ecole_pdf_trans($outputlangs, 'NomComplet'), ecole_pdf_text(ecole_label($eleve))),
+		array(ecole_pdf_trans($outputlangs, 'Matricule'), $eleve->ref),
+		array(ecole_pdf_trans($outputlangs, 'DateLieuNaissance'), $naissance),
+		array(ecole_pdf_trans($outputlangs, 'Classe'), $classe),
+		array(ecole_pdf_trans($outputlangs, 'AnneeScolaire'), $annee),
+		array(ecole_pdf_trans($outputlangs, 'DateInscription'), $eleve->date_inscription ? dol_print_date($eleve->date_inscription, 'day', 'tzuser', $outputlangs) : ''),
+	);
+
+	// Frais d'inscription : payés, exonérés ou restant dus
+	$s = eleves_situation($db, $eleve);
+	$ins = $s['inscription'];
+	if (!empty($ins['exonere']) && $ins['du'] <= 0) {
+		$frais = ecole_pdf_trans($outputlangs, 'EtatExonere');
+		$motif = eleves_motif_exo_label($db, $eleve->fk_motif_exo);
+		$frais .= $motif !== '' ? ' ('.ecole_pdf_text($motif).')' : '';
+	} elseif ($ins['brut'] <= 0) {
+		$frais = ecole_pdf_trans($outputlangs, 'AucunFraisInscription');
+	} else {
+		$frais = ecole_pdf_trans($outputlangs, 'FraisPayesSur', price($ins['paye'], 0, $outputlangs, 1, -1, -1, $conf->currency), price($ins['du'], 0, $outputlangs, 1, -1, -1, $conf->currency));
+		if (!empty($ins['exonere'])) {
+			$frais .= ' — '.ecole_pdf_trans($outputlangs, 'ExonereDe', price($ins['exonere'], 0, $outputlangs, 1, -1, -1, $conf->currency));
+		}
+	}
+	$lignes[] = array(ecole_pdf_trans($outputlangs, 'FraisInscription'), $frais);
+
+	$lw = $w * 0.34;
+	$vw = $w - $lw;
+	foreach ($lignes as $l) {
+		if ($l[1] === '') {
+			continue;
+		}
+		$y = $pdf->GetY();
+		ecole_pdf_font($pdf, 'B', 10, $rtl);
+		$pdf->SetFillColor(242, 244, 248);
+		$xl = $rtl ? $m['left'] + $vw : $m['left'];
+		$xv = $rtl ? $m['left'] : $m['left'] + $lw;
+		$pdf->MultiCell($lw, 8, $l[0], 'B', $align, true, 0, $xl, $y, true, 0, false, true, 8, 'M');
+		ecole_pdf_font($pdf, '', 10, $rtl);
+		$pdf->MultiCell($vw, 8, eleves_pdf_ltr((string) $l[1], $rtl), 'B', $align, false, 1, $xv, $y, true, 0, false, true, 8, 'M');
+	}
+	$pdf->Ln(6);
+
+	ecole_pdf_font($pdf, '', 10, $rtl);
+	$pdf->MultiCell($w, 6, ecole_pdf_trans($outputlangs, 'AttestationInscriptionFin'), 0, $align, false, 1, $m['left']);
+	$pdf->Ln(10);
+	$ville = is_object($mysoc) ? ecole_pdf_text($mysoc->town) : '';
+	$pdf->Cell($w, 6, ecole_pdf_trans($outputlangs, 'FaitLe', $ville, dol_print_date($today, 'day', 'tzuser', $outputlangs)), 0, 1, $rtl ? 'L' : 'R');
+	ecole_pdf_font($pdf, 'B', 10, $rtl);
+	$pdf->Cell($w, 6, ecole_pdf_trans($outputlangs, 'LaDirection'), 0, 1, $rtl ? 'L' : 'R');
+	ecole_pdf_signature_cachet($pdf);
+
+	$pdf->Output(ecole_export_filename('attestation_inscription_'.$eleve->ref, 'pdf'), 'I');
 }

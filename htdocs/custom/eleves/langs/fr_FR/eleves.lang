@@ -607,3 +607,13 @@ RetirerExoneration=Retirer l'exonération
 ConfirmRetirerExoneration=Retirer l'exonération ? Les frais d'inscription redeviennent dus.
 ExonerationEnregistree=Exonération enregistrée.
 ExonerationRetiree=Exonération retirée.
+
+# Attestation d'inscription
+AttestationInscription=Attestation d'inscription
+AttestationInscriptionTexteM=La direction de l'établissement %s atteste que l'élève %s est régulièrement inscrit en classe de %s pour l'année scolaire %s.
+AttestationInscriptionTexteF=La direction de l'établissement %s atteste que l'élève %s est régulièrement inscrite en classe de %s pour l'année scolaire %s.
+AttestationInscriptionFin=En foi de quoi, la présente attestation est délivrée pour servir et valoir ce que de droit.
+AttestationInscriptionNonValidee=L'inscription de cet élève n'est pas encore validée.
+DateLieuNaissance=Date et lieu de naissance
+NeLeA=%s à %s
+FraisPayesSur=%s payés sur %s

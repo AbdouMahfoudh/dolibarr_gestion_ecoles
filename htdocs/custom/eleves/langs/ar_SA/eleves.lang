@@ -607,3 +607,13 @@ RetirerExoneration=إلغاء الإعفاء
 ConfirmRetirerExoneration=إلغاء الإعفاء ؟ تصبح رسوم التسجيل مستحقة من جديد.
 ExonerationEnregistree=تم تسجيل الإعفاء.
 ExonerationRetiree=تم إلغاء الإعفاء.
+
+# شهادة التسجيل
+AttestationInscription=شهادة تسجيل
+AttestationInscriptionTexteM=تشهد إدارة مؤسسة %s بأن التلميذ %s مسجل بصفة نظامية في قسم %s للسنة الدراسية %s.
+AttestationInscriptionTexteF=تشهد إدارة مؤسسة %s بأن التلميذة %s مسجلة بصفة نظامية في قسم %s للسنة الدراسية %s.
+AttestationInscriptionFin=سُلّمت هذه الشهادة للإدلاء بها عند الحاجة.
+AttestationInscriptionNonValidee=لم يتم بعد تأكيد تسجيل هذا التلميذ.
+DateLieuNaissance=تاريخ ومكان الازدياد
+NeLeA=%s في %s
+FraisPayesSur=%s مدفوعة من أصل %s

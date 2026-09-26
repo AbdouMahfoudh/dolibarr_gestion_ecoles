@@ -88,6 +88,7 @@ class modEleves extends DolibarrModules
 			array(104703, 'Élèves : modifier le dossier', 'eleve', 'modifier'),
 			array(104704, 'Élèves : supprimer un élève', 'eleve', 'supprimer'),
 			array(104705, 'Élèves : exporter les listes (PDF / Excel)', 'eleve', 'exporter'),
+			array(104706, 'Élèves : imprimer l\'attestation d\'inscription', 'eleve', 'attestation'),
 			array(104711, 'Responsables : voir', 'responsable', 'lire'),
 			array(104712, 'Responsables : créer', 'responsable', 'creer'),
 			array(104713, 'Responsables : modifier', 'responsable', 'modifier'),
