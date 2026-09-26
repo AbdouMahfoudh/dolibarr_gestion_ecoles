@@ -1,6 +1,6 @@
 # Tâches programmées — lundi 2026-09-28
 
-Réponses aux QCM du 2026-09-25/26. Rien n'est codé : attendre le feu vert.
+Réponses aux QCM du 2026-09-25/26. **Les 8 tâches sont codées (2026-09-26)**, voir « État » en fin de fichier.
 
 ## 1. Permissions dédiées de l'espace
 - Attribution par MODÈLE selon la catégorie, puis ajustable compte par compte par la direction (onglet « Accès espace »).
@@ -52,3 +52,29 @@ Enseignants qui l'enseignent + classes avec nombre de cours par semaine, calcul�
 - Choix MANUEL (pas de détection automatique des réinscrits).
 - Droit Dolibarr dédié « Exonérer les frais d'inscription ».
 - Inscription validable sans paiement si exonération totale ; visible dans l'onglet Paiements et les rapports, pas compté comme impayé.
+
+## État (2026-09-26) — tout est codé, à tester sur la vraie base
+
+À faire une fois après la mise à jour du code : **désactiver puis réactiver** les modules Classes, Élèves, Notes,
+Personnel et Espace (Accueil > Configuration > Modules). Cela crée les nouvelles tables et colonnes
+(`llx_ecole_pdf_modele`, `llx_ecole_motif_exoneration`, `llx_ecole_espace_perm`, colonnes `exo_*` des élèves)
+et installe les données par défaut. Sans cette réactivation, la fiche élève ne peut plus être enregistrée
+(colonnes d'exonération absentes).
+
+| # | Tâche | Où la voir |
+|---|---|---|
+| 1 | Permissions de l'espace | Fiche responsable / élève / employé > onglet « Accès espace » > Permissions de l'espace |
+| 2 | Une épreuve par matière | Emploi du temps des examens d'une classe (message si doublon) |
+| 3 | Noms dans une seule langue | Partout (listes, bannières, appel, notes, espaces, exports) |
+| 4 | Fiche matière | Classes > Matières > une matière (classes, cours et heures / semaine, enseignants) |
+| 5 | Installation par défaut | À l'activation des modules ; fichier SQL autonome : `donnees_par_defaut.sql` |
+| 6 | Modèles de PDF, en-tête image, filigrane, portrait | Classes > Configuration > Modèles de PDF ; Classes > Configuration > Réglages |
+| 7 | Attestation d'inscription | Fiche élève (inscription validée) > bouton « Attestation d'inscription » |
+| 8 | Exonération des frais d'inscription | Fiche élève > onglet Paiements > « Exonérer des frais d'inscription » |
+
+Nouveaux droits Dolibarr à donner : Élèves > « imprimer l'attestation d'inscription » (104706) et
+« exonérer un élève des frais d'inscription » (104777).
+
+Points à vérifier par l'école : horaires des créneaux S1-S4 (08:00-10:00, 10:15-12:15, 15:00-17:00, 17:00-19:00),
+liste des 21 matières et 22 classes (liste standard, pas celle de la base de test), montants des autres frais (0).
+Le mode « bilingue » des modèles de bulletin de notes est gardé (choix explicite de l'école dans le modèle).
