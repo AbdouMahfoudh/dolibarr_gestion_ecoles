@@ -46,11 +46,11 @@ $canPerso = isModEnabled('personnel') && $user->hasRight('personnel', 'employe',
 $canSal = isModEnabled('salaires') && $user->hasRight('salaires', 'bulletin', 'lire');
 $canClasses = isModEnabled('classes') && $user->hasRight('classes', 'lire');
 
-llxHeader('', $langs->trans('AccueilEcole').' - '.(is_object($mysoc) ? $mysoc->name : ''), '', '', 0, 0, '', '', '', 'mod-accueil page-index');
+llxHeader('', $langs->trans('AccueilEcole').' - '.ecole_nom_etablissement(), '', '', 0, 0, '', '', '', 'mod-accueil page-index');
 
 $bonjour = $langs->trans((int) dol_print_date(dol_now(), '%H', 'tzuser') < 13 ? 'AccueilBonjour' : 'AccueilBonsoir', trim($user->firstname) !== '' ? $user->firstname : $user->login);
 $annee = function_exists('eleves_annee_label') ? $langs->trans('AccueilAnneeScolaire', eleves_annee_label(eleves_annee_scolaire())) : '';
-print ecole_dash_hero(is_object($mysoc) ? $mysoc->name : $langs->trans('AccueilEcole'), dol_escape_htmltag($bonjour).($annee !== '' ? ' · '.dol_escape_htmltag($annee) : ''));
+print ecole_dash_hero(ecole_nom_etablissement() !== '' ? ecole_nom_etablissement() : $langs->trans('AccueilEcole'), dol_escape_htmltag($bonjour).($annee !== '' ? ' · '.dol_escape_htmltag($annee) : ''));
 
 // Données
 $el = $canEleves ? ecole_dash_eleves() : null;

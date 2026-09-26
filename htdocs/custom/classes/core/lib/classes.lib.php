@@ -681,6 +681,26 @@ function pdf_modele_extra_view($object)
 }
 
 /**
+ * Nom de l'établissement dans la langue voulue : en arabe, le nom arabe réglé dans Établissement > Réglages
+ * (ECOLE_NOM_AR) s'il existe ; sinon (ou en français) le nom de la société Dolibarr.
+ *
+ * @param  bool|null $arabe true = arabe, false = français, null = langue de l'interface
+ * @return string
+ */
+function ecole_nom_etablissement($arabe = null)
+{
+	global $mysoc, $langs;
+	if ($arabe === null) {
+		$arabe = is_object($langs) && strpos((string) $langs->defaultlang, 'ar') === 0;
+	}
+	$ar = trim(getDolGlobalString('ECOLE_NOM_AR'));
+	if ($arabe && $ar !== '') {
+		return $ar;
+	}
+	return is_object($mysoc) ? (string) $mysoc->name : '';
+}
+
+/**
  * Nom complet d'un utilisateur Dolibarr.
  *
  * @param  DoliDB $db Handler base

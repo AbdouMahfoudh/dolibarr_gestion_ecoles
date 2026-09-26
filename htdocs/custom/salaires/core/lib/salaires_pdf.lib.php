@@ -65,7 +65,7 @@ function salaires_pdf_create($langs)
 	$pdf = new SalairesPDF('P', 'mm', 'A4', true, 'UTF-8', false);
 	$pdf->outputlangs = $outputlangs;
 	$pdf->isRtl = $rtl;
-	$pdf->company = ecole_pdf_company();
+	$pdf->company = ecole_pdf_company($rtl);
 	$pdf->headerStyle = ecole_pdf_header_style();
 	$fonts = ecole_pdf_fonts();
 	$pdf->fontFamily = ecole_pdf_font_choice($rtl);

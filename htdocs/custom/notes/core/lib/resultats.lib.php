@@ -395,7 +395,8 @@ function notes_whatsapp_difficulte($l, $periode)
 		'{moyenne}' => notes_moy($l['res']['moyenne']),
 		'{matieres}' => empty($l['faibles']) ? '-' : implode(', ', $l['faibles']),
 		'{matieres_ar}' => empty($l['faibles_ar']) ? '-' : implode('، ', $l['faibles_ar']),
-		'{ecole}' => is_object($mysoc) ? (string) $mysoc->name : '',
+		'{ecole}' => ecole_nom_etablissement(false),
+		'{ecole_ar}' => ecole_nom_etablissement(true),
 	));
 	return 'https://wa.me/'.$num.'?text='.rawurlencode($msg);
 }

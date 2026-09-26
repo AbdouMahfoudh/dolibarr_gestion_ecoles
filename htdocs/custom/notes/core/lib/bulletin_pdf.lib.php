@@ -299,7 +299,11 @@ function notes_pdf_doc($mode, $style, $couleur = 'bleu', $entete = null)
 	$pdf->sansLienTcpdf();
 	$pdf->outputlangs = $main;
 	$pdf->isRtl = $d->rtl;
-	$pdf->company = ecole_pdf_company();
+	$pdf->company = ecole_pdf_company($d->mode === 'ar');
+	// Bulletin bilingue : nom français et nom arabe de l'établissement (s'il est réglé)
+	if ($d->mode === 'mixte' && ecole_nom_etablissement(true) !== ecole_nom_etablissement(false)) {
+		$pdf->company['name'] = ecole_pdf_text(ecole_nom_etablissement(false).' / '.ecole_nom_etablissement(true));
+	}
 	if ($style === 'moderne' || $style === 'sobre') {
 		$couleur = ($style === 'moderne') ? 'vert' : 'aucune';
 		$style = 'classique';

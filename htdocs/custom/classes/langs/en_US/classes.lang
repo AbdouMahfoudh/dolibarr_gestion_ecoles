@@ -476,3 +476,10 @@ EdEvEmploye=New employee: %s
 EdEvPaiePayee=Salary paid %s — %s
 EdEvPaieValidee=Payslip validated %s — %s
 EdHier=Yesterday
+
+# School name in Arabic
+NomEtablissement=School name
+NomEtablissementAide=the Arabic name is used in documents, PDF headers, dashboards and portals in Arabic; empty = French name
+NomEtablissementFr=Name in French
+NomEtablissementAr=Name in Arabic
+ModifierDansSociete=Edit (Setup > Company)

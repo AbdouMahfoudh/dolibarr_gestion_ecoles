@@ -287,7 +287,7 @@ function ecole_export_excel($ds, $lang)
 	require_once DOL_DOCUMENT_ROOT.'/includes/Psr/autoloader.php';
 	require_once PHPEXCELNEW_PATH.'Spreadsheet.php';
 
-	$company = ecole_pdf_company();
+	$company = ecole_pdf_company($lang === 'ar');
 	$spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
 	$spreadsheet->getProperties()->setCreator($company['name'])->setTitle($ds['title']);
 	$sheet = $spreadsheet->getActiveSheet();

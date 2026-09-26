@@ -193,9 +193,10 @@ function ecole_pdf_font($pdf, $style, $size, $rtl = false)
 /**
  * Informations de l'établissement (société Dolibarr) pour l'en-tête.
  *
+ * @param  bool $rtl Document en arabe (nom arabe de l'établissement s'il est réglé)
  * @return array{name:string,address:string,phone:string,email:string,logo_path:string}
  */
-function ecole_pdf_company()
+function ecole_pdf_company($rtl = false)
 {
 	global $mysoc, $conf;
 
@@ -203,7 +204,7 @@ function ecole_pdf_company()
 	if (!is_object($mysoc)) {
 		return $ctx;
 	}
-	$ctx['name'] = ecole_pdf_text($mysoc->name);
+	$ctx['name'] = ecole_pdf_text(function_exists('ecole_nom_etablissement') ? ecole_nom_etablissement((bool) $rtl) : $mysoc->name); // nom arabe dans un document en arabe
 	$parts = array_filter(array(ecole_pdf_text($mysoc->address), trim(ecole_pdf_text($mysoc->zip).' '.ecole_pdf_text($mysoc->town))));
 	$ctx['address'] = implode(' — ', $parts);
 	$ctx['phone'] = ecole_pdf_text($mysoc->phone);
@@ -897,7 +898,7 @@ function ecole_pdf_create($langs, $orientation = 'P', $format = 'A4', $langue = 
 	$pdf = new EcolePDF($orientation, 'mm', $format, true, 'UTF-8', false);
 	$pdf->outputlangs = $outputlangs;
 	$pdf->isRtl = $rtl;
-	$pdf->company = ecole_pdf_company();
+	$pdf->company = ecole_pdf_company($rtl);
 	$pdf->headerStyle = ecole_pdf_header_style();
 	$fonts = ecole_pdf_fonts();
 	$pdf->fontFamily = ecole_pdf_font_choice($rtl);

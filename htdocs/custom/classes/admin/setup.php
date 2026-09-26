@@ -55,6 +55,8 @@ if ($action == 'save') {
 		setEventMessages($langs->trans('ErrorEcoleBadValue', $langs->transnoentities('EffectifMaxDefaut')), null, 'errors');
 	} else {
 		dolibarr_set_const($db, 'ECOLE_EFFECTIF_MAX_DEFAUT', $effmax, 'chaine', 0, '', $conf->entity);
+		// Nom de l'établissement en arabe (le nom en français est celui de la société Dolibarr)
+		dolibarr_set_const($db, 'ECOLE_NOM_AR', dol_trunc(trim(GETPOST('ecole_nom_ar', 'alphanohtml')), 250, 'right', 'UTF-8', 1), 'chaine', 0, '', $conf->entity);
 		dolibarr_set_const($db, 'ECOLE_JOURS_OUVRABLES', implode(',', $jours), 'chaine', 0, '', $conf->entity);
 		if (isset($registry[$style])) {
 			dolibarr_set_const($db, 'ECOLE_PDF_HEADER_STYLE', $style, 'chaine', 0, '', $conf->entity);
@@ -97,6 +99,13 @@ $actifs = ecole_jours_ouvrables();
 print '<form method="POST" action="'.dol_escape_htmltag($_SERVER['PHP_SELF']).'" enctype="multipart/form-data">';
 print '<input type="hidden" name="token" value="'.newToken().'">';
 print '<input type="hidden" name="action" value="save">';
+
+// Nom de l'établissement : français (société Dolibarr) et arabe (réglé ici)
+print '<table class="noborder centpercent">';
+print '<tr class="liste_titre"><td colspan="2">'.$langs->trans('NomEtablissement').' <span class="opacitymedium small">— '.$langs->trans('NomEtablissementAide').'</span></td></tr>';
+print '<tr class="oddeven"><td class="titlefield">'.$langs->trans('NomEtablissementFr').'</td><td><b>'.dol_escape_htmltag(is_object($mysoc) ? $mysoc->name : '').'</b> &nbsp; <a href="'.DOL_URL_ROOT.'/admin/company.php" class="small">'.$langs->trans('ModifierDansSociete').'</a></td></tr>';
+print '<tr class="oddeven"><td>'.$langs->trans('NomEtablissementAr').'</td><td><input type="text" dir="rtl" class="flat minwidth400" name="ecole_nom_ar" maxlength="250" value="'.dol_escape_htmltag(getDolGlobalString('ECOLE_NOM_AR')).'" placeholder="مثال : مدرسة النجاح الخاصة"></td></tr>';
+print '</table><br>';
 
 // Effectif maximum des classes
 dol_include_once('/classes/class/ecole_classe.class.php');

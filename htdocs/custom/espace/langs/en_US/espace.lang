@@ -154,7 +154,7 @@ AccesDesElevesAide=Unchecked: existing students accesses are disabled and no new
 AdresseEspaceAide=Address printed on the access sheet and sent by WhatsApp. Empty = address of this server.
 MessageAccesParent=WhatsApp message: guardian access
 MessageAccesEleve=WhatsApp message: student access
-AideMessageAcces=Variables: {nom} {nom_ar} (name of the guardian or student), {identifiant}, {motdepasse} (temporary password), {lien} (portal address), {ecole}. Emptying the text restores the default message.
+AideMessageAcces=Variables: {nom} {nom_ar} (name of the guardian or student), {identifiant}, {motdepasse} (temporary password), {lien} (portal address), {ecole}, {ecole_ar}. Emptying the text restores the default message.
 
 # Clean addresses
 PageIntrouvable=Page not found

@@ -273,7 +273,7 @@ function espace_header($title, $acces = null, $back = '')
 	print '<html lang="'.($rtl ? 'ar' : 'fr').'" dir="'.($rtl ? 'rtl' : 'ltr').'"><head>';
 	print '<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">';
 	print '<meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#1f5f8b">';
-	print '<title>'.dol_escape_htmltag($title.' - '.$mysoc->name).'</title>';
+	print '<title>'.dol_escape_htmltag($title.' - '.ecole_nom_etablissement()).'</title>';
 	print '<link rel="stylesheet" href="'.dol_escape_htmltag(espace_page_url('assets/fa/css/all.min.css')).'">';
 	print '<link rel="stylesheet" href="'.dol_escape_htmltag(espace_page_url('assets/emploi.css')).'">';
 	print '<link rel="stylesheet" href="'.dol_escape_htmltag(espace_page_url('assets/portail.css', array('v' => 6))).'">';
@@ -288,7 +288,7 @@ function espace_header($title, $acces = null, $back = '')
 	if ($logo !== '') {
 		print '<img src="'.dol_escape_htmltag($logo).'" alt="">';
 	}
-	print '<span dir="auto">'.dol_escape_htmltag($mysoc->name).'</span></a>';
+	print '<span dir="auto">'.dol_escape_htmltag(ecole_nom_etablissement()).'</span></a>';
 	print '<div class="es-top-actions">'.espace_langue_switch();
 	if ($acces) {
 		print '<a class="es-icon" href="'.dol_escape_htmltag(espace_page_url('mot-de-passe')).'" title="'.dol_escape_htmltag($langs->trans('ChangerMotDePasse')).'"><i class="fas fa-key"></i></a>';
@@ -312,7 +312,7 @@ function espace_footer()
 		.'var k="es-tabs-"+i,s=null;try{s=sessionStorage.getItem(k);}catch(e){}if(s!==null){n.scrollLeft=parseFloat(s);}'
 		.'var r=a.getBoundingClientRect(),q=n.getBoundingClientRect();if(r.left<q.left||r.right>q.right){n.scrollLeft+=(r.left+r.width/2)-(q.left+q.width/2);}'
 		.'n.addEventListener("click",function(ev){try{sessionStorage.setItem(this.k,this.n.scrollLeft);}catch(e){}}.bind({k:k,n:n}));}})();</script>';
-	print '<footer class="es-foot">'.dol_escape_htmltag($mysoc->name).($mysoc->phone ? ' · <a href="tel:'.dol_escape_htmltag(preg_replace('/[^0-9+]/', '', $mysoc->phone)).'">'.dol_escape_htmltag($mysoc->phone).'</a>' : '').'</footer>';
+	print '<footer class="es-foot">'.dol_escape_htmltag(ecole_nom_etablissement()).($mysoc->phone ? ' · <a href="tel:'.dol_escape_htmltag(preg_replace('/[^0-9+]/', '', $mysoc->phone)).'">'.dol_escape_htmltag($mysoc->phone).'</a>' : '').'</footer>';
 	print '</body></html>';
 }
 

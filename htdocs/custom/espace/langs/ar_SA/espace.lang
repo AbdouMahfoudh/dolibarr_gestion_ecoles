@@ -154,7 +154,7 @@ AccesDesElevesAide=عند إلغاء التحديد : تُعطَّل حسابا�
 AdresseEspaceAide=الرابط المطبوع على بطاقة الدخول والمرسل عبر واتساب. فارغ = رابط هذا الخادم.
 MessageAccesParent=رسالة واتساب : حساب ولي الأمر
 MessageAccesEleve=رسالة واتساب : حساب التلميذ
-AideMessageAcces=المتغيرات : {nom} {nom_ar} (اسم ولي الأمر أو التلميذ)، {identifiant}، {motdepasse} (كلمة المرور المؤقتة)، {lien} (رابط الفضاء)، {ecole}. إفراغ النص يعيد الرسالة الافتراضية.
+AideMessageAcces=المتغيرات : {nom} {nom_ar} (اسم ولي الأمر أو التلميذ)، {identifiant}، {motdepasse} (كلمة المرور المؤقتة)، {lien} (رابط الفضاء)، {ecole}، {ecole_ar}. إفراغ النص يعيد الرسالة الافتراضية.
 
 # Adresses propres
 PageIntrouvable=الصفحة غير موجودة

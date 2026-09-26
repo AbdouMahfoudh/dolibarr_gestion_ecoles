@@ -485,3 +485,10 @@ EdEvEmploye=Nouvel employé : %s
 EdEvPaiePayee=Salaire payé %s — %s
 EdEvPaieValidee=Bulletin de paie validé %s — %s
 EdHier=Hier
+
+# Nom de l'établissement en arabe
+NomEtablissement=Nom de l'établissement
+NomEtablissementAide=le nom arabe est utilisé dans les documents, les en-têtes PDF, les tableaux de bord et les espaces en arabe ; vide = nom français
+NomEtablissementFr=Nom en français
+NomEtablissementAr=Nom en arabe
+ModifierDansSociete=Modifier (Configuration > Société)

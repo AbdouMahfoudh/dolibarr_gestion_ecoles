@@ -236,7 +236,7 @@ function eleves_pdf_recu_ticket($db, $recu)
 	$outputlangs = ecole_pdf_use_lang($lang);
 	$outputlangs->loadLangs(array('eleves@eleves', 'bills'));
 	$rtl = ($lang === 'ar');
-	$company = ecole_pdf_company();
+	$company = ecole_pdf_company($rtl);
 
 	$h = 95 + 6 * count($recu->lignes);
 	$pdf = new EcolePDF('P', 'mm', array(80, $h), true, 'UTF-8', false);
@@ -368,7 +368,7 @@ function eleves_pdf_attestation_inscription($db, $eleve)
 
 	// Texte d'attestation
 	$classe = ecole_pdf_text(ecole_row_label($db, 'ecole_classe', $eleve->fk_classe));
-	$ecole = is_object($mysoc) ? ecole_pdf_text($mysoc->name) : '';
+	$ecole = ecole_pdf_text($pdf->company['name']);
 	$feminin = ($eleve->sexe === 'F');
 	ecole_pdf_font($pdf, '', 11, $rtl);
 	$texte = ecole_pdf_trans($outputlangs, $feminin ? 'AttestationInscriptionTexteF' : 'AttestationInscriptionTexteM', eleves_pdf_ltr($ecole, $rtl),
@@ -522,7 +522,7 @@ function eleves_pdf_engagement($db, $eleve)
 		'[matricule]' => $eleve->ref,
 		'[classe]' => $classe,
 		'[annee]' => $annee,
-		'[ecole]' => is_object($mysoc) ? ecole_pdf_text($mysoc->name) : '',
+		'[ecole]' => ecole_pdf_text($pdf->company['name']),
 		'[frais_inscription]' => (!empty($s['inscription']['exonere']) && $s['inscription']['du'] <= 0) ? ecole_pdf_trans($outputlangs, 'EtatExonere') : $prix($s['inscription']['du']),
 		'[mensualite]' => $prix($mensualite),
 		'[jour_limite]' => (string) min(28, max(1, getDolGlobalInt('ELEVES_JOUR_LIMITE', 10))),

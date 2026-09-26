@@ -951,12 +951,12 @@ function espace_htaccess_installer($db, &$message = '')
 function espace_message_defaut($type)
 {
 	if ($type === ESPACE_EMPLOYE) {
-		return "السلام عليكم،\nتم إنشاء حسابكم في فضاء موظفي {ecole}.\nالرابط : {lien}\nاسم المستخدم : {identifiant}\nكلمة المرور المؤقتة : {motdepasse}\nيجب تغييرها عند أول دخول.\n\nBonjour,\nVotre accès à l'espace du personnel de {ecole} est prêt.\nAdresse : {lien}\nIdentifiant : {identifiant}\nMot de passe provisoire : {motdepasse}\nVous devrez le changer à la première connexion.";
+		return "السلام عليكم،\nتم إنشاء حسابكم في فضاء موظفي {ecole_ar}.\nالرابط : {lien}\nاسم المستخدم : {identifiant}\nكلمة المرور المؤقتة : {motdepasse}\nيجب تغييرها عند أول دخول.\n\nBonjour,\nVotre accès à l'espace du personnel de {ecole} est prêt.\nAdresse : {lien}\nIdentifiant : {identifiant}\nMot de passe provisoire : {motdepasse}\nVous devrez le changer à la première connexion.";
 	}
 	if ($type === ESPACE_ELEVE) {
-		return "السلام عليكم،\nتم إنشاء حساب التلميذ(ة) {nom_ar} في فضاء التلاميذ الخاص بـ {ecole}.\nالرابط : {lien}\nاسم المستخدم : {identifiant}\nكلمة المرور المؤقتة : {motdepasse}\nيجب تغييرها عند أول دخول.\n\nBonjour,\nL'accès de {nom} à l'espace élèves de {ecole} est prêt.\nAdresse : {lien}\nIdentifiant : {identifiant}\nMot de passe provisoire : {motdepasse}\nIl faudra le changer à la première connexion.";
+		return "السلام عليكم،\nتم إنشاء حساب التلميذ(ة) {nom_ar} في فضاء التلاميذ الخاص بـ {ecole_ar}.\nالرابط : {lien}\nاسم المستخدم : {identifiant}\nكلمة المرور المؤقتة : {motdepasse}\nيجب تغييرها عند أول دخول.\n\nBonjour,\nL'accès de {nom} à l'espace élèves de {ecole} est prêt.\nAdresse : {lien}\nIdentifiant : {identifiant}\nMot de passe provisoire : {motdepasse}\nIl faudra le changer à la première connexion.";
 	}
-	return "السلام عليكم،\nتم إنشاء حسابكم في فضاء الأولياء الخاص بـ {ecole}.\nالرابط : {lien}\nاسم المستخدم : {identifiant}\nكلمة المرور المؤقتة : {motdepasse}\nيجب تغييرها عند أول دخول.\n\nBonjour,\nVotre accès à l'espace parents de {ecole} est prêt.\nAdresse : {lien}\nIdentifiant : {identifiant}\nMot de passe provisoire : {motdepasse}\nVous devrez le changer à la première connexion.";
+	return "السلام عليكم،\nتم إنشاء حسابكم في فضاء الأولياء الخاص بـ {ecole_ar}.\nالرابط : {lien}\nاسم المستخدم : {identifiant}\nكلمة المرور المؤقتة : {motdepasse}\nيجب تغييرها عند أول دخول.\n\nBonjour,\nVotre accès à l'espace parents de {ecole} est prêt.\nAdresse : {lien}\nIdentifiant : {identifiant}\nMot de passe provisoire : {motdepasse}\nVous devrez le changer à la première connexion.";
 }
 
 /**
@@ -991,7 +991,8 @@ function espace_message($type, $cible, $mdp)
 		'{identifiant}' => (string) $cible->ref,
 		'{motdepasse}' => $mdp,
 		'{lien}' => espace_url($type),
-		'{ecole}' => (string) $mysoc->name,
+		'{ecole}' => ecole_nom_etablissement(false),
+		'{ecole_ar}' => ecole_nom_etablissement(true),
 	));
 }
 

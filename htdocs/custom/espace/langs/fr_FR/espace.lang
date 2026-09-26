@@ -154,7 +154,7 @@ AccesDesElevesAide=Décoché : les accès des élèves existants sont désactiv�
 AdresseEspaceAide=Adresse imprimée sur la fiche d'accès et envoyée par WhatsApp. Vide = adresse de ce serveur.
 MessageAccesParent=Message WhatsApp : accès d'un responsable
 MessageAccesEleve=Message WhatsApp : accès d'un élève
-AideMessageAcces=Variables : {nom} {nom_ar} (nom du responsable ou de l'élève), {identifiant}, {motdepasse} (mot de passe provisoire), {lien} (adresse de l'espace), {ecole}. Vider le texte remet le message par défaut.
+AideMessageAcces=Variables : {nom} {nom_ar} (nom du responsable ou de l'élève), {identifiant}, {motdepasse} (mot de passe provisoire), {lien} (adresse de l'espace), {ecole}, {ecole_ar}. Vider le texte remet le message par défaut.
 
 # Adresses propres
 PageIntrouvable=Page introuvable

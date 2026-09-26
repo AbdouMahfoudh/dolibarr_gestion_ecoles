@@ -489,3 +489,10 @@ EdEvEmploye=موظف جديد : %s
 EdEvPaiePayee=راتب مدفوع %s — %s
 EdEvPaieValidee=كشف راتب مصادق %s — %s
 EdHier=أمس
+
+# اسم المؤسسة بالعربية
+NomEtablissement=اسم المؤسسة
+NomEtablissementAide=يُستعمل الاسم العربي في الوثائق وترويسات PDF ولوحات القيادة والفضاءات بالعربية ؛ فارغ = الاسم بالفرنسية
+NomEtablissementFr=الاسم بالفرنسية
+NomEtablissementAr=الاسم بالعربية
+ModifierDansSociete=تعديل (الإعدادات > الشركة)

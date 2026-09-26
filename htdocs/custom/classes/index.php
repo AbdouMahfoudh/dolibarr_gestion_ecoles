@@ -19,7 +19,7 @@ $p = MAIN_DB_PREFIX;
 $base = dol_buildpath('/classes/', 1);
 
 llxHeader('', $langs->trans('TableauDeBordEtablissement'), '', '', 0, 0, '', '', '', 'mod-classes page-index');
-print ecole_dash_hero($langs->trans('TableauDeBordEtablissement'), dol_escape_htmltag(is_object($mysoc) ? $mysoc->name : ''));
+print ecole_dash_hero($langs->trans('TableauDeBordEtablissement'), dol_escape_htmltag(ecole_nom_etablissement()));
 
 // Chiffres clés
 $nbClasses = (int) ecole_dash_val("SELECT COUNT(*) FROM ".$p."ecole_classe WHERE entity IN (".getEntity('ecole_classe').") AND status = 1");

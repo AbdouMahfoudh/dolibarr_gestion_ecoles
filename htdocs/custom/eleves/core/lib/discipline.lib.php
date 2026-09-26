@@ -814,7 +814,8 @@ function eleves_whatsapp_url($db, $fk_eleve, $date, $type = ELEVES_ABSENT)
 		'{date}' => dol_print_date(eleves_date_ts($date), 'day'),
 		'{creneaux}' => implode(', ', $fr),
 		'{creneaux_ar}' => implode('، ', $ar),
-		'{ecole}' => is_object($mysoc) ? (string) $mysoc->name : '',
+		'{ecole}' => ecole_nom_etablissement(false),
+		'{ecole_ar}' => ecole_nom_etablissement(true),
 	));
 	return 'https://wa.me/'.$num.'?text='.rawurlencode($msg);
 }
