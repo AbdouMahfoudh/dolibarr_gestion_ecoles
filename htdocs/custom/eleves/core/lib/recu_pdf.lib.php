@@ -353,6 +353,7 @@ function eleves_pdf_attestation_inscription($db, $eleve)
 		array(ecole_pdf_trans($outputlangs, 'Matricule'), $eleve->ref),
 		array(ecole_pdf_trans($outputlangs, 'DateLieuNaissance'), $naissance),
 		array(ecole_pdf_trans($outputlangs, 'Classe'), $classe),
+		array(ecole_pdf_trans($outputlangs, 'NumeroAppel'), $eleve->numero_appel ? (string) (int) $eleve->numero_appel : ''),
 		array(ecole_pdf_trans($outputlangs, 'AnneeScolaire'), $annee),
 		array(ecole_pdf_trans($outputlangs, 'DateInscription'), $eleve->date_inscription ? dol_print_date($eleve->date_inscription, 'day', 'tzuser', $outputlangs) : ''),
 	);
@@ -374,22 +375,53 @@ function eleves_pdf_attestation_inscription($db, $eleve)
 	}
 	$lignes[] = array(ecole_pdf_trans($outputlangs, 'FraisInscription'), $frais);
 
+	// Responsable (parent) : nom, lien de parenté, matricule, téléphones, e-mail, adresse
+	$resp = array();
+	if ((int) $eleve->fk_responsable > 0) {
+		dol_include_once('/eleves/class/ecole_responsable.class.php');
+		$r = new EcoleResponsable($db);
+		if ($r->fetch((int) $eleve->fk_responsable) > 0) {
+			$liens = $r->fields['lien_parente']['arrayofkeyval'];
+			$resp = array(
+				array(ecole_pdf_trans($outputlangs, 'NomComplet'), ecole_pdf_text(ecole_label($r))),
+				array(ecole_pdf_trans($outputlangs, 'LienParente'), (!empty($r->lien_parente) && isset($liens[$r->lien_parente])) ? ecole_pdf_trans($outputlangs, $liens[$r->lien_parente]) : ''),
+				array(ecole_pdf_trans($outputlangs, 'Matricule'), (string) $r->ref),
+				array(ecole_pdf_trans($outputlangs, 'Telephone'), (string) $r->telephone),
+				array(ecole_pdf_trans($outputlangs, 'WhatsApp'), (string) $r->whatsapp),
+				array(ecole_pdf_trans($outputlangs, 'Email'), (string) $r->email),
+				array(ecole_pdf_trans($outputlangs, 'Adresse'), ecole_pdf_text(str_replace(array("\r", "\n"), ' ', (string) $r->adresse))),
+			);
+		}
+	}
+
 	$lw = $w * 0.34;
 	$vw = $w - $lw;
-	foreach ($lignes as $l) {
-		if ($l[1] === '') {
-			continue;
+	$bloc = function ($titre, $lignes) use ($pdf, $m, $w, $lw, $vw, $rtl, $align) {
+		ecole_pdf_font($pdf, 'B', 11, $rtl);
+		$c = $pdf->tableColor;
+		$pdf->SetTextColor($c[0], $c[1], $c[2]);
+		$pdf->Cell($w, 7, $titre, 0, 1, $align);
+		$pdf->SetTextColor(40, 40, 50);
+		foreach ($lignes as $l) {
+			if ($l[1] === '') {
+				continue;
+			}
+			$y = $pdf->GetY();
+			ecole_pdf_font($pdf, 'B', 10, $rtl);
+			$pdf->SetFillColor(242, 244, 248);
+			$xl = $rtl ? $m['left'] + $vw : $m['left'];
+			$xv = $rtl ? $m['left'] : $m['left'] + $lw;
+			$pdf->MultiCell($lw, 7.5, $l[0], 'B', $align, true, 0, $xl, $y, true, 0, false, true, 7.5, 'M');
+			ecole_pdf_font($pdf, '', 10, $rtl);
+			$pdf->MultiCell($vw, 7.5, eleves_pdf_ltr((string) $l[1], $rtl), 'B', $align, false, 1, $xv, $y, true, 0, false, true, 7.5, 'M');
 		}
-		$y = $pdf->GetY();
-		ecole_pdf_font($pdf, 'B', 10, $rtl);
-		$pdf->SetFillColor(242, 244, 248);
-		$xl = $rtl ? $m['left'] + $vw : $m['left'];
-		$xv = $rtl ? $m['left'] : $m['left'] + $lw;
-		$pdf->MultiCell($lw, 8, $l[0], 'B', $align, true, 0, $xl, $y, true, 0, false, true, 8, 'M');
-		ecole_pdf_font($pdf, '', 10, $rtl);
-		$pdf->MultiCell($vw, 8, eleves_pdf_ltr((string) $l[1], $rtl), 'B', $align, false, 1, $xv, $y, true, 0, false, true, 8, 'M');
+		$pdf->Ln(4);
+	};
+	$bloc(ecole_pdf_trans($outputlangs, 'Eleve'), $lignes);
+	if (!empty($resp)) {
+		$bloc(ecole_pdf_trans($outputlangs, 'Responsable'), $resp);
 	}
-	$pdf->Ln(6);
+	$pdf->Ln(2);
 
 	ecole_pdf_font($pdf, '', 10, $rtl);
 	$pdf->MultiCell($w, 6, ecole_pdf_trans($outputlangs, 'AttestationInscriptionFin'), 0, $align, false, 1, $m['left']);
