@@ -40,6 +40,8 @@ function eleves_crud_config($name)
 			'perm_export' => 'eleve.exporter', 'perm_read' => 'config.gerer', 'perm_write' => 'config.gerer', 'perm_delete' => 'config.gerer'),
 		'motif_absence' => array('module' => 'eleves', 'dir' => 'motif_absence', 'class' => 'EcoleMotifAbsence', 'title' => 'MotifsAbsence', 'ficheTitle' => 'MotifAbsence', 'newLabel' => 'NouveauMotif',
 			'perm_export' => 'eleve.exporter', 'perm_read' => 'config.gerer', 'perm_write' => 'config.gerer', 'perm_delete' => 'config.gerer'),
+		'motif_exoneration' => array('module' => 'eleves', 'dir' => 'motif_exoneration', 'class' => 'EcoleMotifExoneration', 'title' => 'MotifsExoneration', 'ficheTitle' => 'MotifExoneration', 'newLabel' => 'NouveauMotif',
+			'perm_export' => 'eleve.exporter', 'perm_read' => 'config.gerer', 'perm_write' => 'config.gerer', 'perm_delete' => 'config.gerer'),
 		'sanction_type' => array('module' => 'eleves', 'dir' => 'sanction_type', 'class' => 'EcoleSanctionType', 'title' => 'TypesSanction', 'ficheTitle' => 'TypeSanction', 'newLabel' => 'NouveauTypeSanction',
 			'perm_export' => 'eleve.exporter', 'perm_read' => 'config.gerer', 'perm_write' => 'config.gerer', 'perm_delete' => 'config.gerer'),
 	);
@@ -540,6 +542,7 @@ function eleves_admin_prepare_head()
 	$head[] = array(dol_buildpath('/eleves/admin/setup.php', 1), $langs->trans('MenuReglages'), 'setup');
 	$head[] = array(dol_buildpath('/eleves/admin/paiements.php', 1), $langs->trans('MenuConfigPaiements'), 'paiements');
 	$head[] = array(dol_buildpath('/eleves/frais_type/list.php', 1), $langs->trans('MenuAutresFrais'), 'frais');
+	$head[] = array(dol_buildpath('/eleves/motif_exoneration/list.php', 1), $langs->trans('MenuMotifsExoneration'), 'exoneration');
 	$head[] = array(dol_buildpath('/eleves/document_type/list.php', 1), $langs->trans('MenuPiecesAFournir'), 'pieces');
 	$head[] = array(dol_buildpath('/eleves/admin/discipline.php', 1), $langs->trans('MenuConfigDiscipline'), 'discipline');
 	$head[] = array(dol_buildpath('/eleves/motif_absence/list.php', 1), $langs->trans('MenuMotifsAbsence'), 'motifs');

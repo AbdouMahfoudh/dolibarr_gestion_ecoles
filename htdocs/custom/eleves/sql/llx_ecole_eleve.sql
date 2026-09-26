@@ -32,6 +32,12 @@ CREATE TABLE llx_ecole_eleve
 	reduction_valeur         DOUBLE(24,8),
 	reduction_motif          VARCHAR(255),
 	frais_inscription_du     DOUBLE(24,8),         -- vide = frais d'inscription de la classe
+	exo_type                 VARCHAR(8),           -- exonération des frais inscription : montant | pourcent (vide = aucune)
+	exo_valeur               DOUBLE(24,8),
+	fk_motif_exo             INTEGER,              -- llx_ecole_motif_exoneration
+	exo_note                 VARCHAR(255),
+	exo_fk_user              INTEGER,              -- qui a accordé l exonération
+	exo_date                 DATETIME,             -- quand
 	frais_inscription_payes  SMALLINT NOT NULL DEFAULT 0,  -- ancienne case de l'étape 1 (remplacée par les paiements)
 	date_frais_inscription   DATE,
 	fk_user_frais            INTEGER,

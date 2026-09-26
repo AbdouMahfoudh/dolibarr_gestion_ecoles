@@ -523,7 +523,9 @@ if ($action == 'create') {
 	$situation = $canpaielire ? eleve_situation_cache($db, $object) : null;
 	if ($situation) {
 		$ins = $situation['inscription'];
-		if ($ins['du'] <= 0) {
+		if ($ins['du'] <= 0 && !empty($ins['exonere'])) {
+			$frais = '<span class="badge badge-status4">'.$langs->trans('EtatExonere').'</span> <span class="opacitymedium">'.dol_escape_htmltag(eleves_motif_exo_label($db, $object->fk_motif_exo)).'</span>';
+		} elseif ($ins['du'] <= 0) {
 			$frais = '<span class="opacitymedium">'.$langs->trans('AucunFraisInscription').'</span>';
 		} elseif ($ins['reste'] <= 0) {
 			$frais = img_picto('', 'tick', 'class="pictofixedwidth"').$langs->trans('PayeTotalement', eleves_montant($ins['paye']));

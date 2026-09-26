@@ -11,6 +11,7 @@ require '../init.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/html.form.class.php';
 dol_include_once('/eleves/class/ecole_eleve.class.php');
 dol_include_once('/eleves/class/ecole_recu.class.php');
+dol_include_once('/eleves/class/ecole_motif_exoneration.class.php');
 dol_include_once('/eleves/core/lib/paiements.lib.php');
 
 $langs->loadLangs(array('eleves@eleves', 'classes@classes', 'bills', 'other'));
@@ -25,6 +26,7 @@ if (!$user->hasRight('eleves', 'eleve', 'lire') || !$user->hasRight('eleves', 'p
 $canencaisser = $user->hasRight('eleves', 'paiement', 'encaisser');
 $canreduction = $user->hasRight('eleves', 'paiement', 'reduction');
 $canrecu = $user->hasRight('eleves', 'paiement', 'recu');
+$canexonerer = $user->hasRight('eleves', 'paiement', 'exonerer');
 
 $object = new EcoleEleve($db);
 if ($id <= 0 || $object->fetch($id) <= 0) {
@@ -61,6 +63,25 @@ if ($action == 'setreglages' && $canreduction) {
 	setEventMessages($object->error, $object->errors, 'errors');
 	$action = 'reglages';
 }
+if ($action == 'setexo' && $canexonerer) {
+	$type = GETPOST('exo_type', 'aZ09');
+	$res = $object->setExoneration($user, $type === '-1' ? '' : (string) $type, GETPOST('exo_valeur', 'alpha'), GETPOSTINT('fk_motif_exo'), GETPOST('exo_note', 'alphanohtml'));
+	if ($res > 0) {
+		setEventMessages($langs->trans('ExonerationEnregistree'), null, 'mesgs');
+		header('Location: '.$self);
+		exit;
+	}
+	setEventMessages($object->error, $object->errors, 'errors');
+	$action = 'exoneration';
+}
+if ($action == 'confirm_delexo' && GETPOST('confirm', 'alpha') == 'yes' && $canexonerer) {
+	if ($object->setExoneration($user, '', null, 0) > 0) {
+		setEventMessages($langs->trans('ExonerationRetiree'), null, 'mesgs');
+		header('Location: '.$self);
+		exit;
+	}
+	setEventMessages($object->error, $object->errors, 'errors');
+}
 
 /*
  * Affichage
@@ -88,7 +109,7 @@ print '<table class="noborder centpercent">';
 print '<tr class="liste_titre"><td>'.$langs->trans('Libelle').'</td><td class="right">'.$langs->trans('MontantDu').'</td><td class="right">'.$langs->trans('DejaPaye').'</td><td class="right">'.$langs->trans('Reste').'</td><td class="center">'.$langs->trans('Etat').'</td></tr>';
 $ins = $s['inscription'];
 print '<tr class="oddeven"><td>'.$langs->trans('FraisInscription').'</td><td class="right">'.price($ins['du']).'</td><td class="right">'.price($ins['paye']).'</td><td class="right">'.price($ins['reste']).'</td>';
-print '<td class="center">'.($ins['du'] <= 0 ? eleves_etat_badge('gratuit') : ($ins['reste'] <= 0 ? eleves_etat_badge('paye') : ($ins['paye'] > 0 ? eleves_etat_badge('partiel', $ins['reste']) : eleves_etat_badge($s['actif'] ? 'impaye' : 'a_venir')))).'</td></tr>';
+print '<td class="center">'.eleves_etat_badge(eleves_etat_inscription($s), $ins['reste']).'</td></tr>';
 foreach ($s['mois'] as $m) {
 	print '<tr class="oddeven"><td>'.$langs->trans('MensualiteDe', $m['label']).($m['dans'] ? '' : ' <span class="opacitymedium">('.$langs->trans('HorsPeriode').')</span>').'</td>';
 	print '<td class="right">'.price($m['du']).'</td><td class="right">'.price($m['paye']).'</td><td class="right">'.price($m['reste']).'</td>';
@@ -157,6 +178,46 @@ if ($editreglages) {
 	print '</form>';
 }
 
+// Exonération des frais d'inscription (réinscription, bourse...)
+if ($action == 'delexo' && $canexonerer) {
+	print $form->formconfirm($self, $langs->trans('RetirerExoneration'), $langs->trans('ConfirmRetirerExoneration'), 'confirm_delexo', '', 0, 1);
+}
+$editexo = ($action == 'exoneration' && $canexonerer);
+print '<br>';
+if ($editexo) {
+	print '<form method="POST" action="'.dol_escape_htmltag($self).'">';
+	print '<input type="hidden" name="token" value="'.newToken().'"><input type="hidden" name="action" value="setexo">';
+}
+print '<table class="noborder centpercent">';
+print '<tr class="liste_titre"><td colspan="2">'.img_picto('', 'fa-hand-holding-heart', 'class="pictofixedwidth"').$langs->trans('ExonerationFraisInscription').'</td></tr>';
+if ($editexo) {
+	$exotype = GETPOSTISSET('exo_type') ? GETPOST('exo_type', 'aZ09') : ($object->exo_type ? $object->exo_type : 'pourcent');
+	$exoval = GETPOSTISSET('exo_valeur') ? GETPOST('exo_valeur', 'alpha') : ($object->exo_valeur !== null && $object->exo_valeur !== '' ? price2num($object->exo_valeur) : '100');
+	print '<tr class="oddeven"><td class="titlefield">'.$langs->trans('TypeExoneration').'</td><td>'.$form->selectarray('exo_type', array('pourcent' => $langs->trans('ReductionPourcent'), 'montant' => $langs->trans('ReductionMontant')), $exotype, 0, 0, 0, '', 0, 0, 0, '', 'minwidth200').'</td></tr>';
+	print '<tr class="oddeven"><td>'.$langs->trans('ValeurExoneration').'</td><td><input type="text" class="flat maxwidth100 right" name="exo_valeur" value="'.dol_escape_htmltag($exoval).'"> <span class="opacitymedium">'.$langs->trans('ValeurExonerationAide', $conf->currency).'</span></td></tr>';
+	print '<tr class="oddeven"><td class="fieldrequired">'.$langs->trans('MotifExoneration').'</td><td>'.$form->selectarray('fk_motif_exo', EcoleMotifExoneration::choix($db, (int) $object->fk_motif_exo), GETPOSTISSET('fk_motif_exo') ? GETPOSTINT('fk_motif_exo') : (int) $object->fk_motif_exo, 1, 0, 0, '', 0, 0, 0, '', 'minwidth200');
+	if ($user->hasRight('eleves', 'config', 'gerer')) {
+		print ' <a href="'.dol_buildpath('/eleves/motif_exoneration/list.php', 1).'" target="_blank" title="'.dol_escape_htmltag($langs->trans('MenuMotifsExoneration')).'">'.img_picto('', 'setup').'</a>';
+	}
+	print '</td></tr>';
+	print '<tr class="oddeven"><td>'.$langs->trans('NoteExoneration').'</td><td><input type="text" class="flat minwidth300" name="exo_note" maxlength="255" value="'.dol_escape_htmltag(GETPOSTISSET('exo_note') ? GETPOST('exo_note', 'alphanohtml') : (string) $object->exo_note).'"></td></tr>';
+	print '<tr><td colspan="2" class="center">'.$form->buttonsSaveCancel('Save', 'Cancel', array(), 1).'</td></tr>';
+} elseif (empty($object->exo_type)) {
+	print '<tr class="oddeven"><td colspan="2"><span class="opacitymedium">'.$langs->trans('AucuneExoneration').'</span></td></tr>';
+} else {
+	$exo = ($object->exo_type === 'pourcent') ? price2num($object->exo_valeur).' %' : eleves_montant($object->exo_valeur);
+	if (!empty($ins['exonere'])) {
+		$exo .= ' <span class="opacitymedium">('.$langs->trans('ExonereDe', eleves_montant($ins['exonere'])).')</span>';
+	}
+	print '<tr class="oddeven"><td class="titlefield">'.$langs->trans('Exoneration').'</td><td>'.$exo.'</td></tr>';
+	print '<tr class="oddeven"><td>'.$langs->trans('MotifExoneration').'</td><td>'.dol_escape_htmltag(eleves_motif_exo_label($db, $object->fk_motif_exo)).($object->exo_note ? ' <span class="opacitymedium">— '.dol_escape_htmltag((string) $object->exo_note).'</span>' : '').'</td></tr>';
+	print '<tr class="oddeven"><td>'.$langs->trans('ExonerePar').'</td><td>'.dol_escape_htmltag(ecole_user_label($db, $object->exo_fk_user)).($object->exo_date ? ' <span class="opacitymedium">'.dol_print_date($object->exo_date, 'dayhour').'</span>' : '').'</td></tr>';
+}
+print '</table>';
+if ($editexo) {
+	print '</form>';
+}
+
 print '</div></div><div class="clearboth"></div>';
 
 // Historique des paiements
@@ -190,6 +251,10 @@ print dol_get_fiche_end();
 print '<div class="tabsAction">';
 print dolGetButtonAction('', $langs->trans('Encaisser'), 'default', $self.'&action=encaissement&token='.newToken(), '', $canencaisser);
 print dolGetButtonAction('', $langs->trans('ModifierReglagesPaiement'), 'default', $self.'&action=reglages&token='.newToken(), '', $canreduction);
+print dolGetButtonAction('', $langs->trans(empty($object->exo_type) ? 'Exonerer' : 'ModifierExoneration'), 'default', $self.'&action=exoneration&token='.newToken(), '', $canexonerer);
+if (!empty($object->exo_type)) {
+	print dolGetButtonAction('', $langs->trans('RetirerExoneration'), 'delete', $self.'&action=delexo&token='.newToken(), '', $canexonerer);
+}
 print dolGetButtonAction('', $langs->trans('AttestationSolde'), 'default', dol_buildpath('/eleves/eleve/attestation.php', 1).'?id='.((int) $object->id), '', $canrecu, array('attr' => array('target' => '_blank')));
 print '</div>';
 

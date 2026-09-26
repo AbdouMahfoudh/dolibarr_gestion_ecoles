@@ -80,6 +80,12 @@ class EcoleEleve extends EcoleObject
 	public $reduction_valeur;
 	public $reduction_motif;
 	public $frais_inscription_du;
+	public $exo_type;
+	public $exo_valeur;
+	public $fk_motif_exo;
+	public $exo_note;
+	public $exo_fk_user;
+	public $exo_date;
 	public $date_statut;
 	public $date_validation;
 	public $fk_user_valid;
@@ -128,6 +134,14 @@ class EcoleEleve extends EcoleObject
 		'reduction_valeur' => array('type' => 'double(24,8)', 'label' => 'ValeurReduction', 'enabled' => '1', 'visible' => 0, 'notnull' => 0, 'position' => 63, 'bloc' => 'finance'),
 		'reduction_motif' => array('type' => 'varchar(255)', 'label' => 'MotifReduction', 'enabled' => '1', 'visible' => 0, 'notnull' => 0, 'position' => 64, 'bloc' => 'finance'),
 		'frais_inscription_du' => array('type' => 'double(24,8)', 'label' => 'FraisInscriptionDu', 'enabled' => '1', 'visible' => 0, 'notnull' => 0, 'position' => 65, 'bloc' => 'finance'),
+		// Exonération des frais d'inscription (droit « exonérer »)
+		'exo_type' => array('type' => 'varchar(8)', 'label' => 'TypeExoneration', 'enabled' => '1', 'visible' => 0, 'notnull' => 0, 'position' => 66, 'bloc' => 'finance',
+			'arrayofkeyval' => array('montant' => 'ReductionMontant', 'pourcent' => 'ReductionPourcent')),
+		'exo_valeur' => array('type' => 'double(24,8)', 'label' => 'ValeurExoneration', 'enabled' => '1', 'visible' => 0, 'notnull' => 0, 'position' => 67, 'bloc' => 'finance'),
+		'fk_motif_exo' => array('type' => 'integer', 'label' => 'MotifExoneration', 'enabled' => '1', 'visible' => 0, 'notnull' => 0, 'position' => 68, 'bloc' => 'finance'),
+		'exo_note' => array('type' => 'varchar(255)', 'label' => 'NoteExoneration', 'enabled' => '1', 'visible' => 0, 'notnull' => 0, 'position' => 69, 'bloc' => 'finance'),
+		'exo_fk_user' => array('type' => 'integer', 'label' => 'ExonerePar', 'enabled' => '1', 'visible' => 0, 'notnull' => 0, 'position' => 70, 'bloc' => 'finance'),
+		'exo_date' => array('type' => 'datetime', 'label' => 'DateExoneration', 'enabled' => '1', 'visible' => 0, 'notnull' => 0, 'position' => 71, 'bloc' => 'finance'),
 		'date_statut' => array('type' => 'date', 'label' => 'DateStatut', 'enabled' => '1', 'visible' => 0, 'notnull' => 0, 'position' => 64, 'bloc' => 'technique'),
 		'date_validation' => array('type' => 'datetime', 'label' => 'DateValidationInscription', 'enabled' => '1', 'visible' => 0, 'notnull' => 0, 'position' => 65, 'bloc' => 'technique'),
 		'fk_user_valid' => array('type' => 'integer', 'label' => 'UserValidation', 'enabled' => '1', 'visible' => 0, 'notnull' => 0, 'position' => 66, 'bloc' => 'technique'),
@@ -741,7 +755,7 @@ class EcoleEleve extends EcoleObject
 
 	/**
 	 * Frais d'inscription réglés pour pouvoir valider l'inscription : au moins un paiement (même partiel,
-	 * le reste va dans les impayés), ou aucun frais demandé pour la classe.
+	 * le reste va dans les impayés), ou rien à payer (aucun frais pour la classe ou exonération totale).
 	 *
 	 * @return bool
 	 */
@@ -984,6 +998,86 @@ class EcoleEleve extends EcoleObject
 		$this->reduction_motif = $type !== '' ? trim((string) $motif) : null;
 		$this->frais_inscription_du = ($frais !== null && $frais !== '') ? (float) price2num($frais) : null;
 		return 1;
+	}
+
+	/**
+	 * Exonère l'élève des frais d'inscription, totalement (100 %) ou en partie (montant ou pourcentage),
+	 * avec un motif de la liste configurable ; qui et quand sont enregistrés. $type = '' retire l'exonération.
+	 *
+	 * @param  User       $user     Utilisateur
+	 * @param  string     $type     '' | montant | pourcent
+	 * @param  float|null $valeur   Montant ou pourcentage exonéré
+	 * @param  int        $fk_motif Motif (llx_ecole_motif_exoneration)
+	 * @param  string     $note     Précision libre
+	 * @return int                  1 si OK, -1 sinon
+	 */
+	public function setExoneration(User $user, $type, $valeur, $fk_motif, $note = '')
+	{
+		global $langs;
+		$langs->load('eleves@eleves');
+		if (!$this->checkId()) {
+			return -1;
+		}
+		$this->errors = array();
+		if (!in_array($type, array('', 'montant', 'pourcent'), true)) {
+			$type = '';
+		}
+		if ($type !== '') {
+			$v = ($valeur === null || $valeur === '') ? 0 : (float) price2num($valeur);
+			if ($v <= 0 || ($type === 'pourcent' && $v > 100)) {
+				$this->errors[] = $langs->trans('ErrorEcoleBadValue', $langs->transnoentities('ValeurExoneration'));
+			}
+			if ((int) $fk_motif <= 0) {
+				$this->errors[] = $langs->trans('ErrorFieldRequired', $langs->transnoentities('MotifExoneration'));
+			} else {
+				$r = $this->db->query("SELECT rowid FROM ".$this->db->prefix()."ecole_motif_exoneration WHERE rowid = ".((int) $fk_motif));
+				if (!$r || $this->db->num_rows($r) == 0) {
+					$this->errors[] = $langs->trans('ErrorEcoleBadValue', $langs->transnoentities('MotifExoneration'));
+				}
+			}
+		}
+		if ($this->finishValidation() < 0) {
+			return -1;
+		}
+		$now = dol_now();
+		$sql = "UPDATE ".$this->db->prefix().$this->table_element." SET";
+		if ($type !== '') {
+			$sql .= " exo_type = '".$this->db->escape($type)."', exo_valeur = ".((float) price2num($valeur)).", fk_motif_exo = ".((int) $fk_motif);
+			$sql .= ", exo_note = ".(trim((string) $note) !== '' ? "'".$this->db->escape(dol_trunc(trim((string) $note), 250, 'right', 'UTF-8', 1))."'" : "NULL");
+			$sql .= ", exo_fk_user = ".((int) $user->id).", exo_date = '".$this->db->idate($now)."'";
+		} else {
+			$sql .= " exo_type = NULL, exo_valeur = NULL, fk_motif_exo = NULL, exo_note = NULL, exo_fk_user = NULL, exo_date = NULL";
+		}
+		$sql .= ", fk_user_modif = ".((int) $user->id)." WHERE rowid = ".((int) $this->id);
+		if (!$this->db->query($sql)) {
+			$this->error = $this->db->lasterror();
+			return -1;
+		}
+		$this->exo_type = $type !== '' ? $type : null;
+		$this->exo_valeur = $type !== '' ? (float) price2num($valeur) : null;
+		$this->fk_motif_exo = $type !== '' ? (int) $fk_motif : null;
+		$this->exo_note = ($type !== '' && trim((string) $note) !== '') ? trim((string) $note) : null;
+		$this->exo_fk_user = $type !== '' ? (int) $user->id : null;
+		$this->exo_date = $type !== '' ? $now : null;
+		return 1;
+	}
+
+	/**
+	 * Montant exonéré sur des frais d'inscription donnés (0 si aucune exonération).
+	 *
+	 * @param  float $frais Frais d'inscription avant exonération
+	 * @return float
+	 */
+	public function montantExonere($frais)
+	{
+		$frais = max(0, (float) $frais);
+		if ($this->exo_type === 'pourcent') {
+			return (float) price2num($frais * min(100, max(0, (float) $this->exo_valeur)) / 100, 'MT');
+		}
+		if ($this->exo_type === 'montant') {
+			return (float) price2num(min($frais, max(0, (float) $this->exo_valeur)), 'MT');
+		}
+		return 0.0;
 	}
 
 	/**

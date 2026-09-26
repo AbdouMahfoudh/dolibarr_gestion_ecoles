@@ -276,8 +276,8 @@ function eleves_pdf_attestation($db, $eleve)
 
 	$rows = array();
 	$ins = $s['inscription'];
-	if ($ins['du'] > 0 || $ins['paye'] > 0) {
-		$rows[] = array(ecole_pdf_trans($outputlangs, 'FraisInscription'), price($ins['du'], 0, $outputlangs), price($ins['paye'], 0, $outputlangs), price($ins['reste'], 0, $outputlangs));
+	if ($ins['du'] > 0 || $ins['paye'] > 0 || !empty($ins['exonere'])) {
+		$rows[] = array(ecole_pdf_trans($outputlangs, 'FraisInscription').(!empty($ins['exonere']) ? ' ('.ecole_pdf_trans($outputlangs, 'ExonereDe', price($ins['exonere'], 0, $outputlangs)).')' : ''), price($ins['du'], 0, $outputlangs), price($ins['paye'], 0, $outputlangs), price($ins['reste'], 0, $outputlangs));
 	}
 	foreach ($s['mois'] as $mo) {
 		$rows[] = array(ecole_pdf_trans($outputlangs, 'MensualiteDe', $mo['label']), price($mo['du'], 0, $outputlangs), price($mo['paye'], 0, $outputlangs), price($mo['reste'], 0, $outputlangs));

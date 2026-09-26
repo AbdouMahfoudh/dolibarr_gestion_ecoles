@@ -217,8 +217,11 @@ function eleves_situations($db, $eleves, $now = 0)
 		// (avant l'inscription : la classe demandée, qui peut encore changer)
 		$avant = in_array($st, array(EcoleEleve::STATUS_PREINSCRIT, EcoleEleve::STATUS_ATTENTE), true);
 		$classeInscr = (!$avant && !empty($h)) ? $h[0]['classe'] : (int) $e->fk_classe;
-		$fraisDu = ($e->frais_inscription_du !== null && $e->frais_inscription_du !== '') ? (float) $e->frais_inscription_du
+		$fraisBrut = ($e->frais_inscription_du !== null && $e->frais_inscription_du !== '') ? (float) $e->frais_inscription_du
 			: (isset($classes[$classeInscr]) ? $classes[$classeInscr]['frais'] : 0);
+		// Exonération (réinscription, bourse...) : le montant exonéré n'est ni dû ni compté comme impayé
+		$fraisExo = method_exists($e, 'montantExonere') ? $e->montantExonere($fraisBrut) : 0;
+		$fraisDu = (float) price2num(max(0, $fraisBrut - $fraisExo), 'MT');
 		$fraisPaye = isset($pay['inscription']) ? $pay['inscription'] : 0;
 
 		// Mois dus : du premier mois (réglé ou mois d'inscription) au départ éventuel
@@ -280,7 +283,7 @@ function eleves_situations($db, $eleves, $now = 0)
 		}
 		$out[$id] = array(
 			'actif' => $actif,
-			'inscription' => array('du' => $fraisDu, 'paye' => $fraisPaye, 'reste' => $fraisReste),
+			'inscription' => array('du' => $fraisDu, 'paye' => $fraisPaye, 'reste' => $fraisReste, 'brut' => $fraisBrut, 'exonere' => $fraisExo),
 			'mois' => $mois,
 			'impaye' => (float) price2num($impaye, 'MT'),
 			'impaye_mois' => $impayeMois,
@@ -291,6 +294,40 @@ function eleves_situations($db, $eleves, $now = 0)
 		);
 	}
 	return $out;
+}
+
+/**
+ * Libellé d'un motif d'exonération (dans la langue de l'utilisateur).
+ *
+ * @param  DoliDB $db Handler base
+ * @param  int    $id Motif
+ * @return string
+ */
+function eleves_motif_exo_label($db, $id)
+{
+	if ((int) $id <= 0) {
+		return '';
+	}
+	$resql = $db->query("SELECT label_fr, label_ar FROM ".$db->prefix()."ecole_motif_exoneration WHERE rowid = ".((int) $id));
+	return ($resql && ($o = $db->fetch_object($resql))) ? ecole_label($o) : '';
+}
+
+/**
+ * État des frais d'inscription d'une situation (voir eleves_situations) : gratuit, exonere, paye, partiel, impaye, a_venir.
+ *
+ * @param  array $s Situation d'un élève
+ * @return string
+ */
+function eleves_etat_inscription($s)
+{
+	$ins = $s['inscription'];
+	if ($ins['du'] <= 0) {
+		return (!empty($ins['exonere']) && $ins['exonere'] > 0) ? 'exonere' : 'gratuit';
+	}
+	if ($ins['reste'] <= 0) {
+		return 'paye';
+	}
+	return $ins['paye'] > 0 ? 'partiel' : ($s['actif'] ? 'impaye' : 'a_venir');
 }
 
 /**
@@ -337,6 +374,7 @@ function eleves_etat_map()
 	return array(
 		'paye' => array('EtatPaye', 'badge-status4'),
 		'gratuit' => array('EtatGratuit', 'badge-status4'),
+		'exonere' => array('EtatExonere', 'badge-status4'),
 		'partiel' => array('EtatPartiel', 'badge-status1'),
 		'partiel_retard' => array('EtatPartielRetard', 'badge-warning'),
 		'impaye' => array('EtatImpaye', 'badge-danger'),
@@ -347,7 +385,7 @@ function eleves_etat_map()
 /**
  * État d'un mois en texte (« Payé en partie — reste 100 »), sans HTML.
  *
- * @param  string $etat  paye | partiel | partiel_retard | impaye | a_venir | gratuit
+ * @param  string $etat  paye | partiel | partiel_retard | impaye | a_venir | gratuit | exonere
  * @param  float  $reste Reste à payer
  * @return string
  */

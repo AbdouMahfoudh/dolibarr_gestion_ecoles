@@ -585,3 +585,25 @@ ConfirmRenumeroterClasse=ستُستبدل أرقام المناداة لكل ا�
 ClasseRenumerotee=تمت إعادة ترقيم %s تلميذ.
 AideNumeroAppel=يُعطى رقم المناداة تلقائيا عند التحاق التلميذ بالقسم (آخر رقم + 1) ويمكن تعديله في ملف التلميذ.
 ListeClasseTitre=قائمة القسم %s
+
+# الإعفاء من رسوم التسجيل
+MotifsExoneration=أسباب الإعفاء
+MotifExoneration=سبب الإعفاء
+MenuMotifsExoneration=أسباب الإعفاء
+ExonerationFraisInscription=الإعفاء من رسوم التسجيل
+Exoneration=الإعفاء
+EtatExonere=معفى
+ExonereDe=معفى من %s
+TypeExoneration=نوع الإعفاء
+ValeurExoneration=القيمة المعفاة
+ValeurExonerationAide=100 %% = إعفاء كامل ؛ أو مبلغ بـ %s
+NoteExoneration=ملاحظة
+ExonerePar=منحه
+DateExoneration=تاريخ الإعفاء
+AucuneExoneration=لا يوجد إعفاء : رسوم التسجيل مستحقة.
+Exonerer=الإعفاء من رسوم التسجيل
+ModifierExoneration=تعديل الإعفاء
+RetirerExoneration=إلغاء الإعفاء
+ConfirmRetirerExoneration=إلغاء الإعفاء ؟ تصبح رسوم التسجيل مستحقة من جديد.
+ExonerationEnregistree=تم تسجيل الإعفاء.
+ExonerationRetiree=تم إلغاء الإعفاء.

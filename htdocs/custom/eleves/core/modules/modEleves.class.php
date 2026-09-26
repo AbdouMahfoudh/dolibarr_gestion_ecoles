@@ -107,6 +107,7 @@ class modEleves extends DolibarrModules
 			array(104774, 'Paiements : régler les réductions, le premier mois dû et les frais d\'inscription d\'un élève', 'paiement', 'reduction'),
 			array(104775, 'Paiements : voir la liste des impayés', 'paiement', 'impayes'),
 			array(104776, 'Paiements : imprimer les reçus et les attestations de solde', 'paiement', 'recu'),
+			array(104777, 'Paiements : exonérer un élève des frais d\'inscription (totalement ou en partie)', 'paiement', 'exonerer'),
 			array(104781, 'Absences : voir les absences, les retards et les élèves signalés', 'absence', 'lire'),
 			array(104782, 'Absences : faire l\'appel', 'absence', 'appel'),
 			array(104783, 'Absences : corriger un appel déjà validé (avec historique)', 'absence', 'modifier'),
@@ -165,6 +166,7 @@ class modEleves extends DolibarrModules
 			array('eleves_reglages', 'eleves_config',  'MenuReglages',          '/eleves/admin/setup.php',                       'config.gerer',      31),
 			array('eleves_cfgpaie',  'eleves_config',  'MenuConfigPaiements',   '/eleves/admin/paiements.php',                   'config.gerer',      32),
 			array('eleves_frais',    'eleves_config',  'MenuAutresFrais',       '/eleves/frais_type/list.php',                   'config.gerer',      33),
+			array('eleves_exo',      'eleves_config',  'MenuMotifsExoneration', '/eleves/motif_exoneration/list.php',            'config.gerer',      33),
 			array('eleves_pieces',   'eleves_config',  'MenuPiecesAFournir',    '/eleves/document_type/list.php',                'config.gerer',      34),
 			array('eleves_extra',    'eleves_config',  'MenuChampsSupp',        '/eleves/admin/eleve_extrafields.php',           'config.gerer',      35),
 			array('eleves_cfgdisc',  'eleves_config',  'MenuConfigDiscipline',  '/eleves/admin/discipline.php',                  'config.gerer',      36),
@@ -253,6 +255,18 @@ class modEleves extends DolibarrModules
 		);
 		foreach ($motifs as $d) {
 			$sql[] = "INSERT IGNORE INTO ".$p."ecole_motif_absence (entity, ref, label_fr, label_ar, position, date_creation, status)"
+				." VALUES (".$e.", '".$this->db->escape($d[0])."', '".$this->db->escape($d[1])."', '".$this->db->escape($d[2])."', ".$d[3].", ".$now.", 1)";
+		}
+		// Motifs d'exonération des frais d'inscription proposés
+		$motifsExo = array(
+			array('REINSCR', 'Réinscription (élève de l\'an dernier)', 'إعادة التسجيل (تلميذ السنة الماضية)', 10),
+			array('BOURSE', 'Bourse', 'منحة', 20),
+			array('PERSONNEL', 'Enfant du personnel de l\'école', 'ابن أحد موظفي المدرسة', 30),
+			array('FRATRIE', 'Frère ou sœur inscrit(e)', 'أخ أو أخت مسجل(ة)', 40),
+			array('AUTRE', 'Autre', 'أخرى', 90),
+		);
+		foreach ($motifsExo as $d) {
+			$sql[] = "INSERT IGNORE INTO ".$p."ecole_motif_exoneration (entity, ref, label_fr, label_ar, position, date_creation, status)"
 				." VALUES (".$e.", '".$this->db->escape($d[0])."', '".$this->db->escape($d[1])."', '".$this->db->escape($d[2])."', ".$d[3].", ".$now.", 1)";
 		}
 		$types = array(

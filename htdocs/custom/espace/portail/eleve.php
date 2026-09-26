@@ -326,12 +326,12 @@ if ($onglet === 'paiements') {
 		print espace_msg($langs->trans('MoisEnRetard').' : '.dol_escape_htmltag(implode(', ', $mois)), 'warn');
 	}
 
-	$classesEtat = array('paye' => 'es-chip-green', 'gratuit' => 'es-chip-blue', 'partiel' => 'es-chip-orange', 'partiel_retard' => 'es-chip-orange', 'impaye' => 'es-chip-red', 'a_venir' => '');
+	$classesEtat = array('paye' => 'es-chip-green', 'gratuit' => 'es-chip-blue', 'exonere' => 'es-chip-blue', 'partiel' => 'es-chip-orange', 'partiel_retard' => 'es-chip-orange', 'impaye' => 'es-chip-red', 'a_venir' => '');
 	print '<h2 class="es-h2">'.$langs->trans('SituationMoisParMois').'</h2>';
 	// Une ligne par mois : libellé, montant dû et payé en dessous, état à côté (lisible sur un téléphone)
 	$lignesMois = array();
 	$ins = $s['inscription'];
-	$etatIns = ($ins['du'] <= 0) ? 'gratuit' : ($ins['reste'] <= 0 ? 'paye' : ($ins['paye'] > 0 ? 'partiel' : ($s['actif'] ? 'impaye' : 'a_venir')));
+	$etatIns = eleves_etat_inscription($s);
 	$lignesMois[] = array($langs->trans('FraisInscription'), $ins['du'], $ins['paye'], $ins['reste'], $etatIns);
 	foreach ($s['mois'] as $m) {
 		if ($m['dans']) {

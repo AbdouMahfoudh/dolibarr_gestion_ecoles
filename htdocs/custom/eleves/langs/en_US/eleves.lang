@@ -585,3 +585,25 @@ ConfirmRenumeroterClasse=All roll numbers of the class will be replaced by 1, 2,
 ClasseRenumerotee=%s student(s) renumbered.
 AideNumeroAppel=The roll number is given automatically when the student joins the class (last number + 1) and can be changed on the student's record.
 ListeClasseTitre=Class list %s
+
+# Registration fee exemption
+MotifsExoneration=Exemption reasons
+MotifExoneration=Exemption reason
+MenuMotifsExoneration=Exemption reasons
+ExonerationFraisInscription=Registration fee exemption
+Exoneration=Exemption
+EtatExonere=Exempted
+ExonereDe=exempted from %s
+TypeExoneration=Exemption type
+ValeurExoneration=Exempted value
+ValeurExonerationAide=100 %% = full exemption; or an amount in %s
+NoteExoneration=Note
+ExonerePar=Granted by
+DateExoneration=Exemption date
+AucuneExoneration=No exemption: registration fees are due.
+Exonerer=Exempt from registration fees
+ModifierExoneration=Edit exemption
+RetirerExoneration=Remove exemption
+ConfirmRetirerExoneration=Remove the exemption? Registration fees will be due again.
+ExonerationEnregistree=Exemption saved.
+ExonerationRetiree=Exemption removed.

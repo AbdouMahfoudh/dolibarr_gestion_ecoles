@@ -585,3 +585,25 @@ ConfirmRenumeroterClasse=Les numéros d'appel de toute la classe seront remplac�
 ClasseRenumerotee=%s élève(s) renuméroté(s).
 AideNumeroAppel=Le numéro d'appel est donné automatiquement à l'arrivée dans la classe (dernier numéro + 1) et peut être modifié sur la fiche de l'élève.
 ListeClasseTitre=Liste de la classe %s
+
+# Exonération des frais d'inscription
+MotifsExoneration=Motifs d'exonération
+MotifExoneration=Motif d'exonération
+MenuMotifsExoneration=Motifs d'exonération
+ExonerationFraisInscription=Exonération des frais d'inscription
+Exoneration=Exonération
+EtatExonere=Exonéré
+ExonereDe=exonéré de %s
+TypeExoneration=Type d'exonération
+ValeurExoneration=Valeur exonérée
+ValeurExonerationAide=100 %% = exonération totale ; ou un montant en %s
+NoteExoneration=Précision
+ExonerePar=Accordée par
+DateExoneration=Date de l'exonération
+AucuneExoneration=Aucune exonération : les frais d'inscription sont dus.
+Exonerer=Exonérer des frais d'inscription
+ModifierExoneration=Modifier l'exonération
+RetirerExoneration=Retirer l'exonération
+ConfirmRetirerExoneration=Retirer l'exonération ? Les frais d'inscription redeviennent dus.
+ExonerationEnregistree=Exonération enregistrée.
+ExonerationRetiree=Exonération retirée.
