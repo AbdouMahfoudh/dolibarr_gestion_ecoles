@@ -204,6 +204,17 @@ class modNotes extends DolibarrModules
 				." VALUES (".$e.", '".$d[0]."', '".$this->db->escape($d[1])."', '".$this->db->escape($d[2])."', '".$d[3]."', '".$d[4]."', '".$d[5]."', ".$d[6].", ".$d[7].", ".$d[8].", ".$d[9].", ".$now.", 1)";
 		}
 
+		// Données par défaut d'une nouvelle école (listes installées seulement si la table est encore vide)
+		dol_include_once('/classes/core/lib/installation.lib.php');
+		$db = $this->db;
+		$vide = function ($table) use ($db, $e) {
+			$r = $db->query("SELECT COUNT(*) as nb FROM ".MAIN_DB_PREFIX.$table." WHERE entity = ".$e);
+			$o = $r ? $db->fetch_object($r) : null;
+			return $o && (int) $o->nb === 0;
+		};
+		$esc = array($this->db, 'escape');
+		$sql = array_merge($sql, ecole_defaut_sql('notes', $p, $e, $now, $esc, $vide));
+
 		return $this->_init($sql, $options);
 	}
 

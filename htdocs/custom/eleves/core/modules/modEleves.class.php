@@ -282,7 +282,24 @@ class modEleves extends DolibarrModules
 				." VALUES (".$e.", '".$this->db->escape($d[0])."', '".$this->db->escape($d[1])."', '".$this->db->escape($d[2])."', ".$d[3].", ".$d[4].", ".$now.", 1)";
 		}
 
-		return $this->_init($sql, $options);
+		// Données par défaut d'une nouvelle école (listes installées seulement si la table est encore vide)
+		dol_include_once('/classes/core/lib/installation.lib.php');
+		$db = $this->db;
+		$vide = function ($table) use ($db, $e) {
+			$r = $db->query("SELECT COUNT(*) as nb FROM ".MAIN_DB_PREFIX.$table." WHERE entity = ".$e);
+			$o = $r ? $db->fetch_object($r) : null;
+			return $o && (int) $o->nb === 0;
+		};
+		$esc = array($this->db, 'escape');
+		$sql = array_merge($sql, ecole_defaut_sql('eleves', $p, $e, $now, $esc, $vide));
+		ecole_defaut_poser_reglages($this->db);
+
+		$res = $this->_init($sql, $options);
+		if ($res > 0) {
+			global $user;
+			ecole_defaut_comptes($this->db, $user); // comptes Bankily, Masrvi, Sedad, Caisse espèces reliés aux modes de paiement
+		}
+		return $res;
 	}
 
 	/**

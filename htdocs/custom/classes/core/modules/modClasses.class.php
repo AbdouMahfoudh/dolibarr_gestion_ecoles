@@ -193,6 +193,18 @@ class modClasses extends DolibarrModules
 			$extrafields->addExtraField('ecole_categorie', 'CategorieEcole', 'checkbox', 100, '', 'user', 0, 0, '', array('options' => $catoptions), 1, '', '1', 'CategorieEcoleHelp', '', '', 'classes@classes', 'isModEnabled("classes")');
 		}
 
+		// Données par défaut d'une nouvelle école (listes installées seulement si la table est encore vide)
+		dol_include_once('/classes/core/lib/installation.lib.php');
+		$db = $this->db;
+		$vide = function ($table) use ($db, $e) {
+			$r = $db->query("SELECT COUNT(*) as nb FROM ".MAIN_DB_PREFIX.$table." WHERE entity = ".$e);
+			$o = $r ? $db->fetch_object($r) : null;
+			return $o && (int) $o->nb === 0;
+		};
+		$esc = array($this->db, 'escape');
+		$sql = array_merge($sql, ecole_defaut_sql('classes', $p, $e, $now, $esc, $vide));
+		ecole_defaut_poser_reglages($this->db);
+
 		return $this->_init($sql, $options);
 	}
 

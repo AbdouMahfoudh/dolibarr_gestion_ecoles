@@ -230,6 +230,16 @@ class modPersonnel extends DolibarrModules
 				." VALUES (".$e.", '".$this->db->escape($d[0])."', '".$this->db->escape($d[1])."', '".$this->db->escape($d[2])."', ".($d[3] !== '' ? "'".$d[3]."'" : "NULL").", ".$d[4].", ".$now.", 1)";
 		}
 
+		// Jours fériés fixes de l'année scolaire (seulement si aucun jour sans cours n'est encore saisi)
+		dol_include_once('/classes/core/lib/installation.lib.php');
+		$db = $this->db;
+		$vide = function ($table) use ($db, $e) {
+			$r = $db->query("SELECT COUNT(*) as nb FROM ".MAIN_DB_PREFIX.$table." WHERE entity = ".$e);
+			$o = $r ? $db->fetch_object($r) : null;
+			return $o && (int) $o->nb === 0;
+		};
+		$sql = array_merge($sql, ecole_defaut_sql('personnel', $p, $e, $now, array($this->db, 'escape'), $vide));
+
 		$res = $this->_init($sql, $options);
 		if ($res <= 0) {
 			return $res;
