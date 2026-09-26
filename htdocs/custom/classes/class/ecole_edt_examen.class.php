@@ -113,6 +113,24 @@ class EcoleEdtExamen extends EcoleObject
 			}
 		}
 
+		// Une seule épreuve par matière, pour une classe et une session (trimestre)
+		if ($classe > 0 && $this->fk_matiere > 0 && $this->fk_session > 0) {
+			$sql = "SELECT e.date_examen, s.label_fr, s.label_ar, m.label_fr as mfr, m.label_ar as mar FROM ".$p."ecole_edt_examen e";
+			$sql .= " INNER JOIN ".$p."ecole_session s ON s.rowid = e.fk_session";
+			$sql .= " INNER JOIN ".$p."ecole_matiere m ON m.rowid = e.fk_matiere";
+			$sql .= " WHERE e.fk_classe = ".$classe." AND e.fk_matiere = ".((int) $this->fk_matiere)." AND e.fk_session = ".((int) $this->fk_session);
+			if ($id > 0) {
+				$sql .= " AND e.rowid <> ".$id;
+			}
+			$r = $this->db->query($sql);
+			if ($r && ($o = $this->db->fetch_object($r))) {
+				$this->errors[] = $langs->trans('ErrorEcoleMatiereDejaExamen',
+					ecole_label((object) array('label_fr' => $o->mfr, 'label_ar' => $o->mar)),
+					ecole_label($o),
+					dol_print_date($this->db->jdate($o->date_examen), 'day'));
+			}
+		}
+
 		if ($this->fk_session > 0 && $date !== '') {
 			$r = $this->db->query("SELECT date_debut, date_fin FROM ".$p."ecole_session WHERE rowid = ".((int) $this->fk_session));
 			if ($r && ($o = $this->db->fetch_object($r))) {

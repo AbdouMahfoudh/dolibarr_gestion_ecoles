@@ -132,6 +132,7 @@ ErrorEcoleEnseignantOccupe=%s already teaches class %s on this day and slot.
 ErrorEcoleSalleOccupee=This room is already used by class %s at that time.
 ErrorEcoleDateHorsSession=The exam date must be within the session (from %s to %s).
 ErrorEcoleClasseExamenChevauche=This class already has an exam overlapping this time.
+ErrorEcoleMatiereDejaExamen=The subject %s already has an exam for this class in %s (on %s).
 ErrorEcoleSurveillantOccupe=%s already invigilates class %s at that time.
 ErrorEcoleAucunJour=Choose at least one working day.
 

@@ -141,6 +141,7 @@ ErrorEcoleEnseignantOccupe=%s enseigne déjà dans la classe %s sur ce jour et c
 ErrorEcoleSalleOccupee=Cette salle est déjà occupée par la classe %s à ce moment.
 ErrorEcoleDateHorsSession=La date de l'épreuve doit être comprise dans la session (du %s au %s).
 ErrorEcoleClasseExamenChevauche=Cette classe a déjà une épreuve qui chevauche cet horaire.
+ErrorEcoleMatiereDejaExamen=La matière %s a déjà une épreuve pour cette classe en %s (le %s).
 ErrorEcoleSurveillantOccupe=%s surveille déjà la classe %s à ce moment.
 ErrorEcoleAucunJour=Choisissez au moins un jour ouvrable.
 

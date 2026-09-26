@@ -141,6 +141,7 @@ ErrorEcoleEnseignantOccupe=%s يدرّس بالفعل في القسم %s في ه
 ErrorEcoleSalleOccupee=هذه القاعة مشغولة بالقسم %s في هذا الوقت.
 ErrorEcoleDateHorsSession=يجب أن يكون تاريخ الاختبار ضمن الدورة (من %s إلى %s).
 ErrorEcoleClasseExamenChevauche=هذا القسم لديه اختبار يتقاطع مع هذا التوقيت.
+ErrorEcoleMatiereDejaExamen=مادة %s لديها اختبار لهذا القسم في %s (بتاريخ %s).
 ErrorEcoleSurveillantOccupe=%s يراقب بالفعل القسم %s في هذا الوقت.
 ErrorEcoleAucunJour=اختر يوم عمل واحدا على الأقل.
 
