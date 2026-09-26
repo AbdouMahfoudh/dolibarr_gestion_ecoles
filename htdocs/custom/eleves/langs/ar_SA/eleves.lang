@@ -619,3 +619,20 @@ NeLeA=%s في %s
 FraisPayesSur=%s مدفوعة من أصل %s
 
 RemplirMontantComplet=ملء بالمبلغ الكامل
+
+# تعهد ولي الأمر
+EngagementResponsable=تعهد ولي الأمر
+Engagements=تعهدات ولي الأمر
+Engagement=تعهد
+NouvelEngagement=تعهد جديد
+MenuEngagements=التعهدات
+TitreFr=العنوان (بالفرنسية)
+TitreAr=العنوان (بالعربية)
+TexteFr=النص (بالفرنسية)
+TexteAr=النص (بالعربية)
+SignatureEleve=توقيع التلميذ
+SignatureEleveAide=يضيف خانة « توقيع التلميذ » (ابتداء من الإعدادي فقط).
+EngagementVariablesAide=متغيرات تُستبدل عند الطباعة : [responsable] [lien] [eleve] [matricule] [classe] [annee] [ecole] [frais_inscription] [mensualite] [jour_limite] [premier_mois] [dernier_mois]. السطر الذي يبدأ بـ « - » يصبح نقطة.
+AucunEngagementActif=لا يوجد تعهد مفعل : أضف تعهدات في التلاميذ > الإعدادات > التعهدات.
+SignatureResponsable=توقيع ولي الأمر
+SignatureDeEleve=توقيع التلميذ

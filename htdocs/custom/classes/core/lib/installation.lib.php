@@ -120,6 +120,39 @@ function ecole_defaut_frais()
 }
 
 /**
+ * Engagements du responsable proposés : [ref, titre FR, titre AR, texte FR, texte AR, signature de l'élève].
+ * Variables : [responsable] [lien] [eleve] [matricule] [classe] [annee] [ecole] [frais_inscription] [mensualite]
+ * [jour_limite] [premier_mois] [dernier_mois]. Une ligne commençant par « - » devient une puce.
+ *
+ * @return array
+ */
+function ecole_defaut_engagements()
+{
+	return array(
+		array('REGLEMENT', 'Engagement au règlement intérieur', 'التعهد باحترام النظام الداخلي',
+			"Je soussigné(e) [responsable], [lien] de l'élève [eleve], déclare avoir reçu et pris connaissance du règlement intérieur de [ecole] et m'engage à le respecter et à le faire respecter par mon enfant, notamment :\n"
+			."- le respect des horaires et l'assiduité ; toute absence doit être justifiée ;\n"
+			."- le port de la tenue scolaire ;\n"
+			."- le respect du personnel, des camarades et du matériel ; toute dégradation sera à la charge de la famille ;\n"
+			."- l'acceptation des sanctions prévues par le règlement.",
+			"أنا الموقع أدناه [responsable]، [lien] التلميذ(ة) [eleve]، أصرح بأنني استلمت النظام الداخلي لـ [ecole] واطلعت عليه، وأتعهد باحترامه وبجعل ابني (ابنتي) يحترمه، ولا سيما :\n"
+			."- احترام المواعيد والمواظبة، ويجب تبرير كل غياب ؛\n"
+			."- ارتداء الزي المدرسي ؛\n"
+			."- احترام الطاقم والزملاء والتجهيزات، وكل إتلاف تتحمله الأسرة ؛\n"
+			."- قبول العقوبات المنصوص عليها في النظام.", 1),
+		array('PAIEMENT', 'Engagement de paiement', 'التعهد بالدفع',
+			"Je soussigné(e) [responsable] m'engage à régler pour l'élève [eleve] (classe [classe]), année scolaire [annee] :\n"
+			."- frais d'inscription : [frais_inscription] ;\n"
+			."- mensualité : [mensualite], payable avant le [jour_limite] de chaque mois, de [premier_mois] à [dernier_mois].\n"
+			."Je reconnais qu'en cas de retard, l'école pourra suspendre la remise des bulletins ou l'accès aux examens. Les sommes versées ne sont pas remboursables, sauf décision de la direction.",
+			"أنا الموقع أدناه [responsable] أتعهد بأن أدفع عن التلميذ(ة) [eleve] (القسم [classe])، السنة الدراسية [annee] :\n"
+			."- رسوم التسجيل : [frais_inscription] ؛\n"
+			."- الرسوم الشهرية : [mensualite]، تُدفع قبل اليوم [jour_limite] من كل شهر، من [premier_mois] إلى [dernier_mois].\n"
+			."وأقر بأنه في حالة التأخر يمكن للمدرسة تعليق تسليم كشوف الدرجات أو المشاركة في الامتحانات. والمبالغ المدفوعة غير قابلة للاسترجاع إلا بقرار من الإدارة.", 0),
+	);
+}
+
+/**
  * Jours fériés fixes de la Mauritanie : [ref, français, arabe, mois, jour].
  * Les fêtes religieuses (dates variables) sont à saisir chaque année.
  *
@@ -237,6 +270,11 @@ function ecole_defaut_sql($module, $p, $e, $now, $esc, $vide = null)
 		if ($installer('ecole_frais_type')) {
 			foreach (ecole_defaut_frais() as $d) {
 				$sql[] = "INSERT IGNORE INTO ".$p."ecole_frais_type (entity, ref, label_fr, label_ar, montant, position, date_creation, status) VALUES (".$e.", ".$q($d[0]).", ".$q($d[1]).", ".$q($d[2]).", 0, ".$d[3].", ".$now.", 1)";
+			}
+		}
+		if ($installer('ecole_engagement')) {
+			foreach (ecole_defaut_engagements() as $i => $d) {
+				$sql[] = "INSERT IGNORE INTO ".$p."ecole_engagement (entity, ref, label_fr, label_ar, texte_fr, texte_ar, signature_eleve, position, date_creation, status) VALUES (".$e.", ".$q($d[0]).", ".$q($d[1]).", ".$q($d[2]).", ".$q($d[3]).", ".$q($d[4]).", ".$d[5].", ".(($i + 1) * 10).", ".$now.", 1)";
 			}
 		}
 		foreach (ecole_defaut_modes_paiement() as $d) {

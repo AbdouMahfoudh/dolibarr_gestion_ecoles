@@ -673,6 +673,8 @@ if ($action == 'create') {
 	if ($object->inscriptionValidee()) {
 		print dolGetButtonAction('', $langs->trans('AttestationInscription'), 'default', dol_buildpath('/eleves/eleve/attestation_inscription.php', 1).'?id='.((int) $object->id), '', $canattestation, array('attr' => array('target' => '_blank')));
 	}
+	// Engagement du responsable (règlement, paiement...) : à signer à l'inscription, dès la pré-inscription
+	print dolGetButtonAction('', $langs->trans('EngagementResponsable'), 'default', dol_buildpath('/eleves/eleve/engagement.php', 1).'?id='.((int) $object->id), '', $canattestation, array('attr' => array('target' => '_blank')));
 	if ($canpaielire) {
 		print dolGetButtonAction('', $langs->trans('Encaisser'), 'default', dol_buildpath('/eleves/eleve/paiements.php', 1).'?id='.((int) $object->id).'&action=encaissement&token='.newToken(), '', $canencaisser);
 	}

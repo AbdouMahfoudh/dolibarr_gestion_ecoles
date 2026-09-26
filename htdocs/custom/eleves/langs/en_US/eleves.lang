@@ -619,3 +619,20 @@ NeLeA=%s in %s
 FraisPayesSur=%s paid out of %s
 
 RemplirMontantComplet=Fill with the full amount
+
+# Guardian commitment
+EngagementResponsable=Guardian commitment
+Engagements=Guardian commitments
+Engagement=Commitment
+NouvelEngagement=New commitment
+MenuEngagements=Commitments
+TitreFr=Title (French)
+TitreAr=Title (Arabic)
+TexteFr=Text (French)
+TexteAr=Text (Arabic)
+SignatureEleve=Student signature
+SignatureEleveAide=Adds a "Student signature" box (only from middle school).
+EngagementVariablesAide=Variables replaced when printing: [responsable] [lien] [eleve] [matricule] [classe] [annee] [ecole] [frais_inscription] [mensualite] [jour_limite] [premier_mois] [dernier_mois]. A line starting with "-" becomes a bullet.
+AucunEngagementActif=No active commitment: add some in Students > Setup > Commitments.
+SignatureResponsable=Guardian signature
+SignatureDeEleve=Student signature

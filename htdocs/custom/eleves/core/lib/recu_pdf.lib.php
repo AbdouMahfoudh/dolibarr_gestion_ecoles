@@ -470,3 +470,130 @@ function eleves_pdf_attestation_inscription($db, $eleve)
 
 	$pdf->Output(ecole_export_filename('attestation_inscription_'.$eleve->ref, 'pdf'), 'I');
 }
+
+/**
+ * Engagement du responsable (un seul document) : tous les engagements actifs de la configuration
+ * (règlement intérieur, paiement...), variables remplacées, puis « Fait à ..., le ... » et signatures
+ * du responsable (et de l'élève à partir du collège si un engagement le demande).
+ *
+ * @param  DoliDB     $db    Handler base
+ * @param  EcoleEleve $eleve Élève
+ * @return string            '' si OK (PDF envoyé), sinon message d'erreur
+ */
+function eleves_pdf_engagement($db, $eleve)
+{
+	global $langs, $conf, $mysoc;
+	dol_include_once('/eleves/class/ecole_engagement.class.php');
+	dol_include_once('/eleves/class/ecole_responsable.class.php');
+	$engagements = EcoleEngagement::actifs($db);
+	if (empty($engagements)) {
+		return $langs->trans('AucunEngagementActif');
+	}
+	list($pdf, $outputlangs, $rtl) = ecole_pdf_create($langs, 'P', 'A4');
+	$outputlangs->loadLangs(array('eleves@eleves', 'classes@classes'));
+	$today = dol_now();
+	$annee = eleves_annee_label(eleves_annee_scolaire());
+	ecole_pdf_start($pdf, ecole_pdf_trans($outputlangs, 'EngagementResponsable'), $annee, $eleve->ref);
+	$m = $pdf->getMargins();
+	$w = $pdf->getPageWidth() - $m['left'] - $m['right'];
+	$align = $rtl ? 'R' : 'L';
+
+	// Valeurs des variables
+	$resp = new EcoleResponsable($db);
+	$aResp = ((int) $eleve->fk_responsable > 0 && $resp->fetch((int) $eleve->fk_responsable) > 0);
+	$liens = $resp->fields['lien_parente']['arrayofkeyval'];
+	$s = eleves_situation($db, $eleve);
+	$mensualite = 0;
+	foreach ($s['mois'] as $mo) {
+		if ($mo['dans'] && $mo['du'] > 0) {
+			$mensualite = $mo['du'];
+			break;
+		}
+	}
+	$periodes = eleves_periodes();
+	$classe = ecole_pdf_text(ecole_row_label($db, 'ecole_classe', $eleve->fk_classe));
+	$prix = function ($v) use ($outputlangs, $conf) {
+		return price($v, 0, $outputlangs, 1, -1, -1, $conf->currency);
+	};
+	$vars = array(
+		'[responsable]' => $aResp ? ecole_pdf_text(ecole_label($resp)) : '....................',
+		'[lien]' => ($aResp && !empty($resp->lien_parente) && isset($liens[$resp->lien_parente])) ? ecole_pdf_trans($outputlangs, $liens[$resp->lien_parente]) : '..........',
+		'[eleve]' => ecole_pdf_text(ecole_label($eleve)),
+		'[matricule]' => $eleve->ref,
+		'[classe]' => $classe,
+		'[annee]' => $annee,
+		'[ecole]' => is_object($mysoc) ? ecole_pdf_text($mysoc->name) : '',
+		'[frais_inscription]' => (!empty($s['inscription']['exonere']) && $s['inscription']['du'] <= 0) ? ecole_pdf_trans($outputlangs, 'EtatExonere') : $prix($s['inscription']['du']),
+		'[mensualite]' => $prix($mensualite),
+		'[jour_limite]' => (string) min(28, max(1, getDolGlobalInt('ELEVES_JOUR_LIMITE', 10))),
+		'[premier_mois]' => !empty($periodes) ? eleves_periode_label(reset($periodes)) : '',
+		'[dernier_mois]' => !empty($periodes) ? eleves_periode_label(end($periodes)) : '',
+	);
+
+	// Élève à partir du collège (niveau autre que maternelle et primaire)
+	$collegeOuPlus = false;
+	$resql = $db->query("SELECT n.ref FROM ".$db->prefix()."ecole_classe c LEFT JOIN ".$db->prefix()."ecole_niveau n ON n.rowid = c.fk_niveau WHERE c.rowid = ".((int) $eleve->fk_classe));
+	if ($resql && ($o = $db->fetch_object($resql))) {
+		$collegeOuPlus = !in_array((string) $o->ref, array('MAT', 'PRI'), true);
+	}
+	$signatureEleve = false;
+
+	$pdf->SetTextColor(40, 40, 50);
+	foreach ($engagements as $eng) {
+		$titre = $rtl ? ((string) $eng->label_ar !== '' ? $eng->label_ar : $eng->label_fr) : ((string) $eng->label_fr !== '' ? $eng->label_fr : $eng->label_ar);
+		$texte = $rtl ? ((string) $eng->texte_ar !== '' ? $eng->texte_ar : $eng->texte_fr) : ((string) $eng->texte_fr !== '' ? $eng->texte_fr : $eng->texte_ar);
+		$texte = strtr((string) $texte, $vars);
+		if ($pdf->GetY() > $pdf->getPageHeight() - 60) {
+			$pdf->AddPage();
+		}
+		ecole_pdf_titre_section($pdf, $titre);
+		ecole_pdf_font($pdf, '', 10, $rtl);
+		foreach (preg_split('/\r\n|\r|\n/', $texte) as $ligne) {
+			$ligne = trim($ligne);
+			if ($ligne === '') {
+				$pdf->Ln(2);
+				continue;
+			}
+			if (preg_match('/^[-•*]\s*(.*)$/u', $ligne, $r)) {
+				// Puce, avec retrait
+				$retrait = 6;
+				$pdf->MultiCell($w - $retrait, 5.5, ecole_pdf_bidi('• '.$r[1], $rtl), 0, $align, false, 1, $rtl ? $m['left'] : $m['left'] + $retrait);
+			} else {
+				$pdf->MultiCell($w, 5.5, ecole_pdf_bidi($ligne, $rtl), 0, $align, false, 1, $m['left']);
+			}
+		}
+		$pdf->Ln(3);
+		if ((int) $eng->signature_eleve && $collegeOuPlus) {
+			$signatureEleve = true;
+		}
+	}
+
+	// Lieu, date et signatures
+	if ($pdf->GetY() > $pdf->getPageHeight() - 55) {
+		$pdf->AddPage();
+	}
+	$pdf->Ln(4);
+	ecole_pdf_font($pdf, '', 10, $rtl);
+	$ville = is_object($mysoc) ? ecole_pdf_text($mysoc->town) : '';
+	$pdf->Cell($w, 6, ecole_pdf_trans($outputlangs, 'FaitLe', $ville, dol_print_date($today, 'day', 'tzuser', $outputlangs)), 0, 1, $rtl ? 'L' : 'R');
+	$pdf->Ln(4);
+	ecole_pdf_font($pdf, 'B', 10, $rtl);
+	$cases = array(ecole_pdf_trans($outputlangs, 'SignatureResponsable'));
+	if ($signatureEleve) {
+		$cases[] = ecole_pdf_trans($outputlangs, 'SignatureDeEleve');
+	}
+	$cases[] = ecole_pdf_trans($outputlangs, 'LaDirection');
+	if ($rtl) {
+		$cases = array_reverse($cases);
+	}
+	$cw = $w / count($cases);
+	$y = $pdf->GetY();
+	foreach ($cases as $i => $c) {
+		$pdf->SetXY($m['left'] + $i * $cw, $y);
+		$pdf->Cell($cw, 6, $c, 0, 0, 'C');
+	}
+	$pdf->Ln(8);
+	ecole_pdf_signature_cachet($pdf, 22.0);
+	$pdf->Output(ecole_export_filename('engagement_'.$eleve->ref, 'pdf'), 'I');
+	return '';
+}

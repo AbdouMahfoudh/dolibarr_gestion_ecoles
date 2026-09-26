@@ -619,3 +619,20 @@ NeLeA=%s à %s
 FraisPayesSur=%s payés sur %s
 
 RemplirMontantComplet=Remplir avec le montant complet
+
+# Engagement du responsable
+EngagementResponsable=Engagement du responsable
+Engagements=Engagements du responsable
+Engagement=Engagement
+NouvelEngagement=Nouvel engagement
+MenuEngagements=Engagements
+TitreFr=Titre (français)
+TitreAr=Titre (arabe)
+TexteFr=Texte (français)
+TexteAr=Texte (arabe)
+SignatureEleve=Signature de l'élève
+SignatureEleveAide=Ajoute une case « Signature de l'élève » (seulement à partir du collège).
+EngagementVariablesAide=Variables remplacées à l'impression : [responsable] [lien] [eleve] [matricule] [classe] [annee] [ecole] [frais_inscription] [mensualite] [jour_limite] [premier_mois] [dernier_mois]. Une ligne commençant par « - » devient une puce.
+AucunEngagementActif=Aucun engagement actif : ajoutez-en dans Élèves > Configuration > Engagements.
+SignatureResponsable=Signature du responsable
+SignatureDeEleve=Signature de l'élève
