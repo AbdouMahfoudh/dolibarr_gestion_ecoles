@@ -228,6 +228,9 @@ if (empty($reshook)) {
 		} elseif ($action == 'confirm_statut' && $canstatut) {
 			$done = $object->changerStatut($user, GETPOSTINT('newstatus'), eleve_posted_date('datestatut'), $motif);
 			$msg = 'StatutModifie';
+		} elseif ($action == 'confirm_reinscrire' && $cancreate) {
+			$done = $object->reinscrire($user, GETPOSTINT('newclasse'), eleve_posted_date('datestatut'), $motif);
+			$msg = 'EleveReinscrit';
 		} elseif ($action == 'confirm_classe' && $canclasse) {
 			$done = $object->changerClasse($user, GETPOSTINT('newclasse'), eleve_posted_date('dateclasse'), $motif);
 			$msg = 'ClasseChangee';
@@ -476,6 +479,13 @@ if ($action == 'create') {
 			array(array('type' => 'select', 'name' => 'newstatus', 'label' => $langs->trans('NouveauStatut'), 'values' => $choix, 'select_show_empty' => 0, 'morecss' => 'minwidth200'),
 				array('type' => 'date', 'name' => 'datestatut', 'label' => $langs->trans('DateEffet'), 'value' => $today), $motifq), 'yes', 1, 0, 550);
 	}
+	if ($action == 'reinscrire' && $cancreate && in_array((int) $object->status, EcoleEleve::statusAnciens(), true)) {
+		$choix = eleves_classes_choix($db);
+		$mode = getDolGlobalString('ELEVES_REINSCRIPTION_FRAIS', 'dus');
+		print $form->formconfirm($page, $langs->trans('Reinscrire'), $langs->trans('ConfirmReinscrire', ecole_annee_label(ecole_annee_active())).'<br><span class="opacitymedium">'.$langs->trans('ReinscriptionFraisMode_'.$mode).'</span>', 'confirm_reinscrire',
+			array(array('type' => 'select', 'name' => 'newclasse', 'label' => $langs->trans('ClasseRentree', ecole_annee_label(ecole_annee_active())), 'values' => $choix, 'default' => (int) $object->fk_classe, 'morecss' => 'minwidth300'),
+				array('type' => 'date', 'name' => 'datestatut', 'label' => $langs->trans('DateReinscription'), 'value' => $today), $motifq), 'yes', 1, 0, 600);
+	}
 	if ($action == 'classe' && $canclasse) {
 		$choix = eleves_classes_choix($db);
 		unset($choix[(int) $object->fk_classe]);
@@ -691,6 +701,9 @@ if ($action == 'create') {
 	}
 	if ($st === EcoleEleve::STATUS_PREINSCRIT) {
 		print dolGetButtonAction('', $langs->trans('MettreEnAttente'), 'default', $page.'&action=attente&token='.newToken(), '', $canvalider || $canstatut);
+	}
+	if (in_array($st, EcoleEleve::statusAnciens(), true)) {
+		print dolGetButtonAction('', $langs->trans('Reinscrire'), 'default', $page.'&action=reinscrire&token='.newToken(), '', $cancreate);
 	}
 	$transitions = EcoleEleve::transitions();
 	if (!empty($transitions[$st])) {

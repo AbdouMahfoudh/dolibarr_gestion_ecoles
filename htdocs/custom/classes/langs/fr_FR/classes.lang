@@ -505,3 +505,4 @@ AideTarifsAnnees=Les tarifs de l'année en cours sont ceux des fiches des classe
 AideTarifsPasses=Tarifs appliqués pendant cette année scolaire.
 ErrorTarifsInvalides=Tarifs non enregistrés : les montants doivent être positifs.
 ClasseEdtAnnees=emplois du temps des années passées
+FraisReinscriptionClasse=Réinscription

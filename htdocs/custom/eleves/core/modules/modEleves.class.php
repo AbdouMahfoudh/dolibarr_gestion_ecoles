@@ -153,6 +153,7 @@ class modEleves extends DolibarrModules
 			array('eleves_new',      'eleves_list',    'MenuNouvelEleve',       '/eleves/eleve/card.php?action=create',          'eleve.creer',       11),
 			array('eleves_preinsc',  'eleves_list',    'MenuPreinscriptions',   '/eleves/eleve/list.php?search_status=0',        'eleve.lire',        12),
 			array('eleves_attente',  'eleves_list',    'MenuListeAttente',      '/eleves/eleve/list.php?search_status=2',        'eleve.lire',        13),
+			array('eleves_anciens',  'eleves_list',    'MenuAnciensAttendus',   '/eleves/eleve/list.php?search_status=7',        'eleve.lire',        14),
 			array('eleves_manq',     'eleves_list',    'MenuPiecesManquantes',  '/eleves/eleve/list.php?manquantes=1',           'document.lire',     14),
 			array('eleves_caisse',   '',               'MenuCaisse',            '/eleves/caisse.php',                            'paiement.encaisser', 15),
 			array('eleves_impayes',  '',               'MenuImpayes',           '/eleves/impayes.php',                           'paiement.impayes',  16),

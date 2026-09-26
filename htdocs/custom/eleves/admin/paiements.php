@@ -59,6 +59,8 @@ if ($action == 'save') {
 		dolibarr_set_const($db, 'ELEVES_ANNEE_SCOLAIRE', $annee, 'chaine', 0, '', $conf->entity);
 		dolibarr_set_const($db, 'ELEVES_MOIS_PAYANTS', implode(',', $mois), 'chaine', 0, '', $conf->entity);
 		dolibarr_set_const($db, 'ELEVES_JOUR_LIMITE', $jour, 'chaine', 0, '', $conf->entity);
+		$reins = GETPOST('reinscription_frais', 'aZ09');
+		dolibarr_set_const($db, 'ELEVES_REINSCRIPTION_FRAIS', in_array($reins, array('dus', 'exoneres', 'montant'), true) ? $reins : 'dus', 'chaine', 0, '', $conf->entity);
 		dolibarr_set_const($db, 'ELEVES_RECU_PREFIXE', $prefixe, 'chaine', 0, '', $conf->entity);
 		dolibarr_set_const($db, 'ELEVES_RECU_LONGUEUR', $longueur, 'chaine', 0, '', $conf->entity);
 		dolibarr_set_const($db, 'ELEVES_RECU_FORMAT', $format, 'chaine', 0, '', $conf->entity);
@@ -110,6 +112,9 @@ foreach (eleves_mois_ordre() as $m) {
 	print '<label class="marginrightonly nowraponall"><input type="checkbox" name="mois_'.$m.'" value="1"'.(in_array($m, $actifs, true) ? ' checked' : '').'> '.$langs->trans('Month'.sprintf('%02d', $m)).'</label> ';
 }
 print '<br><span class="opacitymedium">'.$langs->trans('MoisPayantsAide').'</span></td></tr>';
+$modesReins = array('dus' => $langs->trans('ReinscriptionFraisDus'), 'exoneres' => $langs->trans('ReinscriptionFraisExoneres'), 'montant' => $langs->trans('ReinscriptionFraisMontant'));
+print '<tr class="oddeven"><td>'.$langs->trans('FraisReinscription').'</td><td>'.$form->selectarray('reinscription_frais', $modesReins, getDolGlobalString('ELEVES_REINSCRIPTION_FRAIS', 'dus'), 0, 0, 0, '', 0, 0, 0, '', 'minwidth300');
+print ' <a href="'.dol_buildpath('/classes/classe/tarifs.php', 1).'">'.$langs->trans('TarifsParAnnee').'</a><br><span class="opacitymedium">'.$langs->trans('FraisReinscriptionAide').'</span></td></tr>';
 print '<tr class="oddeven"><td>'.$langs->trans('JourLimite').'</td><td><input type="number" name="jour_limite" min="1" max="28" class="flat maxwidth75" value="'.min(28, max(1, getDolGlobalInt('ELEVES_JOUR_LIMITE', 10))).'"> <span class="opacitymedium">'.$langs->trans('JourLimiteAide').'</span></td></tr>';
 print '</table><br>';
 

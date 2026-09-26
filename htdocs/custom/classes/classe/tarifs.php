@@ -18,6 +18,12 @@ $action = GETPOST('action', 'aZ09');
 $active = ecole_annee_active();
 $passee = ecole_annee_passee();
 $canedit = $user->hasRight('classes', 'ecrire') && !$passee;
+// Montant de réinscription par classe : seulement si le réglage des élèves le demande
+$avecReins = isModEnabled('eleves') && getDolGlobalString('ELEVES_REINSCRIPTION_FRAIS', 'dus') === 'montant';
+$champs = array('mens' => 'mensualite', 'insc' => 'frais_inscription');
+if ($avecReins) {
+	$champs['reins'] = 'frais_reinscription';
+}
 
 // Classes : actives pour l'année en cours, celles qui avaient un tarif pour une année passée
 $sql = "SELECT c.rowid, c.ref, c.label_fr, c.label_ar, n.rowid as nid, n.label_fr as nlabel_fr, n.label_ar as nlabel_ar";
@@ -41,6 +47,7 @@ while ($resql && ($o = $db->fetch_object($resql))) {
 if ($action === 'save' && $canedit) {
 	$mens = GETPOST('mens', 'array');
 	$insc = GETPOST('insc', 'array');
+	$reins = GETPOST('reins', 'array');
 	$db->begin();
 	$err = 0;
 	foreach (array($active, $active + 1) as $a) {
@@ -50,13 +57,24 @@ if ($action === 'save' && $canedit) {
 			}
 			$m = trim((string) $mens[$a][$cid]);
 			$i = trim((string) $insc[$a][$cid]);
-			if ($a !== $active && $m === '' && $i === '') {
+			$rv = ($avecReins && isset($reins[$a][$cid])) ? trim((string) $reins[$a][$cid]) : '';
+			if ($a !== $active && $m === '' && $i === '' && $rv === '') {
 				// année suivante laissée vide : pas de tarif préparé
-				$db->query("DELETE FROM ".$p."ecole_classe_tarif WHERE annee = ".((int) $a)." AND fk_classe = ".((int) $cid)." AND frais_reinscription IS NULL");
+				$db->query("DELETE FROM ".$p."ecole_classe_tarif WHERE annee = ".((int) $a)." AND fk_classe = ".((int) $cid).($avecReins ? "" : " AND frais_reinscription IS NULL"));
 				continue;
 			}
+			if ($a !== $active) {
+				// case vide de l'année suivante = même montant que cette année
+				$cur = ecole_classe_tarif($db, $cid, $active);
+				$m = $m === '' ? (string) $cur->mensualite : $m;
+				$i = $i === '' ? (string) $cur->frais_inscription : $i;
+			}
 			$actuel = ecole_classe_tarif($db, $cid, $a);
-			if (ecole_tarif_enregistrer($db, $user, $cid, $a, (float) price2num($m === '' ? '0' : $m), (float) price2num($i === '' ? '0' : $i), $actuel->frais_reinscription) < 0) {
+			$r = $actuel->frais_reinscription;
+			if ($avecReins && isset($reins[$a][$cid])) {
+				$r = trim((string) $reins[$a][$cid]) === '' ? null : (float) price2num($reins[$a][$cid]);
+			}
+			if (ecole_tarif_enregistrer($db, $user, $cid, $a, (float) price2num($m === '' ? '0' : $m), (float) price2num($i === '' ? '0' : $i), $r) < 0) {
 				$err++;
 			}
 		}
@@ -95,16 +113,19 @@ foreach ($annees as $a) {
 	if (!$passee) {
 		$lib .= ' <span class="opacitymedium">('.$langs->trans($a === $active ? 'AnneeEnCours' : 'AnneeSuivante').')</span>';
 	}
-	print '<td colspan="2" class="center">'.$lib.'</td>';
+	print '<td colspan="'.count($champs).'" class="center">'.$lib.'</td>';
 }
 print '</tr><tr class="liste_titre">';
 foreach ($annees as $a) {
 	print '<td class="right">'.$langs->trans('Mensualite').'</td><td class="right">'.$langs->trans('FraisInscriptionClasse').'</td>';
+	if ($avecReins) {
+		print '<td class="right">'.$langs->trans('FraisReinscriptionClasse').'</td>';
+	}
 }
 print '</tr>';
 
 $curniv = 0;
-$ncol = 2 + 2 * count($annees);
+$ncol = 2 + count($champs) * count($annees);
 foreach ($classes as $cid => $o) {
 	if ((int) $o->nid !== $curniv) {
 		$curniv = (int) $o->nid;
@@ -115,8 +136,19 @@ foreach ($classes as $cid => $o) {
 	foreach ($annees as $a) {
 		$t = ecole_classe_tarif($db, $cid, $a);
 		$vide = ($a !== $active && !$passee && !isset($suivants[$cid]));
-		foreach (array('mens' => 'mensualite', 'insc' => 'frais_inscription') as $name => $champ) {
+		foreach ($champs as $name => $champ) {
 			print '<td class="right nowraponall">';
+			if ($champ === 'frais_reinscription') {
+				// vide = frais d'inscription de la classe
+				$val = $t->frais_reinscription === null ? '' : price2num($t->frais_reinscription);
+				if ($canedit) {
+					print '<input type="text" class="flat right width75" name="reins['.$a.']['.$cid.']" value="'.dol_escape_htmltag($val).'" placeholder="'.dol_escape_htmltag(price2num($t->frais_inscription)).'">';
+				} else {
+					print $val === '' ? '<span class="opacitymedium">—</span>' : price($val).' '.$conf->currency;
+				}
+				print '</td>';
+				continue;
+			}
 			if ($canedit) {
 				$val = $vide ? '' : price2num($t->$champ);
 				$ph = $vide ? price2num(ecole_classe_tarif($db, $cid, $active)->$champ) : '';

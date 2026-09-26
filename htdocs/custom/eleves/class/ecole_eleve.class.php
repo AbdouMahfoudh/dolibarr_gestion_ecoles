@@ -1015,6 +1015,97 @@ class EcoleEleve extends EcoleObject
 	}
 
 	/**
+	 * Frais de réinscription d'un ancien élève dans une classe, selon le réglage ELEVES_REINSCRIPTION_FRAIS :
+	 * 'dus' (frais d'inscription de la classe), 'exoneres' (aucun frais), 'montant' (montant de réinscription
+	 * de la classe pour l'année, à défaut les frais d'inscription de la classe).
+	 *
+	 * @param  DoliDB $db        Handler base
+	 * @param  int    $fk_classe Classe
+	 * @return float|null        Montant à retenir sur la fiche (null = frais d'inscription de la classe)
+	 */
+	public static function fraisReinscription($db, $fk_classe)
+	{
+		$mode = getDolGlobalString('ELEVES_REINSCRIPTION_FRAIS', 'dus');
+		if ($mode === 'exoneres') {
+			return 0.0;
+		}
+		if ($mode === 'montant' && function_exists('ecole_classe_tarif')) {
+			$t = ecole_classe_tarif($db, (int) $fk_classe, ecole_annee_active());
+			return $t->frais_reinscription !== null ? (float) $t->frais_reinscription : null;
+		}
+		return null;
+	}
+
+	/**
+	 * Réinscription d'un ancien élève (attendu ou archivé) pour l'année en cours : il redevient pré-inscrit dans la
+	 * classe choisie (proposée au passage d'année) et suit ensuite la même validation qu'un nouvel élève.
+	 * Le matricule, le dossier et les réductions sont gardés ; les frais sont ceux de la réinscription.
+	 *
+	 * @param  User   $user      Utilisateur
+	 * @param  int    $fk_classe Classe de la rentrée
+	 * @param  int    $date      Date de la réinscription
+	 * @param  string $motif     Commentaire
+	 * @return int               1 si OK, -1 sinon
+	 */
+	public function reinscrire(User $user, $fk_classe, $date, $motif = '')
+	{
+		global $langs;
+		if (!$this->checkId()) {
+			return -1;
+		}
+		$langs->load('eleves@eleves');
+		$this->errors = array();
+		if (!in_array((int) $this->status, self::statusAnciens(), true)) {
+			$this->errors[] = $langs->trans('ErrorReinscriptionImpossible');
+		}
+		$classe = new EcoleClasse($this->db);
+		if ((int) $fk_classe <= 0 || $classe->fetch((int) $fk_classe) <= 0) {
+			$this->errors[] = $langs->trans('ErrorFieldRequired', $langs->transnoentities('Classe'));
+		} elseif ((int) $classe->status !== EcoleClasse::STATUS_ACTIVE) {
+			$this->errors[] = $langs->trans('ErrorClasseInactive', $classe->ref);
+		}
+		if (empty($date)) {
+			$this->errors[] = $langs->trans('ErrorFieldRequired', $langs->transnoentities('DateEffet'));
+		}
+		if ($this->finishValidation() < 0) {
+			return -1;
+		}
+		$frais = self::fraisReinscription($this->db, (int) $fk_classe);
+		$old = (int) $this->status;
+		$p = $this->db->prefix();
+		if ($motif === '') {
+			$motif = $langs->transnoentities('MotifReinscription', ecole_annee_label(ecole_annee_active()));
+		}
+		$this->db->begin();
+		$sql = "UPDATE ".$p.$this->table_element." SET status = ".self::STATUS_PREINSCRIT.", fk_classe = ".((int) $fk_classe);
+		$sql .= ", date_statut = '".$this->db->idate($date)."', mois_debut = '".$this->db->escape(dol_print_date($date, '%Y-%m'))."'";
+		$sql .= ", frais_inscription_du = ".($frais === null ? 'NULL' : (string) $frais).", fk_user_modif = ".((int) $user->id);
+		$sql .= " WHERE rowid = ".((int) $this->id);
+		$ok = (bool) $this->db->query($sql);
+		if ($ok) {
+			$this->status = self::STATUS_PREINSCRIT;
+			$this->fk_classe = (int) $fk_classe;
+			$ok = $this->addHistoriqueClasse($user, (int) $fk_classe, $date, $motif) > 0
+				&& $this->addHistoriqueStatut($user, $old, self::STATUS_PREINSCRIT, $date, $motif) > 0
+				&& $this->attribuerNumeroAppel() > 0;
+		}
+		if (!$ok) {
+			if (empty($this->error)) {
+				$this->error = $this->db->lasterror();
+			}
+			$this->errors = array($this->error);
+			$this->db->rollback();
+			$this->status = $old;
+			return -1;
+		}
+		$this->db->commit();
+		$this->date_statut = $date;
+		$this->mois_debut = dol_print_date($date, '%Y-%m');
+		$this->frais_inscription_du = $frais;
+		return 1;
+	}
+
+	/**
 	 * Enregistre les réglages de paiement de l'élève : premier mois dû, réduction (montant ou %, motif),
 	 * frais d'inscription particuliers (vide = ceux de la classe).
 	 *
