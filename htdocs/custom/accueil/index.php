@@ -115,8 +115,8 @@ if ($auj) {
 }
 
 // Derniers événements
-$ev = ecole_dash_evenements(15);
-print ecole_dash_box($langs->trans('EdDerniersEvenements'), 'fa-stream', ecole_dash_feed($ev));
+$ev = ecole_dash_evenements(40);
+print ecole_dash_box($langs->trans('EdDerniersEvenements'), 'fa-stream', ecole_dash_feed($ev, 5));
 
 // Élèves par niveau
 if ($el) {

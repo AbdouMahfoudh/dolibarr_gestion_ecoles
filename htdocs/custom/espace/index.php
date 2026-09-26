@@ -51,13 +51,13 @@ print ecole_dash_box($langs->trans('EdUtilisation'), 'fa-tasks', ecole_dash_rows
 // Dernières connexions
 $html = '';
 if (ecole_dash_table('ecole_acces')) {
-	$resql = $db->query("SELECT type, fk_cible, date_derniere_connexion FROM ".$p."ecole_acces WHERE entity IN (".getEntity('ecole_acces').") AND date_derniere_connexion IS NOT NULL ORDER BY date_derniere_connexion DESC LIMIT 8");
+	$resql = $db->query("SELECT type, fk_cible, date_derniere_connexion FROM ".$p."ecole_acces WHERE entity IN (".getEntity('ecole_acces').") AND date_derniere_connexion IS NOT NULL ORDER BY date_derniere_connexion DESC LIMIT 5");
 	while ($resql && ($o = $db->fetch_object($resql))) {
 		$c = espace_cible($db, $o->type, (int) $o->fk_cible);
 		if (!$c) {
 			continue;
 		}
-		$html .= '<div class="ed-row"><a href="'.$base.'acces.php?type='.urlencode($o->type).'&id='.((int) $o->fk_cible).'">'.dol_escape_htmltag($c->ref.' · '.ecole_label($c)).'</a><span class="opacitymedium">'.dol_print_date($db->jdate($o->date_derniere_connexion), 'dayhourshort', 'tzuserrel').'</span></div>';
+		$html .= '<div class="ed-row"><a href="'.$base.'acces.php?type='.urlencode($o->type).'&id='.((int) $o->fk_cible).'">'.dol_escape_htmltag($c->ref.' · '.ecole_label($c)).'</a><span class="opacitymedium">'.dol_print_date($db->jdate($o->date_derniere_connexion), 'dayhour', 'tzuserrel').'</span></div>';
 	}
 }
 print ecole_dash_box($langs->trans('EdDernieresConnexions'), 'fa-history', $html !== '' ? $html : '<div class="ed-empty">'.$langs->trans('EdAucuneDonnee').'</div>', $base.'list.php');

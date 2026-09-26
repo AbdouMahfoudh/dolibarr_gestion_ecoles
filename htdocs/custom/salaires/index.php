@@ -57,7 +57,7 @@ $html = '';
 if (ecole_dash_table('ecole_salaire')) {
 	dol_include_once('/salaires/class/ecole_salaire.class.php');
 	$b = new EcoleSalaire($db);
-	$resql = $db->query("SELECT s.rowid, s.ref, s.mois, s.net, s.status, e.nom_fr, e.nom_ar FROM ".$p."ecole_salaire s LEFT JOIN ".$p."ecole_employe e ON e.rowid = s.fk_employe WHERE s.entity IN (".getEntity('ecole_salaire').") ORDER BY s.tms DESC LIMIT 8");
+	$resql = $db->query("SELECT s.rowid, s.ref, s.mois, s.net, s.status, e.nom_fr, e.nom_ar FROM ".$p."ecole_salaire s LEFT JOIN ".$p."ecole_employe e ON e.rowid = s.fk_employe WHERE s.entity IN (".getEntity('ecole_salaire').") ORDER BY s.tms DESC LIMIT 5");
 	while ($resql && ($o = $db->fetch_object($resql))) {
 		$html .= '<div class="ed-row"><a href="'.$base.'bulletin/card.php?id='.((int) $o->rowid).'"><b>'.dol_escape_htmltag($o->ref).'</b> · '.dol_escape_htmltag(ecole_label($o)).'</a><span>'.ecole_dash_montant($o->net).' '.$b->LibStatut((int) $o->status, 5).'</span></div>';
 	}

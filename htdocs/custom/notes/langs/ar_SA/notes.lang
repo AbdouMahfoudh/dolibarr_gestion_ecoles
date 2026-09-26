@@ -1,22 +1,22 @@
 # Dolibarr language file - Source file is en_US - notes
-# وحدة « النقاط وكشوف النقاط »
+# وحدة « الدرجات وكشوف الدرجات »
 
-Module104800Name=النقاط وكشوف النقاط
-Module104800Desc=نقاط التلاميذ، الكشوف الفصلية، الكشوف السنوية
+Module104800Name=الدرجات وكشوف الدرجات
+Module104800Desc=درجات التلاميذ، الكشوف الفصلية، الكشوف السنوية
 
 # الصلاحيات
-Permission104801=النقاط: عرض نقاط جميع الأقسام
-Permission104802=النقاط: إدخال نقاط أقسامه ومواده (الأستاذ، حسب جدول الحصص)
-Permission104803=النقاط: إدخال نقاط جميع الأقسام (السكرتارية، الإدارة)
-Permission104804=النقاط: تعديل نقاط فصل مغلق (مع ذكر السبب، يحفظ في السجل)
+Permission104801=الدرجات: عرض درجات جميع الأقسام
+Permission104802=الدرجات: إدخال درجات أقسامه ومواده (الأستاذ، حسب جدول الحصص)
+Permission104803=الدرجات: إدخال درجات جميع الأقسام (السكرتارية، الإدارة)
+Permission104804=الدرجات: تعديل درجات فصل مغلق (مع ذكر السبب، يحفظ في السجل)
 Permission104811=الإغلاق: إغلاق فصل وإعادة فتحه
 Permission104891=الإعدادات: قواعد الحساب، التقديرات، التنويهات، نماذج الكشوف
 
 # القوائم
-MenuNotes=النقاط
-MenuSaisieNotes=إدخال النقاط
+MenuNotes=الدرجات
+MenuSaisieNotes=إدخال الدرجات
 MenuCloture=إغلاق الفصول
-MenuHistoriqueNotes=سجل النقاط
+MenuHistoriqueNotes=سجل الدرجات
 MenuConfiguration=الإعدادات
 MenuReglesCalcul=قواعد الحساب
 
@@ -29,9 +29,9 @@ Evaluation=التقييم
 NouvelleEvaluation=تقييم جديد :
 DateEvaluation=تاريخ التقييم
 LibelleFacultatif=العنوان (اختياري)
-CreerEtSaisir=إنشاء وإدخال النقاط
+CreerEtSaisir=إنشاء وإدخال الدرجات
 SupprimerEvaluation=حذف التقييم
-ConfirmSupprimerEvaluation=حذف « %s » ؟ لن تحتسب نقاطه بعد الآن (تبقى ظاهرة في السجل).
+ConfirmSupprimerEvaluation=حذف « %s » ؟ لن تحتسب درجاته بعد الآن (تبقى ظاهرة في السجل).
 EvaluationSupprimee=تم حذف « %s ».
 EvaluationSupprimeeCourt=محذوف
 NoteAbsent=غائب
@@ -41,7 +41,7 @@ NoteDispenseCourt=مع
 AbsentDispense=غائب (غ) أو معفى (مع)
 
 # الإدخال
-SaisieNotes=إدخال النقاط
+SaisieNotes=إدخال الدرجات
 ChoisirMatiere=اختر المادة
 NbElevesCol=التلاميذ
 TrimestreCloture=فصل مغلق
@@ -49,44 +49,44 @@ AucuneClasse=لا يوجد قسم نشط.
 AucuneClasseEnseignant=لا يوجد قسم باسمك : أقسامك وموادك مأخوذة من جدول الحصص (أستاذ كل حصة). اطلب من الإدارة تسجيلك فيه.
 SuiviDevoirsCompos=%s فرض · %s / %s امتحان
 AideSuiviClasses=لكل فصل : عدد الفروض المنشأة والامتحانات المنشأة / عدد المواد. القفل = فصل مغلق. انقر على قسم لعرض مواده.
-TrimestreClotureLe=%s مغلق بتاريخ %s من طرف %s : لم يعد تعديل النقاط ممكنا.
+TrimestreClotureLe=%s مغلق بتاريخ %s من طرف %s : لم يعد تعديل الدرجات ممكنا.
 TrimestreClotureCorrection=لديك صلاحية التصحيح : سيطلب منك سبب يحفظ في السجل.
-TrimestreClotureLectureSeule=الفصل مغلق : النقاط للقراءة فقط.
+TrimestreClotureLectureSeule=الفصل مغلق : الدرجات للقراءة فقط.
 AucuneMatiereClasse=لا توجد مادة مرتبطة بهذا القسم.
-NoteSur=النقطة على
+NoteSur=الدرجة على
 Enseignant=الأستاذ
-NoteDevoirs=نقطة الفروض
+NoteDevoirs=درجة الفروض
 ExceptionMatiere=استثناء لهذه المادة في هذا القسم (الإعدادات > قواعد الحساب)
 PasEncore=ليس بعد
-SaisirNotes=إدخال النقاط
-VoirNotes=عرض النقاط
-AideMatieresClasse=الامتحان : النقاط المدخلة / تلاميذ القسم. الأستاذ : حسب جدول الحصص.
-CoefficientNoteSur=المعامل %s · النقطة على %s
+SaisirNotes=إدخال الدرجات
+VoirNotes=عرض الدرجات
+AideMatieresClasse=الامتحان : الدرجات المدخلة / تلاميذ القسم. الأستاذ : حسب جدول الحصص.
+CoefficientNoteSur=المعامل %s · الدرجة على %s
 RegleCalcul=قاعدة الحساب
-NoteTrimestreFormule=نقطة الفصل = (الفروض × %s + الامتحان × %s) ÷ %s
+NoteTrimestreFormule=درجة الفصل = (الفروض × %s + الامتحان × %s) ÷ %s
 AucuneEvaluation=لا يوجد تقييم لهذا الفصل.
 AucuneEvaluationCreer=لا يوجد تقييم لهذا الفصل : أنشئ فرضا أو الامتحان أعلاه.
 AucunEleveClasse=لا يوجد تلميذ مسجل في هذا القسم.
-AideSaisieNotes=اكتب النقطة (على %s، بفاصلة أو نقطة)، ثم « إدخال » للانتقال إلى التلميذ الموالي. اكتب « a » للغائب و« d » للمعفى، أو اختر من القائمة. مسح الخانة يحذف النقطة.
+AideSaisieNotes=اكتب الدرجة (على %s، بفاصلة أو نقطة)، ثم « إدخال » للانتقال إلى التلميذ الموالي. اكتب « a » للغائب و« d » للمعفى، أو اختر من القائمة. مسح الخانة يحذف الدرجة.
 ChangeDeClasse=غير القسم
-NotesSaisies=النقاط المدخلة
+NotesSaisies=الدرجات المدخلة
 MoyenneEvaluation=معدل القسم
 MotifCorrection=سبب التصحيح :
 MotifCorrectionAide=(إجباري : الفصل مغلق)
-EnregistrerNotes=حفظ نقاط « %s »
-AideChoisirColonne=لإدخال النقاط أو تصحيحها، انقر على قلم العمود.
-VoirHistoriqueMatiere=سجل نقاط هذه المادة
-NotesEnregistrees=تم حفظ %s نقطة لـ « %s ».
-AucuneNoteChangee=لم تتغير أي نقطة.
+EnregistrerNotes=حفظ درجات « %s »
+AideChoisirColonne=لإدخال الدرجات أو تصحيحها، انقر على قلم العمود.
+VoirHistoriqueMatiere=سجل درجات هذه المادة
+NotesEnregistrees=تم حفظ %s درجة لـ « %s ».
+AucuneNoteChangee=لم تتغير أي درجة.
 
 # الإغلاق
 ClotureTrimestres=إغلاق الفصول
 CloturerTrimestre=إغلاق الفصل
-ConfirmCloturer=إغلاق %s للقسم %s ؟ لن يمكن تعديل النقاط بعد ذلك (إلا بصلاحية خاصة مع ذكر السبب) ويمكن طباعة الكشوف.
+ConfirmCloturer=إغلاق %s للقسم %s ؟ لن يمكن تعديل الدرجات بعد ذلك (إلا بصلاحية خاصة مع ذكر السبب) ويمكن طباعة الكشوف.
 TrimestreClotureOk=تم إغلاق %s للقسم %s.
 TrimestreRouvertOk=تمت إعادة فتح %s للقسم %s.
 CompositionsSaisies=الامتحانات / المواد
-NotesCompoManquantes=نقاط امتحان ناقصة
+NotesCompoManquantes=درجات امتحان ناقصة
 Cloture=مغلق
 Ouvert=مفتوح
 ParLe=من طرف %s بتاريخ %s
@@ -94,28 +94,28 @@ RouvertPar=أعيد فتحه من طرف %s بتاريخ %s
 MotifReouverture=سبب إعادة الفتح
 Rouvrir=إعادة الفتح
 Cloturer=إغلاق
-AideCloture=نقاط الامتحان الناقصة = التلاميذ × المواد − النقاط المدخلة في الامتحانات (« غ » و« مع » تحتسب مدخلة). يمكن الإغلاق حتى مع وجود نقص. إعادة الفتح تتطلب سببا يحفظ مع التاريخ والمستخدم.
+AideCloture=درجات الامتحان الناقصة = التلاميذ × المواد − الدرجات المدخلة في الامتحانات (« غ » و« مع » تحتسب مدخلة). يمكن الإغلاق حتى مع وجود نقص. إعادة الفتح تتطلب سببا يحفظ مع التاريخ والمستخدم.
 
 # السجل
-HistoriqueNotes=سجل النقاط
+HistoriqueNotes=سجل الدرجات
 
 # الإعدادات
-ConfigurationNotes=إعدادات النقاط والكشوف
+ConfigurationNotes=إعدادات الدرجات والكشوف
 AucunNiveau=لا يوجد مستوى نشط : أنشئ المستويات أولا في وحدة الأقسام.
 AideReglesNiveau=لكل مستوى قواعد حسابه. المستوى المعلم « افتراضي » يستعمل القيم المقترحة ما لم تحفظه.
 ParDefaut=افتراضي
-CalculDevoirs=حساب نقطة الفروض
+CalculDevoirs=حساب درجة الفروض
 CalculDevoirsAide=(يمكن تغييره لمادة في قسم : انظر الاستثناءات أسفله)
 CalculDevoirsMoyenne=معدل الفروض
-CalculDevoirsMeilleure=أحسن نقطة فرض
+CalculDevoirsMeilleure=أحسن درجة فرض
 DevoirAbsent=فرض فائت (غياب)
 DevoirAbsentIgnore=لا يحتسب (الحساب على الفروض الأخرى)
 DevoirAbsentZero=يحتسب 0
-NoteTrimestre=نقطة الفصل (لكل مادة)
+NoteTrimestre=درجة الفصل (لكل مادة)
 PoidsDevoirsCompo=وزن الفروض / الامتحان
 CompoAbsent=امتحان فائت (غياب)
 CompoAbsentZero=يحتسب 0
-CompoAbsentDevoirs=نقطة الفصل = نقطة الفروض وحدها
+CompoAbsentDevoirs=درجة الفصل = درجة الفروض وحدها
 AideDispense=« معفى » : لا يحتسب التقييم إطلاقا لهذا التلميذ.
 MoyenneAnnuelle=المعدل السنوي
 PoidsTrimestres=وزن الفصول
@@ -145,9 +145,9 @@ ErrorMotifObligatoireCloture=الفصل مغلق : اذكر سبب التصحي�
 ErrorTrimestreCloture=هذا الفصل مغلق لهذا القسم.
 ErrorMatiereNonLiee=هذه المادة غير مرتبطة بالقسم.
 ErrorCompositionExiste=امتحان هذا الفصل موجود مسبقا لهذه المادة.
-ErrorNoteInvalide=« %s » ليست نقطة صحيحة.
-ErrorNoteTropGrande=%s تتجاوز النقطة القصوى (%s).
-ErrorNotesNonEnregistrees=لم يحفظ شيء : %s نقطة يجب تصحيحها (بالأحمر).
+ErrorNoteInvalide=« %s » ليست درجة صحيحة.
+ErrorNoteTropGrande=%s تتجاوز الدرجة القصوى (%s).
+ErrorNotesNonEnregistrees=لم يحفظ شيء : %s درجة يجب تصحيحها (بالأحمر).
 
 # المرحلة ب : النتائج، مجلس القسم، الكشوف
 Permission104821=النتائج : عرض المعدلات والرتب والتلاميذ المتعثرين ؛ طباعة الكشوف والشهادات
@@ -159,8 +159,8 @@ MenuMentions=التقديرات
 MenuDistinctions=التنويهات
 MenuModelesBulletin=نماذج الكشوف
 MenuConfigSuivi=متابعة التلاميذ
-Notes=النقاط
-NotesResultats=النقاط والنتائج
+Notes=الدرجات
+NotesResultats=الدرجات والنتائج
 Resultats=النتائج
 Annee=السنة
 ToutesLesClasses=كل الأقسام
@@ -195,12 +195,12 @@ StyleClassique=كلاسيكي (أزرق)
 StyleModerne=عصري (أخضر)
 StyleSobre=بسيط (أبيض وأسود)
 ModeleSimplifie=مبسط
-ModeleSimplifieHelp=نقاط كاملة (مثلا 28 / 30) بدون معامل ولا تفصيل الفروض / الامتحان : الروضة والابتدائي.
+ModeleSimplifieHelp=درجات كاملة (مثلا 28 / 30) بدون معامل ولا تفصيل الفروض / الامتحان : الروضة والابتدائي.
 AffDetail=عمودا الفروض والامتحان
-AffCoef=المعاملات ومجموع النقاط
+AffCoef=المعاملات ومجموع الدرجات
 AffRangMatiere=الرتبة في كل مادة
 AffMoyClasse=معدلات القسم
-AffMinMax=أدنى وأعلى نقطة لكل مادة
+AffMinMax=أدنى وأعلى درجة لكل مادة
 AffRang=الرتبة العامة
 AffRappel=تذكير بالفصول السابقة
 AffDistinction=التنويه
@@ -215,15 +215,15 @@ MoyenneSur20=المعدل /20
 PlusForte=أعلى معدل
 PlusFaible=أدنى معدل
 PlusFortePlusFaible=أعلى - أدنى
-NoteMinClasse=أدنى نقطة
-NoteMaxClasse=أعلى نقطة
-NoteObtenue=النقطة المحصل عليها
+NoteMinClasse=أدنى درجة
+NoteMaxClasse=أعلى درجة
+NoteObtenue=الدرجة المحصل عليها
 Coef=المعامل
 ElevesClasses=التلاميذ المرتبون
 TauxReussite=النجاح (≥ 10)
 EnDifficulte=متعثرون
 VoirResultats=عرض النتائج
-AideSuiviResultats=التلاميذ المرتبون = التلاميذ الذين لديهم نقطة واحدة على الأقل. المتعثرون = معدل عام أقل من %s (يضبط في الإعدادات > متابعة التلاميذ).
+AideSuiviResultats=التلاميذ المرتبون = التلاميذ الذين لديهم درجة واحدة على الأقل. المتعثرون = معدل عام أقل من %s (يضبط في الإعدادات > متابعة التلاميذ).
 ResultatsProvisoires=نتائج مؤقتة : الفصل غير مغلق
 ResultatsProvisoiresAnnee=نتائج مؤقتة : الفصول الثلاثة ليست كلها مغلقة
 ImprimerBulletinsClasse=كشوف القسم
@@ -233,10 +233,10 @@ BulletinsApresClotureAnnee=تطبع الكشوف السنوية عندما تغ�
 ConseilDeClasse=مجلس القسم
 ChoisieParConseil=اختاره مجلس القسم
 Aucune=لا شيء
-AideResultats=المعدلات على 20 ؛ بالأحمر : أقل من 10 (المعدل العام : أقل من عتبة التعثر). انقر على تلميذ لتفاصيل نقاطه. لكل عمود مرشحه.
+AideResultats=المعدلات على 20 ؛ بالأحمر : أقل من 10 (المعدل العام : أقل من عتبة التعثر). انقر على تلميذ لتفاصيل درجاته. لكل عمود مرشحه.
 AideResultatsAnnee=المعدل السنوي = معدل الفصول حسب أوزانها (قواعد المستوى). لكل عمود مرشحه.
 TableauMoyennesTitre=جدول المعدلات - %s
-BulletinDeNotes=كشف النقاط
+BulletinDeNotes=كشف الدرجات
 ReleveAnnuel=الكشف السنوي
 NomEleve=التلميذ
 Effectif=التلاميذ المرتبون
@@ -297,7 +297,7 @@ Notee=مدخلة
 SousLaMoyenne=تحت المعدل
 Rouvert=أعيد فتحه
 AvecMotif=مع سبب
-AideFiltreNote=نقطة (12 أو 12,5)، « abs »، « disp » أو « vide »
+AideFiltreNote=درجة (12 أو 12,5)، « abs »، « disp » أو « vide »
 FiltreMin=من
 FiltreMax=إلى
 
@@ -328,7 +328,7 @@ MoyTrimestre=معدل الفصل
 MoyTrimestreAide=معدل الفصل في هذه المادة (الفروض والامتحان حسب قواعد المستوى) على 20
 AucuneModification=لا تغيير
 ModificationsNonEnregistrees=%s تغيير غير محفوظ
-AideChoisirEvaluation=لإدخال النقاط أو تصحيحها، انقر على تقييم أعلاه.
+AideChoisirEvaluation=لإدخال الدرجات أو تصحيحها، انقر على تقييم أعلاه.
 
 # معاينة النماذج
 Apercu=معاينة

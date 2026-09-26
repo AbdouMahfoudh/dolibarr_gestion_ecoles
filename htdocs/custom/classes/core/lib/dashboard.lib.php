@@ -50,6 +50,10 @@ a.ed-kpi:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.10)}
 .ed-bar{height:8px;border-radius:5px;background:var(--colortopbordertitle1,#eceff3);overflow:hidden}.ed-bar span{display:block;height:100%;border-radius:5px;background:#3a6ea5}
 .ed-row{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid var(--colortopbordertitle1,#f1f2f5)}.ed-row:last-child{border-bottom:0}
 .ed-empty{opacity:.6;padding:10px 0}
+.ed-pager{display:flex;align-items:center;justify-content:center;gap:14px;padding-top:8px;border-top:1px solid var(--colortopbordertitle1,#eef0f4);margin-top:4px}
+.ed-pager a{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;border:1px solid var(--colortopbordertitle1,#dfe3ea);text-decoration:none}
+.ed-pager a.disabled{opacity:.35;pointer-events:none}.ed-pnum{font-size:.9em;opacity:.8}
+[dir=rtl] .ed-pager .fa-chevron-left,[dir=rtl] .ed-pager .fa-chevron-right{transform:scaleX(-1)}
 .ed-links{display:flex;flex-wrap:wrap;gap:8px}.ed-links a{padding:6px 11px;border-radius:18px;border:1px solid var(--colortopbordertitle1,#dfe3ea);text-decoration:none;font-size:.92em}
 .ed-links a:hover{background:rgba(58,110,165,.08)}
 </style>';
@@ -549,23 +553,61 @@ function ecole_dash_evenements($limite = 20)
 }
 
 /**
- * Fil des événements.
+ * Date courte d'un événement : heure seule aujourd'hui, « hier HH:MM », sinon jour/mois (et année si autre année)
+ * avec l'heure, jamais les secondes.
  *
- * @param  array $ev Événements (ecole_dash_evenements)
+ * @param  int $ts Horodatage
  * @return string
  */
-function ecole_dash_feed($ev)
+function ecole_dash_date_courte($ts)
 {
 	global $langs;
+	$jour = dol_print_date($ts, '%Y-%m-%d', 'tzuserrel');
+	$auj = dol_print_date(dol_now(), '%Y-%m-%d', 'tzuserrel');
+	$hier = dol_print_date(dol_now() - 86400, '%Y-%m-%d', 'tzuserrel');
+	$heure = dol_print_date($ts, '%H:%M', 'tzuserrel');
+	if ($jour === $auj) {
+		return $heure;
+	}
+	if ($jour === $hier) {
+		return $langs->trans('EdHier').' '.$heure;
+	}
+	return dol_print_date($ts, substr($jour, 0, 4) === substr($auj, 0, 4) ? '%d/%m' : '%d/%m/%Y', 'tzuserrel').' '.$heure;
+}
+
+/**
+ * Fil des événements, avec pagination légère côté navigateur ($parPage > 0 : n événements par page,
+ * boutons précédent / suivant, sans recharger la page).
+ *
+ * @param  array $ev      Événements (ecole_dash_evenements)
+ * @param  int   $parPage Événements par page (0 = tout afficher)
+ * @return string
+ */
+function ecole_dash_feed($ev, $parPage = 0)
+{
+	global $langs;
+	static $n = 0;
 	if (empty($ev)) {
 		return '<div class="ed-empty">'.$langs->trans('EdAucunEvenement').'</div>';
 	}
-	$out = '<ul class="ed-feed">';
-	foreach ($ev as $e) {
-		$out .= '<li><span class="ed-fi" style="background:'.$e[2].'"><i class="fas '.$e[1].'"></i></span><span class="ed-ft"><a href="'.dol_escape_htmltag($e[4]).'">'.$e[3].'</a></span>';
-		$out .= '<span class="ed-fd" title="'.dol_escape_htmltag(dol_print_date($e[0], 'dayhour', 'tzuserrel')).'">'.dol_escape_htmltag(dol_print_date($e[0], 'dayhourshort', 'tzuserrel')).'</span></li>';
+	$id = 'edfeed'.(++$n);
+	$pages = ($parPage > 0) ? (int) ceil(count($ev) / $parPage) : 1;
+	$out = '<ul class="ed-feed" id="'.$id.'">';
+	foreach (array_values($ev) as $i => $e) {
+		$page = ($parPage > 0) ? intdiv($i, $parPage) : 0;
+		$out .= '<li data-page="'.$page.'"'.($page > 0 ? ' style="display:none"' : '').'><span class="ed-fi" style="background:'.$e[2].'"><i class="fas '.$e[1].'"></i></span><span class="ed-ft"><a href="'.dol_escape_htmltag($e[4]).'">'.$e[3].'</a></span>';
+		$out .= '<span class="ed-fd" title="'.dol_escape_htmltag(dol_print_date($e[0], 'dayhour', 'tzuserrel')).'">'.dol_escape_htmltag(ecole_dash_date_courte($e[0])).'</span></li>';
 	}
-	return $out.'</ul>';
+	$out .= '</ul>';
+	if ($pages > 1) {
+		$out .= '<div class="ed-pager" data-feed="'.$id.'" data-pages="'.$pages.'"><a href="#" class="ed-prev disabled"><i class="fas fa-chevron-left"></i></a>'
+			.'<span class="ed-pnum">1 / '.$pages.'</span><a href="#" class="ed-next"><i class="fas fa-chevron-right"></i></a></div>';
+		$out .= '<script>(function(){var b=document.querySelector(\'.ed-pager[data-feed="'.$id.'"]\'),f=document.getElementById("'.$id.'"),n='.$pages.',p=0;'
+			.'function go(k){p=Math.max(0,Math.min(n-1,k));f.querySelectorAll("li").forEach(function(li){li.style.display=(+li.dataset.page===p)?"":"none";});'
+			.'b.querySelector(".ed-pnum").textContent=(p+1)+" / "+n;b.querySelector(".ed-prev").classList.toggle("disabled",p===0);b.querySelector(".ed-next").classList.toggle("disabled",p===n-1);}'
+			.'b.querySelector(".ed-prev").addEventListener("click",function(e){e.preventDefault();go(p-1);});b.querySelector(".ed-next").addEventListener("click",function(e){e.preventDefault();go(p+1);});})();</script>';
+	}
+	return $out;
 }
 
 /**
