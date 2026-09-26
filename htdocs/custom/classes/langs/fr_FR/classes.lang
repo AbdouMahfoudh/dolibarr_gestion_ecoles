@@ -1,8 +1,8 @@
 # Dolibarr language file - Source file is en_US - classes
 # Module « Classes »
 
-Module104600Name=Classes
-Module104600Desc=Classes, matières, coefficients, mensualités et emplois du temps de l'établissement
+Module104600Name=Établissement
+Module104600Desc=Établissement : niveaux, classes, matières, salles, emplois du temps, documents PDF et réglages de l'école
 
 # Menus
 Classes=Classes
@@ -395,3 +395,7 @@ PdfExemplaireEcole=Exemplaire de l'école
 PdfAvancesPretsEnCours=Avances et prêts en cours
 PdfDejaRetenu=Déjà retenu
 PdfResteARetenir=Reste à retenir
+
+# Nom affiché du module (le dossier reste « classes »)
+MenuEtablissement=Établissement
+TableauDeBordEtablissement=Tableau de bord de l'établissement

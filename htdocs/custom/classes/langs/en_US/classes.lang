@@ -1,7 +1,7 @@
 # Dolibarr language file - en_US - classes
 
-Module104600Name=Classes
-Module104600Desc=School classes, subjects, coefficients, monthly fees and timetables
+Module104600Name=School
+Module104600Desc=School: levels, classes, subjects, rooms, timetables, PDF documents and school settings
 
 Classes=Classes
 MenuClasses=Classes
@@ -386,3 +386,7 @@ PdfExemplaireEcole=School's copy
 PdfAvancesPretsEnCours=Current advances and loans
 PdfDejaRetenu=Already deducted
 PdfResteARetenir=Remaining to deduct
+
+# Module display name (folder stays "classes")
+MenuEtablissement=School
+TableauDeBordEtablissement=School dashboard

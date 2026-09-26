@@ -29,11 +29,11 @@ class modClasses extends DolibarrModules
 		$this->family = 'other';
 		$this->module_position = '500';
 		$this->name = preg_replace('/^mod/i', '', get_class($this));
-		$this->description = "Classes, matières, coefficients, mensualités et emplois du temps de l'établissement";
+		$this->description = "Établissement : niveaux, classes, matières, salles, emplois du temps, documents PDF et réglages de l'école";
 		$this->descriptionlong = "Gestion des niveaux, sections, classes et matières (coefficient par classe), mensualité de chaque classe, emploi du temps des cours et emploi du temps des périodes d'examens.";
 		$this->version = '1.0.0';
 		$this->const_name = 'MAIN_MODULE_'.strtoupper($this->name);
-		$this->picto = 'fa-chalkboard';
+		$this->picto = 'fa-school';
 		$this->editor_name = 'Établissement scolaire';
 		$this->editor_url = '';
 
@@ -83,8 +83,8 @@ class modClasses extends DolibarrModules
 		$this->menu[$r++] = array(
 			'fk_menu'  => '',
 			'type'     => 'top',
-			'titre'    => 'Classes',
-			'prefix'   => img_picto('', $this->picto, 'class="pictofixedwidth valignmiddle"'),
+			'titre'    => 'MenuEtablissement',
+			'prefix'   => img_picto('', 'fa-school', 'class="pictofixedwidth valignmiddle"'),
 			'mainmenu' => 'classes',
 			'leftmenu' => '',
 			'url'      => '/classes/index.php',

@@ -1,8 +1,8 @@
 # Dolibarr language file - ar_SA - classes
 # وحدة « الأقسام »
 
-Module104600Name=الأقسام
-Module104600Desc=الأقسام والمواد والمعاملات والرسوم الشهرية والجداول الزمنية للمؤسسة
+Module104600Name=المؤسسة
+Module104600Desc=المؤسسة : المستويات، الأقسام، المواد، القاعات، جداول الحصص، وثائق PDF وإعدادات المدرسة
 
 # القوائم
 Classes=الأقسام
@@ -399,3 +399,7 @@ PdfExemplaireEcole=نسخة المدرسة
 PdfAvancesPretsEnCours=التسبيقات والقروض الجارية
 PdfDejaRetenu=تم اقتطاعه
 PdfResteARetenir=المتبقي للاقتطاع
+
+# اسم الوحدة المعروض (يبقى المجلد « classes »)
+MenuEtablissement=المؤسسة
+TableauDeBordEtablissement=لوحة قيادة المؤسسة
