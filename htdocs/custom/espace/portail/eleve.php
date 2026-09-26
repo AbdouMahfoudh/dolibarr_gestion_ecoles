@@ -148,7 +148,7 @@ if ($onglet === 'notes') {
 	} else {
 		// Notes de chaque évaluation, visibles dès la saisie
 		$evals = array();
-		$resql = $db->query("SELECT rowid, fk_matiere, type, numero, label, date_eval, note_max FROM ".$db->prefix()."ecole_evaluation WHERE fk_classe = ".$fk_classe." AND trimestre = ".((int) $periode)." AND status = 1 ORDER BY type, numero");
+		$resql = $db->query("SELECT rowid, fk_matiere, type, numero, label, date_eval, note_max FROM ".$db->prefix()."ecole_evaluation WHERE fk_classe = ".$fk_classe." AND trimestre = ".((int) $periode)." AND status = 1".ecole_annee_sql()." ORDER BY type, numero");
 		while ($resql && ($o = $db->fetch_object($resql))) {
 			$evals[(int) $o->rowid] = $o;
 		}

@@ -21,6 +21,7 @@ if (!defined('DOL_DOCUMENT_ROOT')) {
 
 dol_include_once('/classes/core/lib/classes.lib.php');
 dol_include_once('/classes/core/lib/dashboard.lib.php');
+ecole_annee_vue_forcer(ecole_annee_active()); // l'accueil montre toujours l'année en cours
 $langs->loadLangs(array('main', 'other', 'classes@classes', 'accueil@accueil'));
 if (isModEnabled('eleves')) {
 	dol_include_once('/eleves/class/ecole_eleve.class.php');

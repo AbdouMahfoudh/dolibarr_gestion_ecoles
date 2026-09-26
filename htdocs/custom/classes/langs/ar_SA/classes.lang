@@ -496,3 +496,9 @@ NomEtablissementAide=يُستعمل الاسم العربي في الوثائق 
 NomEtablissementFr=الاسم بالفرنسية
 NomEtablissementAr=الاسم بالعربية
 ModifierDansSociete=تعديل (الإعدادات > الشركة)
+
+# Années scolaires
+AnneeScolaire=السنة الدراسية
+AnneeEnCours=الحالية
+AnneePasseeLectureSeule=السنة الدراسية %s : للاطلاع فقط، لا يمكن تعديل أي شيء.
+RevenirAnneeEnCours=العودة إلى السنة الحالية

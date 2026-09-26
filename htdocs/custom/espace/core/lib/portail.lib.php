@@ -392,7 +392,7 @@ function espace_dernieres_notes($db, $e, $n = 5)
 	$sql = "SELECT n.valeur, n.absence, n.tms, ev.rowid as evid, ev.type, ev.numero, ev.trimestre, ev.date_eval, ev.note_max, ev.label, m.label_fr, m.label_ar";
 	$sql .= " FROM ".$p."ecole_note n INNER JOIN ".$p."ecole_evaluation ev ON ev.rowid = n.fk_evaluation";
 	$sql .= " INNER JOIN ".$p."ecole_matiere m ON m.rowid = ev.fk_matiere";
-	$sql .= " WHERE n.fk_eleve = ".((int) $e->id)." AND ev.fk_classe = ".((int) $e->fk_classe)." AND ev.status = 1";
+	$sql .= " WHERE n.fk_eleve = ".((int) $e->id)." AND ev.fk_classe = ".((int) $e->fk_classe)." AND ev.status = 1".ecole_annee_sql('ev.annee');
 	$sql .= " ORDER BY n.tms DESC, n.rowid DESC";
 	if ($n > 0) {
 		$sql .= $db->plimit($n, 0);

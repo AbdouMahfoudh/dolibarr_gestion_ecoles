@@ -492,3 +492,9 @@ NomEtablissementAide=le nom arabe est utilisé dans les documents, les en-têtes
 NomEtablissementFr=Nom en français
 NomEtablissementAr=Nom en arabe
 ModifierDansSociete=Modifier (Configuration > Société)
+
+# Années scolaires
+AnneeScolaire=Année scolaire
+AnneeEnCours=en cours
+AnneePasseeLectureSeule=Année scolaire %s : consultation seulement, rien ne peut être modifié.
+RevenirAnneeEnCours=Revenir à l'année en cours

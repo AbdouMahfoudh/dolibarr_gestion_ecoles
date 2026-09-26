@@ -17,6 +17,9 @@
  */
 function eleves_annee_scolaire()
 {
+	if (function_exists('ecole_annee_active')) {
+		return ecole_annee_active();
+	}
 	$a = getDolGlobalInt('ELEVES_ANNEE_SCOLAIRE');
 	if ($a > 2000) {
 		return $a;

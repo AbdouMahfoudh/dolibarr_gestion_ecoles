@@ -13,6 +13,7 @@
 dol_include_once('/classes/class/ecole_object.class.php');
 dol_include_once('/eleves/class/ecole_eleve.class.php');
 dol_include_once('/eleves/core/lib/paiements.lib.php');
+dol_include_once('/classes/core/lib/annee.lib.php');
 
 /**
  * Class EcoleRecu
@@ -319,8 +320,9 @@ class EcoleRecu extends EcoleObject
 				}
 			}
 			foreach ($lignes as $l) {
-				$sql = "INSERT INTO ".$this->db->prefix()."ecole_paiement (entity, fk_recu, fk_eleve, type, periode, fk_frais_type, libelle, montant, fk_facture, fk_paiement, status)";
-				$sql .= " VALUES (".((int) $conf->entity).", ".((int) $this->id).", ".((int) $eid).", '".$this->db->escape($l['type'])."'";
+				$sql = "INSERT INTO ".$this->db->prefix()."ecole_paiement (entity, fk_recu, fk_eleve, annee, type, periode, fk_frais_type, libelle, montant, fk_facture, fk_paiement, status)";
+				$annee = !empty($l['annee']) ? (int) $l['annee'] : (!empty($l['periode']) ? ecole_annee_de_date($l['periode']) : ecole_annee_active());
+				$sql .= " VALUES (".((int) $conf->entity).", ".((int) $this->id).", ".((int) $eid).", ".$annee.", '".$this->db->escape($l['type'])."'";
 				$sql .= ", ".(!empty($l['periode']) ? "'".$this->db->escape($l['periode'])."'" : "NULL");
 				$sql .= ", ".(!empty($l['fk_frais_type']) ? (int) $l['fk_frais_type'] : "NULL");
 				$sql .= ", '".$this->db->escape(dol_trunc($l['libelle'], 250, 'right', 'UTF-8', 1))."', ".((float) price2num($l['montant'], 'MT'));

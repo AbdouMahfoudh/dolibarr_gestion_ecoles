@@ -7,6 +7,7 @@ CREATE TABLE llx_ecole_paiement
 	entity          INTEGER NOT NULL DEFAULT 1,
 	fk_recu         INTEGER NOT NULL,
 	fk_eleve        INTEGER NOT NULL,
+	annee           INTEGER NOT NULL DEFAULT 0,      -- année scolaire (année de la rentrée)
 	type            VARCHAR(16) NOT NULL,
 	periode         VARCHAR(7),
 	fk_frais_type   INTEGER,
@@ -16,5 +17,6 @@ CREATE TABLE llx_ecole_paiement
 	fk_paiement     INTEGER,
 	status          SMALLINT NOT NULL DEFAULT 1,
 	KEY idx_ecole_paiement_recu (fk_recu),
-	KEY idx_ecole_paiement_eleve (fk_eleve, type, periode)
+	KEY idx_ecole_paiement_eleve (fk_eleve, type, periode),
+	KEY idx_ecole_paiement_annee (annee)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

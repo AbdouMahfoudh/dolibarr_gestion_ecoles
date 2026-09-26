@@ -24,6 +24,7 @@ $periode = notes_periode_requete($db, (int) $object->id);
 llxHeader('', $langs->trans('NotesResultats').' - '.$object->ref, '', '', 0, 0, '', '', '', 'mod-notes page-classe-notes');
 classe_print_header($object, 'notes');
 print '<div class="fichecenter"><br>';
+print ecole_annee_selecteur(array('id', 'periode'));
 print notes_periode_tabs($db, $_SERVER['PHP_SELF'].'?id='.((int) $object->id), $periode, (int) $object->id);
 notes_resultats_html($db, $user, (object) array('rowid' => (int) $object->id, 'ref' => $object->ref, 'label_fr' => $object->label_fr, 'label_ar' => $object->label_ar), $periode);
 print '</div>';

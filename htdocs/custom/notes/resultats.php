@@ -32,6 +32,7 @@ $periode = notes_periode_requete($db, $fk_classe);
 
 llxHeader('', $langs->trans('Resultats'), '', '', 0, 0, '', '', '', 'mod-notes page-resultats');
 print load_fiche_titre($langs->trans('Resultats'), $fk_classe ? '' : ecole_export_buttons('suivi_resultats', '&periode='.$periode, 'notes'), 'fa-poll');
+print ecole_annee_selecteur(array('fk_classe', 'periode'));
 
 $choix = array();
 foreach ($classes as $cid => $c) {

@@ -172,7 +172,7 @@ function notes_calcul_trimestre($db, $fk_classe, $trimestre)
 	// Évaluations du trimestre par matière
 	$evals = array();
 	$max = array();
-	$resql = $db->query("SELECT rowid, fk_matiere, type, note_max FROM ".$db->prefix()."ecole_evaluation WHERE fk_classe = ".((int) $fk_classe)." AND trimestre = ".((int) $trimestre)." AND status = 1");
+	$resql = $db->query("SELECT rowid, fk_matiere, type, note_max FROM ".$db->prefix()."ecole_evaluation WHERE fk_classe = ".((int) $fk_classe)." AND trimestre = ".((int) $trimestre)." AND status = 1".ecole_annee_sql());
 	while ($resql && ($o = $db->fetch_object($resql))) {
 		$evals[(int) $o->fk_matiere][(int) $o->type][] = (int) $o->rowid;
 		$max[(int) $o->rowid] = (float) $o->note_max;
@@ -466,7 +466,7 @@ function notes_distinction_auto($db, $moyenne)
 function notes_conseil($db, $fk_classe, $periode)
 {
 	$out = array();
-	$resql = $db->query("SELECT * FROM ".$db->prefix()."ecole_bulletin WHERE fk_classe = ".((int) $fk_classe)." AND trimestre = ".((int) $periode));
+	$resql = $db->query("SELECT * FROM ".$db->prefix()."ecole_bulletin WHERE fk_classe = ".((int) $fk_classe)." AND trimestre = ".((int) $periode).ecole_annee_sql());
 	while ($resql && ($o = $db->fetch_object($resql))) {
 		$out[(int) $o->fk_eleve] = $o;
 	}
@@ -547,6 +547,9 @@ function notes_decision($regle, $conseil, $moyenne)
 function notes_conseil_enregistrer($db, $user, $fk_eleve, $fk_classe, $periode, $observation, $distinction, $decision = null)
 {
 	global $conf;
+	if (ecole_annee_passee()) {
+		return -1;
+	}
 	$forcee = ($distinction === 'auto') ? 0 : 1;
 	$fkd = ($forcee && (int) $distinction > 0) ? (string) ((int) $distinction) : 'NULL';
 	$obs = trim((string) $observation);
@@ -555,8 +558,8 @@ function notes_conseil_enregistrer($db, $user, $fk_eleve, $fk_classe, $periode, 
 	if ($decision !== null && isset(notes_decisions()[$decision])) {
 		$dec = "'".$db->escape($decision)."'";
 	}
-	$sql = "INSERT INTO ".$db->prefix()."ecole_bulletin (entity, fk_eleve, fk_classe, trimestre, observation, distinction_forcee, fk_distinction, decision, date_creation, fk_user_creat)";
-	$sql .= " VALUES (".((int) $conf->entity).", ".((int) $fk_eleve).", ".((int) $fk_classe).", ".((int) $periode).", ".$obsSql.", ".$forcee.", ".$fkd.", ".$dec.", '".$db->idate(dol_now())."', ".((int) $user->id).")";
+	$sql = "INSERT INTO ".$db->prefix()."ecole_bulletin (entity, annee, fk_eleve, fk_classe, trimestre, observation, distinction_forcee, fk_distinction, decision, date_creation, fk_user_creat)";
+	$sql .= " VALUES (".((int) $conf->entity).", ".ecole_annee_active().", ".((int) $fk_eleve).", ".((int) $fk_classe).", ".((int) $periode).", ".$obsSql.", ".$forcee.", ".$fkd.", ".$dec.", '".$db->idate(dol_now())."', ".((int) $user->id).")";
 	$sql .= " ON DUPLICATE KEY UPDATE fk_classe = ".((int) $fk_classe).", observation = ".$obsSql.", distinction_forcee = ".$forcee.", fk_distinction = ".$fkd;
 	if ($decision !== null) {
 		$sql .= ", decision = ".$dec;

@@ -45,6 +45,8 @@ dol_include_once('/classes/core/lib/classes.lib.php');
 dol_include_once('/eleves/core/lib/eleves.lib.php');
 dol_include_once('/espace/core/lib/espace.lib.php');
 dol_include_once('/espace/core/lib/portail.lib.php');
+// Année scolaire affichée : l'année en cours
+ecole_annee_vue_forcer(ecole_annee_active());
 
 // Les pages ne s'ouvrent que par les adresses de l'espace (aiguilleur) : une ancienne adresse en .php est renvoyée à l'accueil
 if (!defined('ESPACE_ROUTER')) {

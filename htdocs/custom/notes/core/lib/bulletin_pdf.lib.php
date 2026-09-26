@@ -720,7 +720,7 @@ function notes_pdf_identite($d, $eleve, $classe, $nb)
 		array($d->t('Matricule'), $eleve->ref),
 		array($d->t('Classe'), $classe->ref.' - '.$d->lib($classe)),
 		array($d->t('Effectif'), (string) $nb),
-		array($d->t('AnneeScolaire'), eleves_annee_label(eleves_annee_scolaire())),
+		array($d->t('AnneeScolaire'), eleves_annee_label(ecole_annee_vue())),
 	);
 	if ($naiss !== '') {
 		$paires[] = array($d->t('DateNaissance'), $naiss);
@@ -747,7 +747,7 @@ function notes_pdf_page_bulletin($db, $d, $modele, $classe, $calc, $eid, $consei
 	$e = $calc['eleves'][$eid];
 	$r = $calc['res'][$eid];
 	$pdf->docTitle = $d->t('BulletinDeNotes');
-	$pdf->docSubtitle = eleves_annee_label(eleves_annee_scolaire()).' - '.$d->t('Trimestre'.$t); // année d'abord : à côté de l'arabe elle serait inversée
+	$pdf->docSubtitle = eleves_annee_label(ecole_annee_vue()).' - '.$d->t('Trimestre'.$t); // année d'abord : à côté de l'arabe elle serait inversée
 	$pdf->docRef = $e->ref;
 	$pdf->AddPage();
 
@@ -915,7 +915,7 @@ function notes_pdf_page_releve($db, $d, $modele, $classe, $calc, $eid, $conseil)
 	$r = $calc['res'][$eid];
 	$regle = $calc['regle'];
 	$pdf->docTitle = $d->t('ReleveAnnuel');
-	$pdf->docSubtitle = $d->t('AnneeScolaire').' '.eleves_annee_label(eleves_annee_scolaire());
+	$pdf->docSubtitle = $d->t('AnneeScolaire').' '.eleves_annee_label(ecole_annee_vue());
 	$pdf->docRef = $e->ref;
 	$pdf->AddPage();
 
@@ -1075,7 +1075,7 @@ function notes_pdf_certificat($db, $eleve)
 	$rtl = $d->rtl;
 	$l = $d->main();
 	$pdf->docTitle = $d->t('CertificatScolarite');
-	$pdf->docSubtitle = $d->t('AnneeScolaire').' '.eleves_annee_label(eleves_annee_scolaire());
+	$pdf->docSubtitle = $d->t('AnneeScolaire').' '.eleves_annee_label(ecole_annee_vue());
 	$pdf->docRef = $eleve->ref;
 	$pdf->AddPage();
 	$m = $pdf->getMargins();

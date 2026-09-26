@@ -89,7 +89,7 @@ function notes_dataset_cloture($db, $user, $trimestre)
 	global $langs;
 	$p = $db->prefix();
 	$av = array();
-	$resql = $db->query("SELECT v.fk_classe, v.type, (SELECT COUNT(*) FROM ".$p."ecole_note n WHERE n.fk_evaluation = v.rowid) as nb FROM ".$p."ecole_evaluation v WHERE v.status = 1 AND v.trimestre = ".((int) $trimestre));
+	$resql = $db->query("SELECT v.fk_classe, v.type, (SELECT COUNT(*) FROM ".$p."ecole_note n WHERE n.fk_evaluation = v.rowid) as nb FROM ".$p."ecole_evaluation v WHERE v.status = 1 AND v.trimestre = ".((int) $trimestre).ecole_annee_sql('v.annee'));
 	while ($resql && ($o = $db->fetch_object($resql))) {
 		$c = (int) $o->fk_classe;
 		if (!isset($av[$c])) {
@@ -164,7 +164,7 @@ function notes_dataset_saisie_classes($db, $user)
 	global $langs;
 	$p = $db->prefix();
 	$suivi = array();
-	$resql = $db->query("SELECT fk_classe, trimestre, type, COUNT(*) as nb FROM ".$p."ecole_evaluation WHERE status = 1 GROUP BY fk_classe, trimestre, type");
+	$resql = $db->query("SELECT fk_classe, trimestre, type, COUNT(*) as nb FROM ".$p."ecole_evaluation WHERE status = 1".ecole_annee_sql()." GROUP BY fk_classe, trimestre, type");
 	while ($resql && ($o = $db->fetch_object($resql))) {
 		$suivi[(int) $o->fk_classe][(int) $o->trimestre][(int) $o->type] = (int) $o->nb;
 	}
@@ -206,7 +206,7 @@ function notes_dataset_saisie_matieres($db, $user, $classe, $trimestre)
 	$exceptions = notes_exceptions_classe($db, $cid);
 	$nbEl = count(notes_calc_eleves($db, $cid));
 	$par = array();
-	$resql = $db->query("SELECT v.fk_matiere, v.type, (SELECT COUNT(*) FROM ".$p."ecole_note n WHERE n.fk_evaluation = v.rowid) as nb FROM ".$p."ecole_evaluation v WHERE v.fk_classe = ".$cid." AND v.trimestre = ".((int) $trimestre)." AND v.status = 1");
+	$resql = $db->query("SELECT v.fk_matiere, v.type, (SELECT COUNT(*) FROM ".$p."ecole_note n WHERE n.fk_evaluation = v.rowid) as nb FROM ".$p."ecole_evaluation v WHERE v.fk_classe = ".$cid." AND v.trimestre = ".((int) $trimestre)." AND v.status = 1".ecole_annee_sql('v.annee'));
 	while ($resql && ($o = $db->fetch_object($resql))) {
 		$m = (int) $o->fk_matiere;
 		if ((int) $o->type === NOTES_COMPO) {
@@ -349,7 +349,7 @@ function notes_dataset_eleve($db, $eleve, $periode)
 			array(ecole_pdf_trans($langs, 'NoteDevoirs'), 1, 'C'), array(ecole_pdf_trans($langs, 'Composition'), 1, 'C'), array(ecole_pdf_trans($langs, 'MoyenneSur20'), 1, 'C'),
 			array(ecole_pdf_trans($langs, 'Rang'), 0.7, 'C'), array(ecole_pdf_trans($langs, 'MoyClasse'), 1, 'C'));
 		$evals = array();
-		$resql = $db->query("SELECT rowid, fk_matiere, type FROM ".$db->prefix()."ecole_evaluation WHERE fk_classe = ".$cid." AND trimestre = ".((int) $periode)." AND status = 1 ORDER BY type, numero");
+		$resql = $db->query("SELECT rowid, fk_matiere, type FROM ".$db->prefix()."ecole_evaluation WHERE fk_classe = ".$cid." AND trimestre = ".((int) $periode)." AND status = 1".ecole_annee_sql()." ORDER BY type, numero");
 		while ($resql && ($o = $db->fetch_object($resql))) {
 			$evals[(int) $o->rowid] = $o;
 		}

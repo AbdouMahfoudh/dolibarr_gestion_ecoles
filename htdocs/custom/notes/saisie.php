@@ -44,7 +44,7 @@ if (!in_array($trimestre, array(1, 2, 3), true)) {
 $urlBase = $self.'?fk_classe='.$fk_classe.'&fk_matiere='.$fk_matiere.'&trimestre='.$trimestre;
 
 $cloture = $fk_classe ? notes_est_cloture($db, $fk_classe, $trimestre) : false;
-$peutSaisir = ($fk_classe && $fk_matiere) ? notes_peut_saisir($db, $user, $fk_classe, $fk_matiere) : false;
+$peutSaisir = ($fk_classe && $fk_matiere && !ecole_annee_passee()) ? notes_peut_saisir($db, $user, $fk_classe, $fk_matiere) : false;
 $peutCorriger = $peutSaisir && $user->hasRight('notes', 'note', 'corriger');
 $editable = $peutSaisir && (!$cloture || $peutCorriger);
 
@@ -139,6 +139,7 @@ if ($fk_classe && $fk_matiere) {
 	$exports = ecole_export_buttons('saisie_classes', '', 'notes');
 }
 print load_fiche_titre($langs->trans('SaisieNotes'), $exports, 'fa-marker');
+print ecole_annee_selecteur(array('fk_classe', 'fk_matiere', 'trimestre'));
 
 // Barre de navigation : toutes les classes › classe › matière, et trimestres
 $choixClasses = array();
@@ -185,7 +186,7 @@ if (empty($classes)) {
 if (!$fk_classe) {
 	$p = $db->prefix();
 	$suivi = array();
-	$resql = $db->query("SELECT fk_classe, trimestre, type, COUNT(*) as nb FROM ".$p."ecole_evaluation WHERE status = 1 GROUP BY fk_classe, trimestre, type");
+	$resql = $db->query("SELECT fk_classe, trimestre, type, COUNT(*) as nb FROM ".$p."ecole_evaluation WHERE status = 1".ecole_annee_sql()." GROUP BY fk_classe, trimestre, type");
 	while ($resql && ($o = $db->fetch_object($resql))) {
 		$suivi[(int) $o->fk_classe][(int) $o->trimestre][(int) $o->type] = (int) $o->nb;
 	}
@@ -256,7 +257,7 @@ if (!$fk_matiere) {
 	$p = $db->prefix();
 	$parMat = array();
 	$compoIds = array();
-	$resql = $db->query("SELECT rowid, fk_matiere, type FROM ".$p."ecole_evaluation WHERE fk_classe = ".$fk_classe." AND trimestre = ".$trimestre." AND status = 1");
+	$resql = $db->query("SELECT rowid, fk_matiere, type FROM ".$p."ecole_evaluation WHERE fk_classe = ".$fk_classe." AND trimestre = ".$trimestre." AND status = 1".ecole_annee_sql());
 	while ($resql && ($o = $db->fetch_object($resql))) {
 		$parMat[(int) $o->fk_matiere][(int) $o->type][] = (int) $o->rowid;
 		if ((int) $o->type === NOTES_COMPO) {

@@ -5,6 +5,7 @@ CREATE TABLE llx_ecole_evaluation
 (
 	rowid          INTEGER AUTO_INCREMENT PRIMARY KEY,
 	entity         INTEGER NOT NULL DEFAULT 1,
+	annee          INTEGER NOT NULL DEFAULT 0,       -- année scolaire (année de la rentrée)
 	fk_classe      INTEGER NOT NULL,
 	fk_matiere     INTEGER NOT NULL,
 	trimestre      SMALLINT NOT NULL,
@@ -22,5 +23,6 @@ CREATE TABLE llx_ecole_evaluation
 	fk_user_suppression INTEGER,
 	status         SMALLINT NOT NULL DEFAULT 1,
 	KEY idx_ecole_evaluation_classe (fk_classe, fk_matiere, trimestre),
-	KEY idx_ecole_evaluation_matiere (fk_matiere)
+	KEY idx_ecole_evaluation_matiere (fk_matiere),
+	KEY idx_ecole_evaluation_annee (annee)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

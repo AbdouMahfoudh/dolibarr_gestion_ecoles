@@ -57,6 +57,7 @@ while ($resql && ($o = $db->fetch_object($resql))) {
 	$choixUsers[(int) $o->fk_user] = ecole_user_label($db, (int) $o->fk_user);
 }
 
+print ecole_annee_selecteur();
 print '<form method="POST" action="'.dol_escape_htmltag($self).'" name="formfilter">';
 print '<input type="hidden" name="token" value="'.newToken().'">';
 if ($f['fk_evaluation']) {

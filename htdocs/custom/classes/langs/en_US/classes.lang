@@ -483,3 +483,9 @@ NomEtablissementAide=the Arabic name is used in documents, PDF headers, dashboar
 NomEtablissementFr=Name in French
 NomEtablissementAr=Name in Arabic
 ModifierDansSociete=Edit (Setup > Company)
+
+# School years
+AnneeScolaire=School year
+AnneeEnCours=current
+AnneePasseeLectureSeule=School year %s: read only, nothing can be changed.
+RevenirAnneeEnCours=Back to the current year

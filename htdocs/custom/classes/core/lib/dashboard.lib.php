@@ -373,13 +373,13 @@ function ecole_dash_notes()
 		return $out;
 	}
 	$out['classes'] = (int) ecole_dash_val("SELECT COUNT(*) FROM ".$p."ecole_classe WHERE entity IN (".getEntity('ecole_classe').") AND status = 1");
-	$out['evaluations'] = (int) ecole_dash_val("SELECT COUNT(*) FROM ".$p."ecole_evaluation WHERE entity IN (".getEntity('ecole_evaluation').") AND status = 1");
-	$out['notes'] = (int) ecole_dash_val("SELECT COUNT(*) FROM ".$p."ecole_note n INNER JOIN ".$p."ecole_evaluation v ON v.rowid = n.fk_evaluation WHERE v.status = 1");
-	$resql = $db->query("SELECT trimestre, COUNT(*) as nb FROM ".$p."ecole_note_cloture WHERE status = 1 GROUP BY trimestre");
+	$out['evaluations'] = (int) ecole_dash_val("SELECT COUNT(*) FROM ".$p."ecole_evaluation WHERE entity IN (".getEntity('ecole_evaluation').") AND status = 1".ecole_annee_sql());
+	$out['notes'] = (int) ecole_dash_val("SELECT COUNT(*) FROM ".$p."ecole_note n INNER JOIN ".$p."ecole_evaluation v ON v.rowid = n.fk_evaluation WHERE v.status = 1".ecole_annee_sql('v.annee'));
+	$resql = $db->query("SELECT trimestre, COUNT(*) as nb FROM ".$p."ecole_note_cloture WHERE status = 1".ecole_annee_sql()." GROUP BY trimestre");
 	while ($resql && ($o = $db->fetch_object($resql))) {
 		$out['cloturees'][(int) $o->trimestre] = (int) $o->nb;
 	}
-	$resql = $db->query("SELECT trimestre, COUNT(*) as nb FROM ".$p."ecole_evaluation WHERE entity IN (".getEntity('ecole_evaluation').") AND status = 1 GROUP BY trimestre ORDER BY trimestre");
+	$resql = $db->query("SELECT trimestre, COUNT(*) as nb FROM ".$p."ecole_evaluation WHERE entity IN (".getEntity('ecole_evaluation').") AND status = 1".ecole_annee_sql()." GROUP BY trimestre ORDER BY trimestre");
 	while ($resql && ($o = $db->fetch_object($resql))) {
 		$out['par_trimestre'][] = array('T'.(int) $o->trimestre, (int) $o->nb);
 	}
@@ -531,7 +531,7 @@ function ecole_dash_evenements($limite = 20)
 	}
 	if (isModEnabled('notes') && ecole_dash_table('ecole_evaluation') && ($user->hasRight('notes', 'note', 'lire') || $user->hasRight('notes', 'note', 'saisirtout'))) {
 		$ajoute("SELECT v.fk_classe, v.trimestre, v.date_creation, c.ref as cref, m.label_fr, m.label_ar FROM ".$p."ecole_evaluation v LEFT JOIN ".$p."ecole_classe c ON c.rowid = v.fk_classe"
-			." LEFT JOIN ".$p."ecole_matiere m ON m.rowid = v.fk_matiere WHERE v.entity IN (".getEntity('ecole_evaluation').") AND v.status = 1 ORDER BY v.date_creation DESC LIMIT ".$n,
+			." LEFT JOIN ".$p."ecole_matiere m ON m.rowid = v.fk_matiere WHERE v.entity IN (".getEntity('ecole_evaluation').") AND v.status = 1".ecole_annee_sql('v.annee')." ORDER BY v.date_creation DESC LIMIT ".$n,
 			function ($o) use ($db, $langs) {
 				return array($db->jdate($o->date_creation), 'fa-star', '#8a4fc4', $langs->trans('EdEvEvaluation', dol_escape_htmltag(ecole_label($o)), dol_escape_htmltag($o->cref), (int) $o->trimestre), dol_buildpath('/notes/saisie.php', 1).'?fk_classe='.((int) $o->fk_classe).'&trimestre='.((int) $o->trimestre));
 			});

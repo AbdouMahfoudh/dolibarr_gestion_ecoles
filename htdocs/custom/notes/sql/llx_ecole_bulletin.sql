@@ -5,6 +5,7 @@ CREATE TABLE llx_ecole_bulletin
 (
 	rowid              INTEGER AUTO_INCREMENT PRIMARY KEY,
 	entity             INTEGER NOT NULL DEFAULT 1,
+	annee              INTEGER NOT NULL DEFAULT 0,  -- année scolaire (année de la rentrée)
 	fk_eleve           INTEGER NOT NULL,
 	fk_classe          INTEGER NOT NULL,
 	trimestre          SMALLINT NOT NULL,
@@ -16,6 +17,6 @@ CREATE TABLE llx_ecole_bulletin
 	tms                TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	fk_user_creat      INTEGER,
 	fk_user_modif      INTEGER,
-	UNIQUE KEY uk_ecole_bulletin (fk_eleve, trimestre),
+	UNIQUE KEY uk_ecole_bulletin (fk_eleve, trimestre, annee),
 	KEY idx_ecole_bulletin_classe (fk_classe, trimestre)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

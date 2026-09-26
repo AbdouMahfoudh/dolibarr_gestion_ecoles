@@ -21,7 +21,7 @@ if (GETPOSTINT('id') <= 0 || $object->fetch(GETPOSTINT('id')) <= 0) {
 	accessforbidden($langs->trans('ErrorRecordNotFound'));
 }
 $id = (int) $object->id;
-$fk_classe = (int) $object->fk_classe;
+$fk_classe = ecole_eleve_classe_annee($db, $id, (int) $object->fk_classe);
 $periode = notes_periode_requete($db, $fk_classe);
 $annee = ($periode === 0);
 $self = $_SERVER['PHP_SELF'].'?id='.$id;
@@ -30,6 +30,14 @@ llxHeader('', $langs->trans('Notes').' - '.$object->ref, '', '', 0, 0, '', '', '
 eleve_print_banner($object, 'notes');
 
 print '<div class="fichecenter"><br>';
+print ecole_annee_selecteur(array('id', 'periode'));
+if ($fk_classe <= 0) {
+	print '<div class="info">'.$langs->trans('EleveNonClasse').'</div></div>';
+	print dol_get_fiche_end();
+	llxFooter();
+	$db->close();
+	exit;
+}
 print '<div class="right">'.ecole_export_buttons('eleve', '&id='.$id.'&periode='.$periode, 'notes').'</div>';
 print notes_periode_tabs($db, $self, $periode, $fk_classe);
 
@@ -90,7 +98,7 @@ if ($annee) {
 } else {
 	// Notes de chaque évaluation
 	$evals = array();
-	$resql = $db->query("SELECT rowid, fk_matiere, type, numero, note_max FROM ".$db->prefix()."ecole_evaluation WHERE fk_classe = ".$fk_classe." AND trimestre = ".$periode." AND status = 1 ORDER BY type, numero");
+	$resql = $db->query("SELECT rowid, fk_matiere, type, numero, note_max FROM ".$db->prefix()."ecole_evaluation WHERE fk_classe = ".$fk_classe." AND trimestre = ".$periode." AND status = 1".ecole_annee_sql()." ORDER BY type, numero");
 	while ($resql && ($o = $db->fetch_object($resql))) {
 		$evals[(int) $o->rowid] = $o;
 	}

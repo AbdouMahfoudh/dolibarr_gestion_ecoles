@@ -66,6 +66,7 @@ class modClasses extends DolibarrModules
 			array(104603, 'Supprimer les classes et les matières', 'supprimer'),
 			array(104604, 'Gérer les emplois du temps (cours et examens)', 'edt'),
 			array(104605, 'Configurer niveaux, sections, créneaux et sessions d\'examen', 'config'),
+			array(104606, 'Consulter les années scolaires passées', 'annees'),
 		);
 		foreach ($defs as $d) {
 			$this->rights[$r][0] = $d[0];

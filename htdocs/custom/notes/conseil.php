@@ -28,7 +28,7 @@ if (!isset($classes[$fk_classe])) {
 }
 $periode = notes_periode_requete($db, $fk_classe);
 $annee = ($periode === 0);
-$close = $fk_classe ? (!$annee && notes_est_cloture($db, $fk_classe, $periode)) : false;
+$close = $fk_classe ? (ecole_annee_passee() || (!$annee && notes_est_cloture($db, $fk_classe, $periode))) : false;
 $url = $self.'?fk_classe='.$fk_classe.'&periode='.$periode;
 
 /*
@@ -71,6 +71,7 @@ if ($action === 'save' && $fk_classe && !$close) {
  */
 llxHeader('', $langs->trans('ConseilDeClasse'), '', '', 0, 0, '', '', '', 'mod-notes page-conseil');
 print load_fiche_titre($langs->trans('ConseilDeClasse'), $fk_classe ? ecole_export_buttons('conseil', '&fk_classe='.$fk_classe.'&periode='.$periode, 'notes') : '', 'fa-users');
+print ecole_annee_selecteur(array('fk_classe', 'periode'));
 
 $choix = array();
 foreach ($classes as $cid => $c) {

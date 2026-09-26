@@ -34,6 +34,7 @@ $param = '&fk_classe='.$fk_classe.'&seuil='.urlencode(notes_code($seuil, ''));
 
 llxHeader('', $langs->trans('ElevesEnDifficulte'), '', '', 0, 0, '', '', '', 'mod-notes page-difficultes');
 print load_fiche_titre($langs->trans('ElevesEnDifficulte'), ecole_export_buttons('difficultes', $param.'&periode='.$periode, 'notes'), 'fa-life-ring');
+print ecole_annee_selecteur(array('fk_classe', 'periode', 'seuil'));
 
 $choix = array();
 foreach ($classes as $cid => $c) {

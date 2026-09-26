@@ -14,7 +14,7 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/html.form.class.php';
 
 $langs->loadLangs(array('notes@notes', 'eleves@eleves', 'classes@classes', 'other'));
 
-$cangerer = $user->hasRight('notes', 'cloture', 'gerer');
+$cangerer = $user->hasRight('notes', 'cloture', 'gerer') && !ecole_annee_passee();
 if (!$cangerer && !$user->hasRight('notes', 'note', 'lire')) {
 	accessforbidden();
 }
@@ -29,7 +29,7 @@ if (!in_array($trimestre, array(1, 2, 3), true)) {
 	$r = $db->query("SELECT COUNT(*) as nb FROM ".$db->prefix()."ecole_classe WHERE status = 1");
 	$nbClasses = ($r && ($o = $db->fetch_object($r))) ? (int) $o->nb : 0;
 	$fermees = array(1 => 0, 2 => 0, 3 => 0);
-	$r = $db->query("SELECT q.trimestre, COUNT(*) as nb FROM ".$db->prefix()."ecole_note_cloture q INNER JOIN ".$db->prefix()."ecole_classe c ON c.rowid = q.fk_classe AND c.status = 1 WHERE q.status = 1 GROUP BY q.trimestre");
+	$r = $db->query("SELECT q.trimestre, COUNT(*) as nb FROM ".$db->prefix()."ecole_note_cloture q INNER JOIN ".$db->prefix()."ecole_classe c ON c.rowid = q.fk_classe AND c.status = 1 WHERE q.status = 1".ecole_annee_sql('q.annee')." GROUP BY q.trimestre");
 	while ($r && ($o = $db->fetch_object($r))) {
 		$fermees[(int) $o->trimestre] = (int) $o->nb;
 	}
@@ -72,6 +72,7 @@ if ($cangerer && $fk_classe > 0 && isset($classes[$fk_classe])) {
  */
 llxHeader('', $langs->trans('ClotureTrimestres'), '', '', 0, 0, '', '', '', 'mod-notes page-cloture');
 print load_fiche_titre($langs->trans('ClotureTrimestres'), ecole_export_buttons('cloture', '&trimestre='.$trimestre, 'notes'), 'fa-lock');
+print ecole_annee_selecteur(array('trimestre'));
 
 print '<style>.notes-trim{display:inline-block;padding:5px 12px;margin-right:4px;border:1px solid #bbb;border-radius:4px;text-decoration:none;background:#fff}.notes-trim.on{background:#e8eefb;border-color:#6a84c4;font-weight:bold}</style>';
 print '<div class="marginbottomonly">';
@@ -88,7 +89,7 @@ if ($action === 'cloturer' && $cangerer && isset($classes[$fk_classe])) {
 $p = $db->prefix();
 $av = array();
 $sql = "SELECT v.fk_classe, v.rowid, v.type, (SELECT COUNT(*) FROM ".$p."ecole_note n WHERE n.fk_evaluation = v.rowid) as nb";
-$sql .= " FROM ".$p."ecole_evaluation v WHERE v.status = 1 AND v.trimestre = ".$trimestre;
+$sql .= " FROM ".$p."ecole_evaluation v WHERE v.status = 1 AND v.trimestre = ".$trimestre.ecole_annee_sql('v.annee');
 $resql = $db->query($sql);
 while ($resql && ($o = $db->fetch_object($resql))) {
 	$c = (int) $o->fk_classe;

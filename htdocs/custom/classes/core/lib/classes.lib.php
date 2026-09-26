@@ -1075,3 +1075,9 @@ function ecole_plages_chevauchent($d1, $f1, $d2, $f2)
 {
 	return $d1 < $f2 && $f1 > $d2;
 }
+
+// Années scolaires (année active, année consultée) et mise à niveau des tables si besoin
+require_once __DIR__.'/annee.lib.php';
+if (!empty($GLOBALS['db']) && is_object($GLOBALS['db'])) {
+	ecole_annee_migrer($GLOBALS['db']);
+}

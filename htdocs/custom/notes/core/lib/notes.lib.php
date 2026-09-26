@@ -294,6 +294,21 @@ function notes_peut_voir($db, $user, $fk_classe, $fk_matiere = 0)
 }
 
 /**
+ * Condition SQL sur les classes (alias c) de l'année consultée : classes actives pour l'année en cours,
+ * classes qui ont eu des évaluations pour une année passée (même désactivées depuis).
+ *
+ * @param  DoliDB $db Handler base
+ * @return string
+ */
+function notes_sql_classes_annee($db)
+{
+	if (ecole_annee_passee()) {
+		return " AND c.rowid IN (SELECT v.fk_classe FROM ".$db->prefix()."ecole_evaluation v WHERE v.status = 1".ecole_annee_sql('v.annee').")";
+	}
+	return " AND c.status = 1";
+}
+
+/**
  * Classes visibles par l'utilisateur (actives), dans l'ordre des niveaux : id => objet (rowid, ref, label_fr, label_ar, fk_niveau).
  *
  * @param  DoliDB $db   Handler base
@@ -304,7 +319,7 @@ function notes_classes($db, $user)
 {
 	$p = $db->prefix();
 	$sql = "SELECT c.rowid, c.ref, c.label_fr, c.label_ar, c.fk_niveau FROM ".$p."ecole_classe c LEFT JOIN ".$p."ecole_niveau n ON n.rowid = c.fk_niveau";
-	$sql .= " WHERE c.entity IN (".getEntity('ecole_classe').") AND c.status = 1";
+	$sql .= " WHERE c.entity IN (".getEntity('ecole_classe').")".notes_sql_classes_annee($db);
 	if (!notes_voit_tout($user)) {
 		$ids = array_keys(notes_affectations($db, (int) $user->id));
 		$sql .= " AND c.rowid IN (".(empty($ids) ? '0' : implode(',', array_map('intval', $ids))).")";
@@ -366,7 +381,7 @@ function notes_matieres_classe($db, $user, $fk_classe)
  */
 function notes_cloture($db, $fk_classe, $trimestre)
 {
-	$resql = $db->query("SELECT * FROM ".$db->prefix()."ecole_note_cloture WHERE fk_classe = ".((int) $fk_classe)." AND trimestre = ".((int) $trimestre));
+	$resql = $db->query("SELECT * FROM ".$db->prefix()."ecole_note_cloture WHERE fk_classe = ".((int) $fk_classe)." AND trimestre = ".((int) $trimestre).ecole_annee_sql());
 	$o = $resql ? $db->fetch_object($resql) : null;
 	return $o ? $o : null;
 }
@@ -394,7 +409,7 @@ function notes_est_cloture($db, $fk_classe, $trimestre)
 function notes_clotures($db)
 {
 	$out = array();
-	$resql = $db->query("SELECT * FROM ".$db->prefix()."ecole_note_cloture WHERE entity IN (".getEntity('ecole_note_cloture').")");
+	$resql = $db->query("SELECT * FROM ".$db->prefix()."ecole_note_cloture WHERE entity IN (".getEntity('ecole_note_cloture').")".ecole_annee_sql());
 	while ($resql && ($o = $db->fetch_object($resql))) {
 		$out[((int) $o->fk_classe).'|'.((int) $o->trimestre)] = $o;
 	}
@@ -414,8 +429,11 @@ function notes_cloturer($db, $user, $fk_classe, $trimestre)
 {
 	global $conf;
 	$now = "'".$db->idate(dol_now())."'";
-	$sql = "INSERT INTO ".$db->prefix()."ecole_note_cloture (entity, fk_classe, trimestre, status, date_cloture, fk_user_cloture)";
-	$sql .= " VALUES (".((int) $conf->entity).", ".((int) $fk_classe).", ".((int) $trimestre).", 1, ".$now.", ".((int) $user->id).")";
+	if (ecole_annee_passee()) {
+		return -1;
+	}
+	$sql = "INSERT INTO ".$db->prefix()."ecole_note_cloture (entity, annee, fk_classe, trimestre, status, date_cloture, fk_user_cloture)";
+	$sql .= " VALUES (".((int) $conf->entity).", ".ecole_annee_active().", ".((int) $fk_classe).", ".((int) $trimestre).", 1, ".$now.", ".((int) $user->id).")";
 	$sql .= " ON DUPLICATE KEY UPDATE status = 1, date_cloture = ".$now.", fk_user_cloture = ".((int) $user->id);
 	return $db->query($sql) ? 1 : -1;
 }
@@ -435,13 +453,17 @@ function notes_rouvrir($db, $user, $fk_classe, $trimestre, $motif, &$error)
 {
 	global $langs;
 	$motif = trim((string) $motif);
+	if (ecole_annee_passee()) {
+		$error = $langs->trans('AnneePasseeLectureSeule', ecole_annee_label(ecole_annee_vue()));
+		return -1;
+	}
 	if ($motif === '') {
 		$error = $langs->trans('ErrorMotifObligatoire');
 		return -1;
 	}
 	$sql = "UPDATE ".$db->prefix()."ecole_note_cloture SET status = 0, date_reouverture = '".$db->idate(dol_now())."', fk_user_reouverture = ".((int) $user->id);
 	$sql .= ", motif_reouverture = '".$db->escape(dol_trunc($motif, 250, 'right', 'UTF-8', 1))."'";
-	$sql .= " WHERE fk_classe = ".((int) $fk_classe)." AND trimestre = ".((int) $trimestre)." AND status = 1";
+	$sql .= " WHERE fk_classe = ".((int) $fk_classe)." AND trimestre = ".((int) $trimestre)." AND status = 1".ecole_annee_sql();
 	if (!$db->query($sql)) {
 		$error = $db->lasterror();
 		return -1;
@@ -482,7 +504,7 @@ function notes_trimestre_defaut($db, $fk_classe)
 function notes_evaluations($db, $fk_classe, $fk_matiere, $trimestre)
 {
 	$sql = "SELECT * FROM ".$db->prefix()."ecole_evaluation WHERE fk_classe = ".((int) $fk_classe)." AND fk_matiere = ".((int) $fk_matiere);
-	$sql .= " AND trimestre = ".((int) $trimestre)." AND status = 1 ORDER BY type, numero, rowid";
+	$sql .= " AND trimestre = ".((int) $trimestre)." AND status = 1".ecole_annee_sql()." ORDER BY type, numero, rowid";
 	$out = array();
 	$resql = $db->query($sql);
 	while ($resql && ($o = $db->fetch_object($resql))) {
@@ -541,6 +563,10 @@ function notes_evaluation_creer($db, $user, $fk_classe, $fk_matiere, $trimestre,
 		$error = $langs->trans('ErrorEcoleBadValue', $langs->transnoentities('Trimestre'));
 		return -1;
 	}
+	if (ecole_annee_passee()) {
+		$error = $langs->trans('AnneePasseeLectureSeule', ecole_annee_label(ecole_annee_vue()));
+		return -1;
+	}
 	if (notes_est_cloture($db, $fk_classe, $trimestre)) {
 		$error = $langs->trans('ErrorTrimestreCloture');
 		return -1;
@@ -573,8 +599,8 @@ function notes_evaluation_creer($db, $user, $fk_classe, $fk_matiere, $trimestre,
 			$date = $x ? substr((string) $x->date_examen, 0, 10) : '';
 		}
 	}
-	$sql = "INSERT INTO ".$p."ecole_evaluation (entity, fk_classe, fk_matiere, trimestre, type, numero, label, date_eval, note_max, fk_session, date_creation, fk_user_creat, status)";
-	$sql .= " VALUES (".((int) $conf->entity).", ".((int) $fk_classe).", ".((int) $fk_matiere).", ".((int) $trimestre).", ".((int) $type).", ".$numero;
+	$sql = "INSERT INTO ".$p."ecole_evaluation (entity, annee, fk_classe, fk_matiere, trimestre, type, numero, label, date_eval, note_max, fk_session, date_creation, fk_user_creat, status)";
+	$sql .= " VALUES (".((int) $conf->entity).", ".ecole_annee_active().", ".((int) $fk_classe).", ".((int) $fk_matiere).", ".((int) $trimestre).", ".((int) $type).", ".$numero;
 	$sql .= ", ".(trim((string) $label) !== '' ? "'".$db->escape(dol_trunc(trim($label), 120, 'right', 'UTF-8', 1))."'" : "NULL");
 	$sql .= ", ".(notes_date_ok($date) ? "'".$db->escape($date)."'" : "NULL");
 	$sql .= ", ".((float) $cm->note_max).", ".($fk_session > 0 ? $fk_session : "NULL").", '".$db->idate(dol_now())."', ".((int) $user->id).", 1)";
@@ -583,6 +609,17 @@ function notes_evaluation_creer($db, $user, $fk_classe, $fk_matiere, $trimestre,
 		return -1;
 	}
 	return (int) $db->last_insert_id($p."ecole_evaluation");
+}
+
+/**
+ * Une évaluation peut-elle encore être modifiée ? Non si elle appartient à une année scolaire passée.
+ *
+ * @param  object $ev Évaluation
+ * @return bool
+ */
+function notes_evaluation_modifiable($ev)
+{
+	return !ecole_annee_passee() && (!isset($ev->annee) || (int) $ev->annee === 0 || (int) $ev->annee === ecole_annee_active());
 }
 
 /**
@@ -597,6 +634,9 @@ function notes_evaluation_creer($db, $user, $fk_classe, $fk_matiere, $trimestre,
  */
 function notes_evaluation_modifier($db, $user, $ev, $date, $label)
 {
+	if (!notes_evaluation_modifiable($ev)) {
+		return -1;
+	}
 	$sql = "UPDATE ".$db->prefix()."ecole_evaluation SET date_eval = ".(notes_date_ok($date) ? "'".$db->escape($date)."'" : "NULL");
 	$sql .= ", label = ".(trim((string) $label) !== '' ? "'".$db->escape(dol_trunc(trim($label), 120, 'right', 'UTF-8', 1))."'" : "NULL");
 	$sql .= ", fk_user_modif = ".((int) $user->id)." WHERE rowid = ".((int) $ev->rowid);
@@ -613,6 +653,9 @@ function notes_evaluation_modifier($db, $user, $ev, $date, $label)
  */
 function notes_evaluation_supprimer($db, $user, $ev)
 {
+	if (!notes_evaluation_modifiable($ev)) {
+		return -1;
+	}
 	$sql = "UPDATE ".$db->prefix()."ecole_evaluation SET status = 0, date_suppression = '".$db->idate(dol_now())."', fk_user_suppression = ".((int) $user->id);
 	$sql .= " WHERE rowid = ".((int) $ev->rowid);
 	return $db->query($sql) ? 1 : -1;
@@ -635,8 +678,23 @@ function notes_eleves($db, $fk_classe, $evalIds)
 {
 	$p = $db->prefix();
 	$cols = "e.rowid, e.ref, e.nom_fr, e.nom_ar, e.numero_appel, e.status, e.fk_classe";
-	$sql = "SELECT ".$cols." FROM ".$p."ecole_eleve e WHERE e.entity IN (".getEntity('ecole_eleve').") AND e.fk_classe = ".((int) $fk_classe);
-	$sql .= " AND e.status IN (".implode(',', EcoleEleve::statusOccupantPlace()).")";
+	$passee = ecole_annee_passee();
+	if ($passee) {
+		// Année passée : élèves dont c'était la dernière classe de l'année (historique des classes)
+		list($debut, $fin) = ecole_annee_bornes(ecole_annee_vue());
+		$sql = "SELECT ".$cols." FROM ".$p."ecole_eleve e INNER JOIN ".$p."ecole_eleve_classe h ON h.fk_eleve = e.rowid";
+		$sql .= " WHERE e.entity IN (".getEntity('ecole_eleve').") AND h.fk_classe = ".((int) $fk_classe);
+		$sql .= " AND h.date_debut <= '".$fin."' AND (h.date_fin IS NULL OR h.date_fin >= '".$debut."')";
+		$sql .= " AND NOT EXISTS (SELECT 1 FROM ".$p."ecole_eleve_classe h2 WHERE h2.fk_eleve = h.fk_eleve AND h2.date_debut > h.date_debut AND h2.date_debut <= '".$fin."')";
+		$membres = array();
+		$resql = $db->query($sql);
+		while ($resql && ($o = $db->fetch_object($resql))) {
+			$membres[(int) $o->rowid] = true;
+		}
+	} else {
+		$sql = "SELECT ".$cols." FROM ".$p."ecole_eleve e WHERE e.entity IN (".getEntity('ecole_eleve').") AND e.fk_classe = ".((int) $fk_classe);
+		$sql .= " AND e.status IN (".implode(',', EcoleEleve::statusOccupantPlace()).")";
+	}
 	if (!empty($evalIds)) {
 		$sql .= " UNION SELECT ".$cols." FROM ".$p."ecole_eleve e INNER JOIN ".$p."ecole_note n ON n.fk_eleve = e.rowid";
 		$sql .= " WHERE n.fk_evaluation IN (".implode(',', array_map('intval', $evalIds)).")";
@@ -644,7 +702,11 @@ function notes_eleves($db, $fk_classe, $evalIds)
 	$out = array();
 	$resql = $db->query($sql);
 	while ($resql && ($o = $db->fetch_object($resql))) {
-		$o->ancien = ((int) $o->fk_classe !== (int) $fk_classe || !in_array((int) $o->status, EcoleEleve::statusOccupantPlace(), true)) ? 1 : 0;
+		if ($passee) {
+			$o->ancien = isset($membres[(int) $o->rowid]) ? 0 : 1;
+		} else {
+			$o->ancien = ((int) $o->fk_classe !== (int) $fk_classe || !in_array((int) $o->status, EcoleEleve::statusOccupantPlace(), true)) ? 1 : 0;
+		}
 		$out[(int) $o->rowid] = $o;
 	}
 	uasort($out, function ($a, $b) {
@@ -780,8 +842,12 @@ function notes_parse($saisie, $absence, $max, &$err)
  */
 function notes_enregistrer($db, $user, $ev, $codes, $motif, &$error)
 {
-	global $conf;
+	global $conf, $langs;
 	$p = $db->prefix();
+	if (!notes_evaluation_modifiable($ev)) {
+		$error = $langs->trans('AnneePasseeLectureSeule', ecole_annee_label(isset($ev->annee) ? (int) $ev->annee : ecole_annee_vue()));
+		return -1;
+	}
 	$avant = notes_valeurs($db, array((int) $ev->rowid));
 	$avant = isset($avant[(int) $ev->rowid]) ? $avant[(int) $ev->rowid] : array();
 	$now = "'".$db->idate(dol_now())."'";
@@ -869,7 +935,7 @@ function notes_historique($db, $user, $f, $limit, $offset, &$total)
 	$from = " FROM ".$p."ecole_note_log l INNER JOIN ".$p."ecole_evaluation v ON v.rowid = l.fk_evaluation";
 	$from .= " INNER JOIN ".$p."ecole_eleve e ON e.rowid = l.fk_eleve";
 	$from .= " LEFT JOIN ".$p."ecole_classe c ON c.rowid = v.fk_classe LEFT JOIN ".$p."ecole_matiere m ON m.rowid = v.fk_matiere";
-	$where = " WHERE l.entity IN (".getEntity('ecole_note_log').")";
+	$where = " WHERE l.entity IN (".getEntity('ecole_note_log').")".ecole_annee_sql('v.annee');
 	foreach (array('fk_classe' => 'v.fk_classe', 'fk_matiere' => 'v.fk_matiere', 'trimestre' => 'v.trimestre', 'fk_evaluation' => 'l.fk_evaluation', 'fk_user' => 'l.fk_user', 'fk_eleve' => 'l.fk_eleve') as $k => $col) {
 		if (!empty($f[$k])) {
 			$where .= " AND ".$col." = ".((int) $f[$k]);

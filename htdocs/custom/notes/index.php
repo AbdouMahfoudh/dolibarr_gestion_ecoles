@@ -20,7 +20,8 @@ $langs->loadLangs(array('notes@notes', 'classes@classes', 'other'));
 $base = dol_buildpath('/notes/', 1);
 
 llxHeader('', $langs->trans('EdTableauNotes'), '', '', 0, 0, '', '', '', 'mod-notes page-index');
-print ecole_dash_hero($langs->trans('EdTableauNotes'));
+print ecole_dash_hero($langs->trans('EdTableauNotes'), dol_escape_htmltag(ecole_annee_label(ecole_annee_vue())));
+print ecole_annee_selecteur();
 
 $st = ecole_dash_notes();
 $kpis = array(
@@ -44,7 +45,7 @@ print ecole_dash_box($langs->trans('EdAvancementClotures'), 'fa-tasks', ecole_da
 $html = '';
 $sql = "SELECT v.fk_classe, v.trimestre, v.label, v.date_creation, c.ref as cref, m.label_fr, m.label_ar FROM ".MAIN_DB_PREFIX."ecole_evaluation v";
 $sql .= " LEFT JOIN ".MAIN_DB_PREFIX."ecole_classe c ON c.rowid = v.fk_classe LEFT JOIN ".MAIN_DB_PREFIX."ecole_matiere m ON m.rowid = v.fk_matiere";
-$sql .= " WHERE v.entity IN (".getEntity('ecole_evaluation').") AND v.status = 1 ORDER BY v.date_creation DESC LIMIT 5";
+$sql .= " WHERE v.entity IN (".getEntity('ecole_evaluation').") AND v.status = 1".ecole_annee_sql('v.annee')." ORDER BY v.date_creation DESC LIMIT 5";
 $resql = $db->query($sql);
 while ($resql && ($o = $db->fetch_object($resql))) {
 	$html .= '<div class="ed-row"><a href="'.$base.'saisie.php?fk_classe='.((int) $o->fk_classe).'&trimestre='.((int) $o->trimestre).'"><b>'.dol_escape_htmltag($o->cref).'</b> · '.dol_escape_htmltag(ecole_label($o)).' <span class="opacitymedium">T'.((int) $o->trimestre).'</span></a>';

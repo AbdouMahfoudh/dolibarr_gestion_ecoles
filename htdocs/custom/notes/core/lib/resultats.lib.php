@@ -21,7 +21,7 @@ function notes_classes_resultats($db, $user)
 	if ($user->hasRight('notes', 'bulletin', 'lire')) {
 		$p = $db->prefix();
 		$sql = "SELECT c.rowid, c.ref, c.label_fr, c.label_ar, c.fk_niveau FROM ".$p."ecole_classe c LEFT JOIN ".$p."ecole_niveau n ON n.rowid = c.fk_niveau";
-		$sql .= " WHERE c.entity IN (".getEntity('ecole_classe').") AND c.status = 1 ORDER BY n.position, c.rowid";
+		$sql .= " WHERE c.entity IN (".getEntity('ecole_classe').")".notes_sql_classes_annee($db)." ORDER BY n.position, c.rowid";
 		$out = array();
 		$resql = $db->query($sql);
 		while ($resql && ($o = $db->fetch_object($resql))) {
