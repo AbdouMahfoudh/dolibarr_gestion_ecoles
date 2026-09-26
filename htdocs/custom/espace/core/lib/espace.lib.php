@@ -811,6 +811,19 @@ function espace_zones()
 }
 
 /**
+ * Zones écrites dans les règles d'adresses (.htaccess) : aussi le personnel dès que le module Personnel est
+ * présent sur le serveur, même désactivé au moment de l'écriture (sinon réactiver le module Espace avant le
+ * module Personnel effaçait la règle « personnel » et …/personnel répondait « Not Found »).
+ *
+ * @return string[]
+ */
+function espace_zones_htaccess()
+{
+	$perso = isModEnabled('personnel') || is_file(dol_buildpath('/personnel/core/modules/modPersonnel.class.php', 0));
+	return $perso ? array(ESPACE_ZONE_PARENTS, ESPACE_ZONE_PERSONNEL) : array(ESPACE_ZONE_PARENTS);
+}
+
+/**
  * Bloc de règles des adresses propres (fichier .htaccess) : une règle par zone, dans le même dossier.
  *
  * @param  array[]|null $cibles Emplacements (espace_htaccess_cible) d'un même dossier ;
@@ -822,7 +835,7 @@ function espace_htaccess_bloc($cibles = null)
 	$racineUrl = rtrim(DOL_URL_ROOT, '/');
 	if (!$cibles) {
 		$cibles = array();
-		foreach (espace_zones() as $z) {
+		foreach (espace_zones_htaccess() as $z) {
 			$cibles[] = array('base' => $racineUrl.'/', 'segment' => ($z === ESPACE_ZONE_PERSONNEL ? 'personnel' : 'espace'),
 				'cible' => ltrim(substr(dol_buildpath(espace_entree($z), 1), strlen($racineUrl)), '/'));
 		}
@@ -849,7 +862,7 @@ function espace_htaccess_bloc($cibles = null)
 function espace_htaccess_cibles()
 {
 	$parDossier = array();
-	foreach (espace_zones() as $z) {
+	foreach (espace_zones_htaccess() as $z) {
 		$c = espace_htaccess_cible($z);
 		if ($c) {
 			$parDossier[rtrim($c['dir'], '/')][] = $c;

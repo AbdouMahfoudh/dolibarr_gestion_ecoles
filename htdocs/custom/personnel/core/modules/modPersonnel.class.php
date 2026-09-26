@@ -250,6 +250,14 @@ class modPersonnel extends DolibarrModules
 		if (class_exists('EcoleEmploye') && is_object($user)) {
 			EcoleEmploye::importerUtilisateurs($this->db, $user);
 		}
+		// Adresse de l'espace du personnel (…/personnel) : règles .htaccess réécrites avec les deux zones
+		if (isModEnabled('espace')) {
+			require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
+			dol_include_once('/espace/core/lib/espace.lib.php');
+			if (function_exists('espace_htaccess_installer')) {
+				espace_htaccess_installer($this->db);
+			}
+		}
 		return $res;
 	}
 
