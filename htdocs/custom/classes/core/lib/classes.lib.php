@@ -263,15 +263,19 @@ function ecole_users_categories($db, $cats, $keep = 0)
 	foreach ($cats as $c) {
 		$conds[] = "FIND_IN_SET('".$db->escape($c)."', ef.ecole_categorie) > 0";
 	}
-	$sql = "SELECT u.rowid, u.firstname, u.lastname, u.login FROM ".$db->prefix()."user as u";
+	$emp = ecole_table_exists($db, 'ecole_employe');
+	$sql = "SELECT u.rowid, u.firstname, u.lastname, u.login".($emp ? ", e.nom_fr, e.nom_ar" : "")." FROM ".$db->prefix()."user as u";
 	$sql .= " LEFT JOIN ".$db->prefix()."user_extrafields as ef ON ef.fk_object = u.rowid";
+	if ($emp) {
+		$sql .= " LEFT JOIN ".$db->prefix()."ecole_employe as e ON e.fk_user = u.rowid";
+	}
 	$sql .= " WHERE u.entity IN (".getEntity('user').")";
 	$sql .= " AND ((u.statut = 1 AND (".implode(' OR ', $conds)."))".((int) $keep > 0 ? " OR u.rowid = ".((int) $keep) : "").")";
 	$sql .= " ORDER BY u.lastname, u.firstname";
 	$out = array();
 	$resql = $db->query($sql);
 	while ($resql && ($o = $db->fetch_object($resql))) {
-		$name = trim($o->firstname.' '.$o->lastname);
+		$name = ecole_user_nom($o);
 		$out[(int) $o->rowid] = $name !== '' ? $name : $o->login;
 	}
 	return $out;
@@ -664,15 +668,42 @@ function pdf_modele_extra_view($object)
  */
 function ecole_user_label($db, $id)
 {
+	global $langs;
+	static $cache = array();
 	if ((int) $id <= 0) {
 		return '';
 	}
-	$resql = $db->query("SELECT firstname, lastname, login FROM ".$db->prefix()."user WHERE rowid = ".((int) $id));
-	if ($resql && ($o = $db->fetch_object($resql))) {
-		$name = trim($o->firstname.' '.$o->lastname);
-		return $name !== '' ? $name : $o->login;
+	$k = (int) $id.'-'.(is_object($langs) ? $langs->defaultlang : ''); // le nom dépend de la langue
+	if (!isset($cache[$k])) {
+		$cache[$k] = '';
+		$emp = ecole_table_exists($db, 'ecole_employe');
+		$sql = "SELECT u.firstname, u.lastname, u.login".($emp ? ", e.nom_fr, e.nom_ar" : "")." FROM ".$db->prefix()."user as u";
+		if ($emp) {
+			$sql .= " LEFT JOIN ".$db->prefix()."ecole_employe as e ON e.fk_user = u.rowid";
+		}
+		$sql .= " WHERE u.rowid = ".((int) $id);
+		$resql = $db->query($sql);
+		if ($resql && ($o = $db->fetch_object($resql))) {
+			$name = ecole_user_nom($o);
+			$cache[$k] = $name !== '' ? $name : (string) $o->login;
+		}
 	}
-	return '';
+	return $cache[$k];
+}
+
+/**
+ * Nom d'un utilisateur dans la langue de l'interface : nom de sa fiche employé (arabe ou français, repli
+ * sur l'autre langue), sinon prénom et nom du compte Dolibarr.
+ *
+ * @param  object $o Ligne (firstname, lastname et, si fiche employé, nom_fr, nom_ar)
+ * @return string
+ */
+function ecole_user_nom($o)
+{
+	if ((isset($o->nom_fr) && trim((string) $o->nom_fr) !== '') || (isset($o->nom_ar) && trim((string) $o->nom_ar) !== '')) {
+		return ecole_label((object) array('nom_fr' => (string) $o->nom_fr, 'nom_ar' => (string) $o->nom_ar));
+	}
+	return trim($o->firstname.' '.$o->lastname);
 }
 
 /**
