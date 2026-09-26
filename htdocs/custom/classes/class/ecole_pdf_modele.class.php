@@ -27,7 +27,7 @@ class EcolePdfModele extends EcoleObject
 
 	public $required = array('ref', 'label_fr', 'type_doc');
 	public $unique = array('ref');
-	public $listcolumns = array('ref', 'label', 'type_doc', 'entete', 'couleur', 'orientation', 'filigrane', 'par_defaut', 'extra:apercu', 'status');
+	public $listcolumns = array('ref', 'label', 'type_doc', 'style', 'couleur', 'langue', 'filigrane', 'par_defaut', 'extra:apercu', 'status');
 	public $sortdefault = 'type_doc,position,ref';
 
 	public $ref;
@@ -44,6 +44,23 @@ class EcolePdfModele extends EcoleObject
 	public $fil_opacite = 10;
 	public $fil_taille = 50;
 	public $fil_couleur = 'gris';
+	public $style = 'classique';
+	public $langue = 'auto';
+	public $colonnes_masquees;
+	public $opt_numeroter = 0;
+	public $opt_total = 1;
+	public $opt_date = 1;
+	public $opt_signature = 0;
+	public $opt_situation = 1;
+	public $opt_caissier = 1;
+	public $opt_signature_recu = 1;
+	public $opt_lettres_recu = 0;
+	public $opt_souche = 0;
+	public $opt_seances = 1;
+	public $opt_presence = 1;
+	public $opt_avances = 1;
+	public $opt_signatures_paie = 1;
+	public $opt_lettres_paie = 0;
 	public $par_defaut = 0;
 	public $position = 0;
 	public $description;
@@ -57,8 +74,12 @@ class EcolePdfModele extends EcoleObject
 			'arrayofkeyval' => array('liste' => 'PdfTypeListe', 'recu' => 'PdfTypeRecu', 'paie' => 'PdfTypePaie')),
 		'entete' => array('type' => 'varchar(32)', 'label' => 'PdfEntete', 'enabled' => '1', 'visible' => 1, 'notnull' => 0, 'position' => 40, 'help' => 'PdfEnteteHelp',
 			'arrayofkeyval' => array('bandeau_bleu' => 'PdfHeaderBandeauBleu', 'bandeau_sombre' => 'PdfHeaderBandeauSombre', 'minimal' => 'PdfHeaderMinimal', 'compact' => 'PdfHeaderCompact', 'classique' => 'PdfHeaderClassique', 'image' => 'PdfHeaderImage')),
+		'style' => array('type' => 'varchar(16)', 'label' => 'PdfStyle', 'enabled' => '1', 'visible' => 1, 'notnull' => 1, 'default' => 'classique', 'position' => 42, 'help' => 'PdfStyleHelp',
+			'arrayofkeyval' => array('classique' => 'PdfStyleClassique', 'lignes' => 'PdfStyleLignes', 'encadre' => 'PdfStyleEncadre')),
+		'langue' => array('type' => 'varchar(4)', 'label' => 'PdfLangue', 'enabled' => '1', 'visible' => 1, 'notnull' => 1, 'default' => 'auto', 'position' => 44,
+			'arrayofkeyval' => array('auto' => 'PdfLangueAuto', 'fr' => 'PdfLangueFr', 'ar' => 'PdfLangueAr')),
 		'couleur' => array('type' => 'varchar(16)', 'label' => 'PdfCouleur', 'enabled' => '1', 'visible' => 1, 'notnull' => 1, 'default' => 'bleu', 'position' => 45,
-			'arrayofkeyval' => array('bleu' => 'PdfCouleurBleu', 'vert' => 'PdfCouleurVert', 'bordeaux' => 'PdfCouleurBordeaux', 'violet' => 'PdfCouleurViolet', 'orange' => 'PdfCouleurOrange', 'gris' => 'PdfCouleurGris', 'noir' => 'PdfCouleurNoir')),
+			'arrayofkeyval' => array('bleu' => 'PdfCouleurBleu', 'vert' => 'PdfCouleurVert', 'bordeaux' => 'PdfCouleurBordeaux', 'violet' => 'PdfCouleurViolet', 'orange' => 'PdfCouleurOrange', 'gris' => 'PdfCouleurGris', 'noir' => 'PdfCouleurNoir', 'aucune' => 'PdfCouleurAucune')),
 		'orientation' => array('type' => 'varchar(4)', 'label' => 'PdfOrientation', 'enabled' => '1', 'visible' => 1, 'notnull' => 1, 'default' => 'auto', 'position' => 50, 'help' => 'PdfOrientationHelp',
 			'arrayofkeyval' => array('auto' => 'PdfOrientationAuto', 'P' => 'PdfOrientationPortrait', 'L' => 'PdfOrientationPaysage')),
 		'taille_police' => array('type' => 'double(4,1)', 'label' => 'PdfTaillePolice', 'enabled' => '1', 'visible' => 1, 'notnull' => 1, 'default' => '8', 'position' => 55, 'help' => 'PdfTaillePoliceHelp', 'css' => 'maxwidth75'),
@@ -70,9 +91,24 @@ class EcolePdfModele extends EcoleObject
 		'fil_taille' => array('type' => 'integer', 'label' => 'PdfFilTaille', 'enabled' => '1', 'visible' => 1, 'notnull' => 1, 'default' => '50', 'position' => 64, 'css' => 'maxwidth75'),
 		'fil_couleur' => array('type' => 'varchar(16)', 'label' => 'PdfFilCouleur', 'enabled' => '1', 'visible' => 1, 'notnull' => 1, 'default' => 'gris', 'position' => 65,
 			'arrayofkeyval' => array('gris' => 'PdfCouleurGris', 'bleu' => 'PdfCouleurBleu', 'vert' => 'PdfCouleurVert', 'bordeaux' => 'PdfCouleurBordeaux', 'rouge' => 'PdfCouleurRouge', 'noir' => 'PdfCouleurNoir')),
+		'colonnes_masquees' => array('type' => 'varchar(255)', 'label' => 'PdfColonnesMasquees', 'enabled' => '1', 'visible' => 1, 'notnull' => 0, 'position' => 56, 'css' => 'minwidth300', 'help' => 'PdfColonnesMasqueesHelp'),
+		'opt_numeroter' => array('type' => 'boolean', 'label' => 'PdfOptNumeroter', 'enabled' => '1', 'visible' => 1, 'notnull' => 1, 'default' => '0', 'position' => 100, 'help' => 'PdfPourListes'),
+		'opt_total' => array('type' => 'boolean', 'label' => 'PdfOptTotal', 'enabled' => '1', 'visible' => 1, 'notnull' => 1, 'default' => '1', 'position' => 101, 'help' => 'PdfPourListes'),
+		'opt_date' => array('type' => 'boolean', 'label' => 'PdfOptDate', 'enabled' => '1', 'visible' => 1, 'notnull' => 1, 'default' => '1', 'position' => 102, 'help' => 'PdfPourListes'),
+		'opt_signature' => array('type' => 'boolean', 'label' => 'PdfOptSignature', 'enabled' => '1', 'visible' => 1, 'notnull' => 1, 'default' => '0', 'position' => 103, 'help' => 'PdfPourListes'),
+		'opt_situation' => array('type' => 'boolean', 'label' => 'PdfOptSituation', 'enabled' => '1', 'visible' => 1, 'notnull' => 1, 'default' => '1', 'position' => 104, 'help' => 'PdfPourRecus'),
+		'opt_caissier' => array('type' => 'boolean', 'label' => 'PdfOptCaissier', 'enabled' => '1', 'visible' => 1, 'notnull' => 1, 'default' => '1', 'position' => 105, 'help' => 'PdfPourRecus'),
+		'opt_signature_recu' => array('type' => 'boolean', 'label' => 'PdfOptSignatureRecu', 'enabled' => '1', 'visible' => 1, 'notnull' => 1, 'default' => '1', 'position' => 106, 'help' => 'PdfPourRecus'),
+		'opt_lettres_recu' => array('type' => 'boolean', 'label' => 'PdfOptLettres', 'enabled' => '1', 'visible' => 1, 'notnull' => 1, 'default' => '0', 'position' => 107, 'help' => 'PdfPourRecus'),
+		'opt_souche' => array('type' => 'boolean', 'label' => 'PdfOptSouche', 'enabled' => '1', 'visible' => 1, 'notnull' => 1, 'default' => '0', 'position' => 108, 'help' => 'PdfPourRecus'),
+		'opt_seances' => array('type' => 'boolean', 'label' => 'PdfOptSeances', 'enabled' => '1', 'visible' => 1, 'notnull' => 1, 'default' => '1', 'position' => 109, 'help' => 'PdfPourPaie'),
+		'opt_presence' => array('type' => 'boolean', 'label' => 'PdfOptPresence', 'enabled' => '1', 'visible' => 1, 'notnull' => 1, 'default' => '1', 'position' => 110, 'help' => 'PdfPourPaie'),
+		'opt_avances' => array('type' => 'boolean', 'label' => 'PdfOptAvances', 'enabled' => '1', 'visible' => 1, 'notnull' => 1, 'default' => '1', 'position' => 111, 'help' => 'PdfPourPaie'),
+		'opt_signatures_paie' => array('type' => 'boolean', 'label' => 'PdfOptSignaturesPaie', 'enabled' => '1', 'visible' => 1, 'notnull' => 1, 'default' => '1', 'position' => 112, 'help' => 'PdfPourPaie'),
+		'opt_lettres_paie' => array('type' => 'boolean', 'label' => 'PdfOptLettres', 'enabled' => '1', 'visible' => 1, 'notnull' => 1, 'default' => '0', 'position' => 113, 'help' => 'PdfPourPaie'),
 		'par_defaut' => array('type' => 'boolean', 'label' => 'PdfParDefaut', 'enabled' => '1', 'visible' => 1, 'notnull' => 1, 'default' => '0', 'position' => 70, 'help' => 'PdfParDefautHelp'),
-		'position' => array('type' => 'integer', 'label' => 'Position', 'enabled' => '1', 'visible' => 1, 'notnull' => 1, 'default' => '0', 'position' => 80),
-		'description' => array('type' => 'text', 'label' => 'Description', 'enabled' => '1', 'visible' => 3, 'notnull' => 0, 'position' => 90, 'css' => 'minwidth300'),
+		'position' => array('type' => 'integer', 'label' => 'Position', 'enabled' => '1', 'visible' => 1, 'notnull' => 1, 'default' => '0', 'position' => 130),
+		'description' => array('type' => 'text', 'label' => 'Description', 'enabled' => '1', 'visible' => 3, 'notnull' => 0, 'position' => 140, 'css' => 'minwidth300'),
 	);
 
 	/**
@@ -87,7 +123,7 @@ class EcolePdfModele extends EcoleObject
 			$this->entete = null;
 		}
 		parent::validate();
-		foreach (array('type_doc', 'couleur', 'orientation', 'filigrane', 'fil_couleur', 'entete') as $k) {
+		foreach (array('type_doc', 'style', 'langue', 'couleur', 'orientation', 'filigrane', 'fil_couleur', 'entete') as $k) {
 			if ($this->$k !== null && !isset($this->fields[$k]['arrayofkeyval'][$this->$k])) {
 				$this->errors[] = $langs->trans('ErrorEcoleBadValue', $langs->transnoentities($this->fields[$k]['label']));
 			}

@@ -18,6 +18,23 @@ CREATE TABLE llx_ecole_pdf_modele
 	fil_opacite    INTEGER NOT NULL DEFAULT 10,           -- en pour cent
 	fil_taille     INTEGER NOT NULL DEFAULT 50,
 	fil_couleur    VARCHAR(16) NOT NULL DEFAULT 'gris',
+	style          VARCHAR(16) NOT NULL DEFAULT 'classique', -- classique, lignes, encadre
+	langue         VARCHAR(4) NOT NULL DEFAULT 'auto',       -- auto (langue de l utilisateur), fr, ar
+	colonnes_masquees VARCHAR(255),                         -- listes : titres des colonnes à ne pas imprimer
+	opt_numeroter  SMALLINT NOT NULL DEFAULT 0,
+	opt_total      SMALLINT NOT NULL DEFAULT 1,
+	opt_date       SMALLINT NOT NULL DEFAULT 1,
+	opt_signature  SMALLINT NOT NULL DEFAULT 0,
+	opt_situation  SMALLINT NOT NULL DEFAULT 1,
+	opt_caissier   SMALLINT NOT NULL DEFAULT 1,
+	opt_signature_recu SMALLINT NOT NULL DEFAULT 1,
+	opt_lettres_recu SMALLINT NOT NULL DEFAULT 0,
+	opt_souche     SMALLINT NOT NULL DEFAULT 0,
+	opt_seances    SMALLINT NOT NULL DEFAULT 1,
+	opt_presence   SMALLINT NOT NULL DEFAULT 1,
+	opt_avances    SMALLINT NOT NULL DEFAULT 1,
+	opt_signatures_paie SMALLINT NOT NULL DEFAULT 1,
+	opt_lettres_paie SMALLINT NOT NULL DEFAULT 0,
 	par_defaut     SMALLINT NOT NULL DEFAULT 0,
 	position       INTEGER NOT NULL DEFAULT 0,
 	description    TEXT,

@@ -115,28 +115,27 @@ function eleves_pdf_recu($db, $recu)
 		eleves_pdf_recu_ticket($db, $recu);
 		return;
 	}
-	list($pdf, $outputlangs, $rtl) = ecole_pdf_create($langs, 'P', $format === 'A4' ? 'A4' : 'A5');
-	// Modèle de reçu choisi à l'impression (&modele=), sinon le modèle par défaut
+	// Modèle de reçu choisi à l'impression (&modele=), sinon le modèle par défaut : langue, mise en page, options
 	dol_include_once('/classes/class/ecole_pdf_modele.class.php');
-	ecole_pdf_modele_appliquer($pdf, EcolePdfModele::charger($db, 'recu', GETPOSTINT('modele')));
-	$outputlangs->loadLangs(array('eleves@eleves', 'bills'));
+	$modele = EcolePdfModele::charger($db, 'recu', GETPOSTINT('modele'));
+	list($pdf, $outputlangs, $rtl) = ecole_pdf_create($langs, 'P', $format === 'A4' ? 'A4' : 'A5', $modele ? $modele->langue : '');
+	ecole_pdf_modele_appliquer($pdf, $modele);
+	$outputlangs->loadLangs(array('eleves@eleves', 'bills', 'classes@classes'));
 	ecole_pdf_start($pdf, ecole_pdf_trans($outputlangs, 'RecuDePaiement'), dol_print_date($recu->date_recu, 'day', 'tzuser', $outputlangs), $recu->ref);
 	if ($format !== 'A4') {
 		$pdf->SetMargins(10, $pdf->getMargins()['top'], 10);
 	}
 	$pdf->SetTextColor(40, 40, 50);
+	$m = $pdf->getMargins();
+	$w = $pdf->getPageWidth() - $m['left'] - $m['right'];
 
-	// Payeur, mode, référence
+	$resp = null;
 	if ($recu->fk_responsable > 0) {
-		$resp = new EcoleResponsable($db);
-		if ($resp->fetch((int) $recu->fk_responsable) > 0) {
-			eleves_pdf_kv($pdf, ecole_pdf_trans($outputlangs, 'RecuDe'), ecole_label($resp).($resp->telephone ? ' — '.$resp->telephone : ''), 9, 'B');
+		$r = new EcoleResponsable($db);
+		if ($r->fetch((int) $recu->fk_responsable) > 0) {
+			$resp = $r;
 		}
 	}
-	eleves_pdf_kv($pdf, ecole_pdf_trans($outputlangs, 'DatePaiement'), dol_print_date($recu->date_recu, 'day', 'tzuser', $outputlangs));
-	eleves_pdf_kv($pdf, ecole_pdf_trans($outputlangs, 'ModePaiement'), eleves_mode_label($db, $recu->fk_mode).($recu->reference_paiement ? ' ('.$recu->reference_paiement.')' : ''));
-	$pdf->Ln(2);
-
 	// Détail par élève
 	$rows = array();
 	$eleves = array();
@@ -148,12 +147,9 @@ function eleves_pdf_recu($db, $recu)
 		$rows[] = array($nom, ecole_pdf_text(eleves_ligne_libelle($l)), price($l->montant, 0, $outputlangs));
 	}
 	$rows[] = array('', ecole_pdf_trans($outputlangs, 'Total'), price($recu->montant, 0, $outputlangs, 1, -1, -1, $conf->currency));
-	ecole_pdf_table($pdf, array(ecole_pdf_trans($outputlangs, 'Eleve'), ecole_pdf_trans($outputlangs, 'Libelle'), ecole_pdf_trans($outputlangs, 'Montant').' ('.$conf->currency.')'),
-		array(3, 3.2, 1.4), array('L', 'L', 'R'), $rows);
-	$pdf->Ln(3);
-
 	// Situation après ce paiement (reste en retard par élève)
-	if ((int) $recu->status === EcoleRecu::STATUS_VALIDE) {
+	$situations = array();
+	if ((int) $recu->status === EcoleRecu::STATUS_VALIDE && ecole_pdf_option($pdf, 'opt_situation', true)) {
 		$objs = array();
 		foreach ($eleves as $eid) {
 			$e = new EcoleEleve($db);
@@ -163,22 +159,62 @@ function eleves_pdf_recu($db, $recu)
 		}
 		$sits = eleves_situations($db, $objs);
 		foreach ($objs as $e) {
-			$s = $sits[(int) $e->id];
-			$txt = ($s['impaye'] > 0) ? ecole_pdf_trans($outputlangs, 'ResteImpayeAuJour', price($s['impaye'], 0, $outputlangs, 1, -1, -1, $conf->currency)) : ecole_pdf_trans($outputlangs, 'AJourAuJour');
-			eleves_pdf_kv($pdf, eleves_pdf_eleve_nom($e->ref, ecole_label($e), $rtl), $txt, 8);
+			$si = $sits[(int) $e->id];
+			$situations[] = array(eleves_pdf_eleve_nom($e->ref, ecole_label($e), $rtl), ($si['impaye'] > 0) ? ecole_pdf_trans($outputlangs, 'ResteImpayeAuJour', price($si['impaye'], 0, $outputlangs, 1, -1, -1, $conf->currency)) : ecole_pdf_trans($outputlangs, 'AJourAuJour'));
 		}
-	} else {
-		eleves_pdf_kv($pdf, ecole_pdf_trans($outputlangs, 'RecuAnnule'), (string) $recu->motif_annulation, 9, 'B');
 	}
 
-	// Caissier et signature
-	$pdf->Ln(4);
-	eleves_pdf_kv($pdf, ecole_pdf_trans($outputlangs, 'EnregistrePar'), ecole_user_label($db, $recu->fk_user_creat), 8);
-	$m = $pdf->getMargins();
-	$w = $pdf->getPageWidth() - $m['left'] - $m['right'];
-	ecole_pdf_font($pdf, '', 8, $rtl);
-	$pdf->Ln(2);
-	$pdf->Cell($w, 5, ecole_pdf_trans($outputlangs, 'SignatureCachet'), 0, 1, $rtl ? 'L' : 'R');
+	// Corps du reçu (imprimé deux fois avec l'option « souche » : exemplaire du payeur + exemplaire de l'école)
+	$corps = function ($exemplaire) use ($db, $pdf, $outputlangs, $rtl, $recu, $resp, $rows, $situations, $conf, $w) {
+		if ($exemplaire !== '') {
+			ecole_pdf_titre_section($pdf, $exemplaire);
+		}
+		if ($resp) {
+			eleves_pdf_kv($pdf, ecole_pdf_trans($outputlangs, 'RecuDe'), ecole_label($resp).($resp->telephone ? ' — '.$resp->telephone : ''), 9, 'B');
+		}
+		eleves_pdf_kv($pdf, ecole_pdf_trans($outputlangs, 'DatePaiement'), dol_print_date($recu->date_recu, 'day', 'tzuser', $outputlangs));
+		eleves_pdf_kv($pdf, ecole_pdf_trans($outputlangs, 'ModePaiement'), eleves_mode_label($db, $recu->fk_mode).($recu->reference_paiement ? ' ('.$recu->reference_paiement.')' : ''));
+		$pdf->Ln(2);
+		ecole_pdf_table($pdf, array(ecole_pdf_trans($outputlangs, 'Eleve'), ecole_pdf_trans($outputlangs, 'Libelle'), ecole_pdf_trans($outputlangs, 'Montant').' ('.$conf->currency.')'),
+			array(3, 3.2, 1.4), array('L', 'L', 'R'), $rows);
+		if (ecole_pdf_option($pdf, 'opt_lettres_recu', false)) {
+			$pdf->Ln(1);
+			eleves_pdf_kv($pdf, ecole_pdf_trans($outputlangs, 'PdfArreteSomme'), ecole_montant_lettres($recu->montant, $pdf), 8, 'B');
+		}
+		$pdf->Ln(3);
+		foreach ($situations as $si) {
+			eleves_pdf_kv($pdf, $si[0], $si[1], 8);
+		}
+		if ((int) $recu->status !== EcoleRecu::STATUS_VALIDE) {
+			eleves_pdf_kv($pdf, ecole_pdf_trans($outputlangs, 'RecuAnnule'), (string) $recu->motif_annulation, 9, 'B');
+		}
+		// Caissier et signature
+		$pdf->Ln(4);
+		if (ecole_pdf_option($pdf, 'opt_caissier', true)) {
+			eleves_pdf_kv($pdf, ecole_pdf_trans($outputlangs, 'EnregistrePar'), ecole_user_label($db, $recu->fk_user_creat), 8);
+		}
+		if (ecole_pdf_option($pdf, 'opt_signature_recu', true)) {
+			ecole_pdf_font($pdf, '', 8, $rtl);
+			$pdf->Ln(2);
+			$pdf->Cell($w, 5, ecole_pdf_trans($outputlangs, 'SignatureCachet'), 0, 1, $rtl ? 'L' : 'R');
+			ecole_pdf_signature_cachet($pdf, 18.0);
+		}
+	};
+
+	if (ecole_pdf_option($pdf, 'opt_souche', false)) {
+		$corps(ecole_pdf_trans($outputlangs, 'PdfExemplairePayeur'));
+		// Ligne de découpe puis exemplaire de l'école
+		$pdf->Ln(4);
+		$m = $pdf->getMargins();
+		$pdf->SetDrawColor(150, 150, 160);
+		$pdf->SetLineStyle(array('width' => 0.3, 'dash' => '3,2', 'color' => array(150, 150, 160)));
+		$pdf->Line($m['left'], $pdf->GetY(), $m['left'] + $w, $pdf->GetY());
+		$pdf->SetLineStyle(array('width' => 0.2, 'dash' => 0));
+		$pdf->Ln(4);
+		$corps(ecole_pdf_trans($outputlangs, 'PdfExemplaireEcole').' — '.$recu->ref);
+	} else {
+		$corps('');
+	}
 
 	if ((int) $recu->status === EcoleRecu::STATUS_ANNULE) {
 		eleves_pdf_annule($pdf, $outputlangs);

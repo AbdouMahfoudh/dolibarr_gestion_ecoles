@@ -180,8 +180,9 @@ function ecole_export_pdf($ds)
 	dol_include_once('/classes/class/ecole_pdf_modele.class.php');
 	// Modèle de liste choisi à l'impression (&modele=), sinon le modèle par défaut
 	$modele = EcolePdfModele::charger($db, 'liste', GETPOSTINT('modele'));
-	list($pdf) = ecole_pdf_create($langs, 'P');
+	list($pdf, $outputlangs) = ecole_pdf_create($langs, 'P', 'A4', $modele ? $modele->langue : '');
 	ecole_pdf_modele_appliquer($pdf, $modele);
+	$ds = ecole_export_pdf_colonnes($ds, $pdf, $outputlangs);
 	$orientation = $modele ? $modele->orientation : 'auto';
 	if ($orientation === 'auto') {
 		$orientation = ecole_export_orientation($pdf, $ds);
@@ -191,7 +192,86 @@ function ecole_export_pdf($ds)
 	}
 	ecole_pdf_start($pdf, $ds['title'], $ds['subtitle'], $ds['ref']);
 	ecole_pdf_table($pdf, $ds['headers'], $ds['ratios'], $ds['aligns'], $ds['rows']);
+
+	// Pied de liste selon le modèle : nombre d'enregistrements, date d'impression, visa de la direction
+	global $user;
+	$m = $pdf->getMargins();
+	$w = $pdf->getPageWidth() - $m['left'] - $m['right'];
+	$align = $pdf->isRtl ? 'R' : 'L';
+	ecole_pdf_font($pdf, '', 8, $pdf->isRtl);
+	$pdf->SetTextColor(90, 95, 105);
+	$pdf->Ln(2);
+	if (ecole_pdf_option($pdf, 'opt_total', true)) {
+		$pdf->Cell($w, 5, ecole_pdf_bidi(ecole_pdf_trans($outputlangs, 'PdfNbLignes', count($ds['rows'])), $pdf->isRtl), 0, 1, $align);
+	}
+	if (ecole_pdf_option($pdf, 'opt_date', true)) {
+		$par = is_object($user) ? trim($user->firstname.' '.$user->lastname) : '';
+		$pdf->Cell($w, 5, ecole_pdf_bidi(ecole_pdf_trans($outputlangs, 'PdfImprimeLe', dol_print_date(dol_now(), 'dayhour', 'tzuser', $outputlangs), $par), $pdf->isRtl), 0, 1, $align);
+	}
+	if (ecole_pdf_option($pdf, 'opt_signature', false)) {
+		$pdf->Ln(6);
+		ecole_pdf_font($pdf, 'B', 10, $pdf->isRtl);
+		$pdf->SetTextColor(40, 40, 50);
+		$pdf->Cell($w, 6, ecole_pdf_trans($outputlangs, 'PdfVisaDirection'), 0, 1, $pdf->isRtl ? 'L' : 'R');
+		ecole_pdf_signature_cachet($pdf);
+	}
 	$pdf->Output(ecole_export_filename($ds['filename'], 'pdf'), 'I');
+}
+
+/**
+ * Colonnes d'une liste selon le modèle : colonnes masquées (titres donnés dans le modèle, en français ou en
+ * arabe, sans tenir compte des majuscules), numérotation des lignes en première colonne.
+ *
+ * @param  array     $ds           Jeu de données
+ * @param  EcolePDF  $pdf          PDF (modèle appliqué)
+ * @param  Translate $outputlangs  Traductions du document
+ * @return array
+ */
+function ecole_export_pdf_colonnes($ds, $pdf, $outputlangs)
+{
+	$ds['headers'] = array_values($ds['headers']);
+	$ds['ratios'] = array_values($ds['ratios']);
+	$ds['aligns'] = array_values($ds['aligns']);
+	$ds['rows'] = array_map('array_values', array_values($ds['rows']));
+	$masquees = array();
+	if (!empty($pdf->modele) && trim((string) $pdf->modele->colonnes_masquees) !== '') {
+		foreach (preg_split('/[,;\n]+/u', (string) $pdf->modele->colonnes_masquees) as $t) {
+			$t = mb_strtolower(trim($t), 'UTF-8');
+			if ($t !== '') {
+				$masquees[] = $t;
+			}
+		}
+	}
+	if (!empty($masquees)) {
+		$garder = array();
+		foreach ($ds['headers'] as $i => $h) {
+			if (!in_array(mb_strtolower(trim((string) $h), 'UTF-8'), $masquees, true)) {
+				$garder[] = $i;
+			}
+		}
+		if (!empty($garder) && count($garder) < count($ds['headers'])) {
+			$pick = function ($arr) use ($garder) {
+				$out = array();
+				foreach ($garder as $i) {
+					$out[] = isset($arr[$i]) ? $arr[$i] : '';
+				}
+				return $out;
+			};
+			$ds['headers'] = $pick($ds['headers']);
+			$ds['ratios'] = $pick($ds['ratios']);
+			$ds['aligns'] = $pick($ds['aligns']);
+			$ds['rows'] = array_map($pick, $ds['rows']);
+		}
+	}
+	if (ecole_pdf_option($pdf, 'opt_numeroter', false)) {
+		array_unshift($ds['headers'], ecole_pdf_trans($outputlangs, 'ApercuColNum'));
+		array_unshift($ds['ratios'], 0.45);
+		array_unshift($ds['aligns'], 'C');
+		foreach ($ds['rows'] as $i => $r) {
+			array_unshift($ds['rows'][$i], (string) ($i + 1));
+		}
+	}
+	return $ds;
 }
 
 /**

@@ -642,6 +642,27 @@ function pdf_modele_col_apercu($rec)
 }
 
 /**
+ * Formulaire d'un modèle de PDF : n'affiche que les réglages du type de document choisi
+ * (orientation et colonnes pour les listes, options des reçus, options des bulletins de paie)
+ * et les réglages du filigrane seulement pour un filigrane « texte » ou « image ».
+ *
+ * @param  EcolePdfModele $object Modèle
+ * @return string                 Script
+ */
+function pdf_modele_form_js($object)
+{
+	$par = array(
+		'liste' => array('orientation', 'colonnes_masquees', 'opt_numeroter', 'opt_total', 'opt_date', 'opt_signature'),
+		'recu' => array('opt_situation', 'opt_caissier', 'opt_signature_recu', 'opt_lettres_recu', 'opt_souche'),
+		'paie' => array('opt_seances', 'opt_presence', 'opt_avances', 'opt_signatures_paie', 'opt_lettres_paie'),
+	);
+	return '<script>$(function(){var par='.json_encode($par).';'
+		.'function t(){var ty=$("#type_doc").val();$.each(par,function(k,l){$.each(l,function(i,f){$("tr.field_"+f).toggle(k===ty);});});'
+		.'var fil=$("#filigrane").val();$("tr.field_fil_texte,tr.field_fil_couleur").toggle(fil==="texte");$("tr.field_fil_angle,tr.field_fil_opacite,tr.field_fil_taille").toggle(fil==="texte"||fil==="image");}'
+		.'$("#type_doc,#filigrane").on("change",t);t();});</script>';
+}
+
+/**
  * Sous la fiche d'un modèle de PDF : aperçu en français et en arabe, duplication.
  *
  * @param  EcolePdfModele $object Modèle

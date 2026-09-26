@@ -218,7 +218,7 @@ function ecole_crud_config($name)
 			)),
 		'pdf_modele' => array('dir' => 'pdf_modele', 'class' => 'EcolePdfModele', 'title' => 'ModelesPdf', 'ficheTitle' => 'ModelePdf', 'newLabel' => 'NouveauModelePdf',
 			'perm_read' => 'config', 'perm_write' => 'config', 'perm_delete' => 'config',
-			'extra_view' => 'pdf_modele_extra_view',
+			'extra_view' => 'pdf_modele_extra_view', 'form_js' => 'pdf_modele_form_js',
 			'extra_columns' => array('apercu' => array('label' => 'Apercu', 'render' => 'pdf_modele_col_apercu'))),
 		'salle' => array('dir' => 'salle', 'class' => 'EcoleSalle', 'title' => 'Salles', 'ficheTitle' => 'Salle', 'newLabel' => 'NouvelleSalle',
 			'perm_read' => 'lire', 'perm_write' => 'ecrire', 'perm_delete' => 'supprimer',
@@ -626,6 +626,9 @@ function ecole_crud_card($object, $cfg)
 
 		print $form->buttonsSaveCancel('Create');
 		print '</form>';
+		if (!empty($cfg['form_js'])) {
+			print call_user_func($cfg['form_js'], $object);
+		}
 	} elseif ($object->id > 0 && $action == 'edit') {
 		print load_fiche_titre($title, '', 'object_'.$object->picto);
 
@@ -642,6 +645,9 @@ function ecole_crud_card($object, $cfg)
 
 		print $form->buttonsSaveCancel();
 		print '</form>';
+		if (!empty($cfg['form_js'])) {
+			print call_user_func($cfg['form_js'], $object);
+		}
 	} elseif ($object->id > 0) {
 		$head = !empty($cfg['head']) ? call_user_func($cfg['head'], $object) : array();
 

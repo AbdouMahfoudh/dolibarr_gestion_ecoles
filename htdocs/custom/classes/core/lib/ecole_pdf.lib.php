@@ -32,6 +32,17 @@ function ecole_pdf_resolve_lang($langs)
 	if ($forced === 'ar' || $forced === 'fr') {
 		return $forced;
 	}
+	// Export PDF d'une liste : langue imposée par le modèle de liste choisi (ou par défaut)
+	if (GETPOST('format', 'aZ09') === 'pdf' && GETPOST('obj', 'aZ09') !== '') {
+		global $db;
+		dol_include_once('/classes/class/ecole_pdf_modele.class.php');
+		if (is_object($db) && class_exists('EcolePdfModele')) {
+			$m = EcolePdfModele::charger($db, 'liste', GETPOSTINT('modele'));
+			if ($m && in_array($m->langue, array('fr', 'ar'), true)) {
+				return $m->langue;
+			}
+		}
+	}
 	foreach (array($langs->defaultlang, getDolGlobalString('MAIN_LANG_DEFAULT')) as $code) {
 		if ((string) $code !== '') {
 			return (strpos(strtolower((string) $code), 'ar') === 0) ? 'ar' : 'fr';
@@ -442,11 +453,194 @@ function ecole_pdf_modele_appliquer($pdf, $modele)
 	if (!empty($modele->entete) && isset($registry[$modele->entete])) {
 		$pdf->headerStyle = $modele->entete;
 	}
+	$pdf->modele = $modele;
 	$couleurs = ecole_pdf_couleurs();
-	if (isset($couleurs[$modele->couleur])) {
+	if ($modele->couleur === 'aucune') {
+		$pdf->tableColor = array(20, 20, 24); // noir et blanc (photocopie)
+	} elseif (isset($couleurs[$modele->couleur])) {
 		$pdf->tableColor = $couleurs[$modele->couleur];
 	}
+	if (in_array($modele->style, array('classique', 'lignes', 'encadre'), true)) {
+		$pdf->tableStyle = $modele->style;
+	}
 	$pdf->tableFontSize = min(12, max(6, (float) $modele->taille_police));
+}
+
+/**
+ * Option « afficher / masquer » du modèle appliqué (valeur par défaut sans modèle).
+ *
+ * @param  EcolePDF $pdf    PDF
+ * @param  string   $option Champ du modèle (opt_...)
+ * @param  bool     $defaut Valeur sans modèle
+ * @return bool
+ */
+function ecole_pdf_option($pdf, $option, $defaut = true)
+{
+	if (empty($pdf->modele) || !property_exists($pdf->modele, $option) || $pdf->modele->$option === null || $pdf->modele->$option === '') {
+		return $defaut;
+	}
+	return (int) $pdf->modele->$option === 1;
+}
+
+/**
+ * Nombre entier en toutes lettres, en français ou en arabe (montants des reçus et des bulletins de paie).
+ *
+ * @param  int    $n    Nombre (0 à 999 999 999)
+ * @param  string $lang 'fr' ou 'ar'
+ * @return string
+ */
+function ecole_nombre_lettres($n, $lang = 'fr')
+{
+	$n = (int) abs($n);
+	if ($lang === 'ar') {
+		$u = array('', 'واحد', 'اثنان', 'ثلاثة', 'أربعة', 'خمسة', 'ستة', 'سبعة', 'ثمانية', 'تسعة', 'عشرة', 'أحد عشر', 'اثنا عشر', 'ثلاثة عشر', 'أربعة عشر', 'خمسة عشر', 'ستة عشر', 'سبعة عشر', 'ثمانية عشر', 'تسعة عشر');
+		$d = array(2 => 'عشرون', 3 => 'ثلاثون', 4 => 'أربعون', 5 => 'خمسون', 6 => 'ستون', 7 => 'سبعون', 8 => 'ثمانون', 9 => 'تسعون');
+		$c = array(1 => 'مائة', 2 => 'مائتان', 3 => 'ثلاثمائة', 4 => 'أربعمائة', 5 => 'خمسمائة', 6 => 'ستمائة', 7 => 'سبعمائة', 8 => 'ثمانمائة', 9 => 'تسعمائة');
+		$moins1000 = function ($x) use ($u, $d, $c) {
+			$p = array();
+			if ($x >= 100) {
+				$p[] = $c[intdiv($x, 100)];
+				$x %= 100;
+			}
+			if ($x > 0 && $x < 20) {
+				$p[] = $u[$x];
+			} elseif ($x >= 20) {
+				$p[] = ($x % 10 ? $u[$x % 10].' و' : '').$d[intdiv($x, 10)];
+			}
+			return implode(' و', $p);
+		};
+		if ($n === 0) {
+			return 'صفر';
+		}
+		$p = array();
+		$mil = intdiv($n, 1000000);
+		$th = intdiv($n % 1000000, 1000);
+		$r = $n % 1000;
+		if ($mil) {
+			$p[] = $mil === 1 ? 'مليون' : ($mil === 2 ? 'مليونان' : $moins1000($mil).($mil <= 10 ? ' ملايين' : ' مليون'));
+		}
+		if ($th) {
+			$p[] = $th === 1 ? 'ألف' : ($th === 2 ? 'ألفان' : $moins1000($th).($th <= 10 ? ' آلاف' : ' ألف'));
+		}
+		if ($r) {
+			$p[] = $moins1000($r);
+		}
+		return implode(' و', $p);
+	}
+	$u = array('zéro', 'un', 'deux', 'trois', 'quatre', 'cinq', 'six', 'sept', 'huit', 'neuf', 'dix', 'onze', 'douze', 'treize', 'quatorze', 'quinze', 'seize', 'dix-sept', 'dix-huit', 'dix-neuf');
+	$d = array(2 => 'vingt', 3 => 'trente', 4 => 'quarante', 5 => 'cinquante', 6 => 'soixante', 8 => 'quatre-vingt');
+	$moins100 = function ($x) use ($u, $d) {
+		if ($x < 20) {
+			return $u[$x];
+		}
+		$dz = intdiv($x, 10);
+		$un = $x % 10;
+		if ($dz === 7 || $dz === 9) {
+			return $d[$dz - 1].(($dz === 7 && $un === 1) ? '-et-' : '-').$u[10 + $un];
+		}
+		if ($un === 0) {
+			return $d[$dz].($dz === 8 ? 's' : '');
+		}
+		return $d[$dz].(($un === 1 && $dz !== 8) ? '-et-' : '-').$u[$un];
+	};
+	$moins1000 = function ($x, $final = true) use ($u, $moins100) {
+		$c = intdiv($x, 100);
+		$r = $x % 100;
+		$t = '';
+		if ($c > 0) {
+			$t = ($c > 1 ? $u[$c].' ' : '').'cent'.($c > 1 && $r === 0 && $final ? 's' : '');
+		}
+		if ($r > 0) {
+			$t .= ($t !== '' ? ' ' : '').$moins100($r);
+		}
+		return $t;
+	};
+	if ($n === 0) {
+		return 'zéro';
+	}
+	$p = array();
+	$mil = intdiv($n, 1000000);
+	$th = intdiv($n % 1000000, 1000);
+	$r = $n % 1000;
+	if ($mil) {
+		$p[] = $moins1000($mil).' million'.($mil > 1 ? 's' : '');
+	}
+	if ($th) {
+		$p[] = ($th === 1 ? '' : $moins1000($th, false).' ').'mille';
+	}
+	if ($r) {
+		$p[] = $moins1000($r);
+	}
+	$t = implode(' ', $p);
+	return str_replace('quatre-vingts mille', 'quatre-vingt mille', $t); // « quatre-vingt » invariable devant « mille »
+}
+
+/**
+ * Montant en toutes lettres avec la devise (« Arrêté à la somme de ... »), partie entière seulement.
+ *
+ * @param  float    $montant Montant
+ * @param  EcolePDF $pdf     PDF (langue du document)
+ * @return string
+ */
+function ecole_montant_lettres($montant, $pdf)
+{
+	global $conf;
+	$lang = $pdf->isRtl ? 'ar' : 'fr';
+	$txt = ecole_nombre_lettres((int) floor(abs((float) $montant)), $lang);
+	$devise = $conf->currency;
+	if ($devise === 'MRU' || $devise === 'MRO') {
+		$devise = $lang === 'ar' ? 'أوقية' : 'ouguiyas';
+	}
+	return ($lang === 'fr' ? ucfirst($txt) : $txt).' '.$devise;
+}
+
+/**
+ * Teinte claire d'une couleur (fonds des blocs et des en-têtes « encadré »).
+ *
+ * @param  int[] $rgb   Couleur
+ * @param  float $clair Part de blanc (0 à 1)
+ * @return int[]
+ */
+function ecole_pdf_teinte($rgb, $clair = 0.88)
+{
+	return array((int) round($rgb[0] + (255 - $rgb[0]) * $clair), (int) round($rgb[1] + (255 - $rgb[1]) * $clair), (int) round($rgb[2] + (255 - $rgb[2]) * $clair));
+}
+
+/**
+ * Titre de section dans la mise en page du modèle : classique (texte coloré), lignes (souligné), encadré (bandeau teinté).
+ *
+ * @param  EcolePDF $pdf   PDF
+ * @param  string   $titre Titre
+ * @return void
+ */
+function ecole_pdf_titre_section($pdf, $titre)
+{
+	$m = $pdf->getMargins();
+	$w = $pdf->getPageWidth() - $m['left'] - $m['right'];
+	$c = $pdf->tableColor;
+	$pdf->Ln(2);
+	ecole_pdf_font($pdf, 'B', 10, $pdf->isRtl);
+	$pdf->SetTextColor($c[0], $c[1], $c[2]);
+	$texte = ecole_pdf_bidi(ecole_pdf_text($titre), $pdf->isRtl);
+	$align = $pdf->isRtl ? 'R' : 'L';
+	if ($pdf->tableStyle === 'encadre') {
+		$t = ecole_pdf_teinte($c);
+		$pdf->SetFillColor($t[0], $t[1], $t[2]);
+		$y = $pdf->GetY();
+		$pdf->RoundedRect($m['left'], $y, $w, 7, 1.5, '1111', 'F');
+		$pdf->SetXY($m['left'] + 2, $y);
+		$pdf->Cell($w - 4, 7, $texte, 0, 1, $align);
+		$pdf->Ln(1);
+	} elseif ($pdf->tableStyle === 'lignes') {
+		$pdf->Cell($w, 6, $texte, 0, 1, $align);
+		$pdf->SetDrawColor($c[0], $c[1], $c[2]);
+		$pdf->SetLineWidth(0.4);
+		$pdf->Line($m['left'], $pdf->GetY(), $m['left'] + $w, $pdf->GetY());
+		$pdf->Ln(1.5);
+	} else {
+		$pdf->Cell($w, 6, $texte, 0, 1, $align);
+	}
+	$pdf->SetTextColor(40, 40, 50);
 }
 
 /**
@@ -553,6 +747,10 @@ class EcolePDF extends TCPDF
 	public $tableFontSize = 8.0;
 	/** @var array|null Filigrane de chaque page (ecole_pdf_filigrane_config), null = celui de la configuration */
 	public $filigrane = null;
+	/** @var string Mise en page des tableaux : classique (cases colorées), lignes (léger), encadre (blocs) */
+	public $tableStyle = 'classique';
+	/** @var object|null Modèle de PDF appliqué (options afficher / masquer) */
+	public $modele = null;
 
 	/**
 	 * Filigrane de la page courante (transparent, dessiné par-dessus le contenu depuis le pied de page).
@@ -686,11 +884,13 @@ class EcolePDF extends TCPDF
  * @param  Translate    $langs       Langue de l'interface
  * @param  string       $orientation 'P' (portrait) ou 'L' (paysage)
  * @param  string|array $format      Format de page : 'A4', 'A5'... ou array(largeur, hauteur) en mm
+ * @param  string       $langue      Langue imposée ('fr', 'ar') par un modèle de PDF, '' = langue détectée
  * @return array{0:EcolePDF,1:Translate,2:bool,3:string} pdf, traductions, arabe ?, langue
  */
-function ecole_pdf_create($langs, $orientation = 'P', $format = 'A4')
+function ecole_pdf_create($langs, $orientation = 'P', $format = 'A4', $langue = '')
 {
-	$lang = ecole_pdf_resolve_lang($langs);
+	// Langue imposée par un modèle de PDF (fr / ar), sinon langue détectée
+	$lang = in_array($langue, array('fr', 'ar'), true) ? $langue : ecole_pdf_resolve_lang($langs);
 	$outputlangs = ecole_pdf_use_lang($lang);
 	$rtl = ($lang === 'ar');
 
@@ -768,10 +968,28 @@ function ecole_pdf_table($pdf, $headers, $ratios, $aligns, $rows)
 	$printHeader = function () use ($pdf, $headers, $widths, $rtl) {
 		ecole_pdf_font($pdf, 'B', isset($pdf->tableFontSize) ? $pdf->tableFontSize : 8, $rtl);
 		$c = isset($pdf->tableColor) ? $pdf->tableColor : array(66, 92, 199);
-		$pdf->SetFillColor($c[0], $c[1], $c[2]);
-		$pdf->SetTextColor(255, 255, 255);
-		$pdf->SetDrawColor(180, 185, 200);
+		$style = isset($pdf->tableStyle) ? $pdf->tableStyle : 'classique';
 		$pdf->SetLineWidth(0.2);
+		if ($style === 'lignes') {
+			// Léger : titres colorés, filet épais dessous, pas de fond ni de cadres
+			$pdf->SetFillColor(255, 255, 255);
+			$pdf->SetTextColor($c[0], $c[1], $c[2]);
+			$pdf->SetDrawColor($c[0], $c[1], $c[2]);
+			$pdf->SetLineWidth(0.5);
+			$bordure = 'B';
+		} elseif ($style === 'encadre') {
+			// Encadré : titres sur fond teinté, cadre coloré autour du tableau
+			$t = ecole_pdf_teinte($c, 0.82);
+			$pdf->SetFillColor($t[0], $t[1], $t[2]);
+			$pdf->SetTextColor($c[0], $c[1], $c[2]);
+			$pdf->SetDrawColor($c[0], $c[1], $c[2]);
+			$bordure = 1;
+		} else {
+			$pdf->SetFillColor($c[0], $c[1], $c[2]);
+			$pdf->SetTextColor(255, 255, 255);
+			$pdf->SetDrawColor(180, 185, 200);
+			$bordure = 1;
+		}
 		$h = 8;
 		foreach ($headers as $i => $label) {
 			$h = max($h, $pdf->getStringHeight($widths[$i], $label) + 1);
@@ -779,9 +997,10 @@ function ecole_pdf_table($pdf, $headers, $ratios, $aligns, $rows)
 		$x = $pdf->GetX();
 		$y = $pdf->GetY();
 		foreach ($headers as $i => $label) {
-			$pdf->MultiCell($widths[$i], $h, $label, 1, 'C', true, 0, $x, $y, true, 0, false, true, $h, 'M');
+			$pdf->MultiCell($widths[$i], $h, $label, $bordure, 'C', true, 0, $x, $y, true, 0, false, true, $h, 'M');
 			$x += $widths[$i];
 		}
+		$pdf->SetLineWidth(0.2);
 		$pdf->SetXY($pdf->getMargins()['left'], $y + $h);
 	};
 	$printHeader();
@@ -807,13 +1026,31 @@ function ecole_pdf_table($pdf, $headers, $ratios, $aligns, $rows)
 			ecole_pdf_font($pdf, '', isset($pdf->tableFontSize) ? $pdf->tableFontSize : 8, $rtl);
 		}
 		$alt = !$alt;
-		$pdf->SetFillColor($alt ? 248 : 255, $alt ? 249 : 255, $alt ? 252 : 255);
+		$style = isset($pdf->tableStyle) ? $pdf->tableStyle : 'classique';
+		$coul = isset($pdf->tableColor) ? $pdf->tableColor : array(66, 92, 199);
+		if ($style === 'lignes') {
+			$pdf->SetFillColor(255, 255, 255);
+			$pdf->SetDrawColor(215, 218, 226);
+		} elseif ($style === 'encadre') {
+			$t = ecole_pdf_teinte($coul, 0.95);
+			$pdf->SetFillColor($alt ? $t[0] : 255, $alt ? $t[1] : 255, $alt ? $t[2] : 255);
+			$pdf->SetDrawColor($coul[0], $coul[1], $coul[2]);
+		} else {
+			$pdf->SetFillColor($alt ? 248 : 255, $alt ? 249 : 255, $alt ? 252 : 255);
+			$pdf->SetDrawColor(180, 185, 200);
+		}
 		$pdf->SetTextColor(45, 45, 55);
 		$pdf->SetAutoPageBreak(false, 0);
 		$x = $pdf->getMargins()['left'];
 		$y = $pdf->GetY();
+		$last = count($cells) - 1;
 		foreach ($cells as $i => $c) {
-			$pdf->MultiCell($widths[$i], $h, $c, 1, $aligns[$i], true, 0, $x, $y, true, 0, false, true, $h, 'M');
+			// Lignes : filet fin sous chaque ligne ; encadré : cadre extérieur + filets ; classique : toutes les cases
+			$bord = ($style === 'lignes') ? 'B' : (($style === 'encadre') ? 'B'.($i === 0 ? 'L' : '').($i === $last ? 'R' : '') : 1);
+			if ($style === 'encadre') {
+				$pdf->SetDrawColor($i === 0 || $i === $last ? $coul[0] : 220, $i === 0 || $i === $last ? $coul[1] : 222, $i === 0 || $i === $last ? $coul[2] : 230);
+			}
+			$pdf->MultiCell($widths[$i], $h, $c, $bord, $aligns[$i], true, 0, $x, $y, true, 0, false, true, $h, 'M');
 			$x += $widths[$i];
 		}
 		$pdf->SetAutoPageBreak(true, 18);

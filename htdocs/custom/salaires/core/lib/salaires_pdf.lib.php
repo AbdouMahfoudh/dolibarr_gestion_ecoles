@@ -54,7 +54,11 @@ class SalairesPDF extends EcolePDF
  */
 function salaires_pdf_create($langs)
 {
-	$lang = ecole_pdf_resolve_lang($langs);
+	// Modèle de bulletin de paie choisi à l'impression (&modele=), sinon le modèle par défaut
+	global $db;
+	dol_include_once('/classes/class/ecole_pdf_modele.class.php');
+	$modele = EcolePdfModele::charger($db, 'paie', GETPOSTINT('modele'));
+	$lang = ($modele && in_array($modele->langue, array('fr', 'ar'), true)) ? $modele->langue : ecole_pdf_resolve_lang($langs);
 	$outputlangs = ecole_pdf_use_lang($lang);
 	$outputlangs->loadLangs(array('salaires@salaires', 'personnel@personnel', 'classes@classes', 'bills'));
 	$rtl = ($lang === 'ar');
@@ -71,10 +75,7 @@ function salaires_pdf_create($langs)
 	$pdf->SetAuthor($pdf->company['name']);
 	$pdf->setFontSubsetting(true);
 	$pdf->SetAutoPageBreak(true, 18);
-	// Modèle de bulletin de paie choisi à l'impression (&modele=), sinon le modèle par défaut
-	global $db;
-	dol_include_once('/classes/class/ecole_pdf_modele.class.php');
-	ecole_pdf_modele_appliquer($pdf, EcolePdfModele::charger($db, 'paie', GETPOSTINT('modele')));
+	ecole_pdf_modele_appliquer($pdf, $modele);
 	return array($pdf, $outputlangs, $rtl);
 }
 
@@ -139,14 +140,7 @@ function salaires_pdf_ltr($s, $rtl)
  */
 function salaires_pdf_titre($pdf, $titre)
 {
-	$m = $pdf->getMargins();
-	$w = $pdf->getPageWidth() - $m['left'] - $m['right'];
-	$pdf->Ln(2);
-	ecole_pdf_font($pdf, 'B', 10, $pdf->isRtl);
-	$c = $pdf->tableColor; // couleur du modèle de bulletin de paie
-	$pdf->SetTextColor($c[0], $c[1], $c[2]);
-	$pdf->Cell($w, 6, ecole_pdf_bidi(ecole_pdf_text($titre), $pdf->isRtl), 0, 1, $pdf->isRtl ? 'R' : 'L');
-	$pdf->SetTextColor(40, 40, 50);
+	ecole_pdf_titre_section($pdf, $titre); // mise en page et couleur du modèle de bulletin de paie
 }
 
 /**
@@ -244,14 +238,32 @@ function salaires_pdf_fiche($db, $pdf, $b)
 	$w = $pdf->getPageWidth() - $mg['left'] - $mg['right'];
 	$pdf->Ln(2);
 	ecole_pdf_font($pdf, 'B', 12, $rtl);
-	$pdf->SetFillColor(236, 241, 252);
-	$pdf->SetDrawColor(66, 92, 199);
+	$coul = $pdf->tableColor;
+	$teinte = ecole_pdf_teinte($coul);
+	$pdf->SetFillColor($teinte[0], $teinte[1], $teinte[2]);
+	$pdf->SetDrawColor($coul[0], $coul[1], $coul[2]);
 	$net = ecole_pdf_trans($ol, 'NetAPayer').' : '.$m($b->net);
-	$pdf->Cell($w, 10, ecole_pdf_bidi($net, $rtl), 1, 1, 'C', true);
+	if ($pdf->tableStyle === 'lignes') {
+		$pdf->Cell($w, 10, ecole_pdf_bidi($net, $rtl), 'TB', 1, 'C', false);
+	} elseif ($pdf->tableStyle === 'encadre') {
+		$y = $pdf->GetY();
+		$pdf->RoundedRect($pdf->getMargins()['left'], $y, $w, 10, 2, '1111', 'DF');
+		$pdf->SetXY($pdf->getMargins()['left'], $y);
+		$pdf->Cell($w, 10, ecole_pdf_bidi($net, $rtl), 0, 1, 'C', false);
+	} else {
+		$pdf->Cell($w, 10, ecole_pdf_bidi($net, $rtl), 1, 1, 'C', true);
+	}
+	if (ecole_pdf_option($pdf, 'opt_lettres_paie', false) && (float) $b->net > 0) {
+		$pdf->Ln(1);
+		salaires_pdf_kv($pdf, ecole_pdf_trans($ol, 'PdfArreteSomme'), ecole_montant_lettres($b->net, $pdf), 8, 'B');
+	}
 	$pdf->SetTextColor(40, 40, 50);
 
-	// Présence de la période
-	if ((int) $b->minutes_prevues > 0 || (int) $b->nb_remplacements > 0) {
+	// Présence de la période (option du modèle)
+	$avecPresence = ecole_pdf_option($pdf, 'opt_presence', true);
+	if (!$avecPresence) {
+		// masquée par le modèle
+	} elseif ((int) $b->minutes_prevues > 0 || (int) $b->nb_remplacements > 0) {
 		salaires_pdf_titre($pdf, ecole_pdf_trans($ol, 'PresencePeriode'));
 		$heads = array(ecole_pdf_trans($ol, 'CoursPrevus'), ecole_pdf_trans($ol, 'CoursFaits'), ecole_pdf_trans($ol, 'AbsencesNonJustifiees'),
 			ecole_pdf_trans($ol, 'AbsencesJustifiees'), ecole_pdf_trans($ol, 'RemplacementsFaits'));
@@ -273,13 +285,32 @@ function salaires_pdf_fiche($db, $pdf, $b)
 		salaires_pdf_kv($pdf, ecole_pdf_trans($ol, 'NotePublicBulletin'), $ltr((string) $b->note_public));
 	}
 
-	// Signatures
-	$pdf->Ln(8);
-	ecole_pdf_font($pdf, 'B', 9, $rtl);
-	$gauche = ecole_pdf_trans($ol, 'SignatureEmploye');
-	$droite = ecole_pdf_trans($ol, 'SignatureDirection');
-	$pdf->Cell($w / 2, 6, $rtl ? $droite : $gauche, 0, 0, 'C');
-	$pdf->Cell($w / 2, 6, $rtl ? $gauche : $droite, 0, 1, 'C');
+	// Avances et prêts en cours (reste à retenir), option du modèle
+	if (ecole_pdf_option($pdf, 'opt_avances', true) && function_exists('salaires_avances_prets_employe')) {
+		$lignesAP = array();
+		foreach (array('avance' => 'AvanceSurSalaire', 'pret' => 'Pret') as $type => $cle) {
+			foreach (salaires_avances_prets_employe($db, (int) $b->fk_employe, $type) as $o) {
+				if ((float) $o->reste > 0) {
+					$lignesAP[] = array(ecole_pdf_trans($ol, $cle), $ltr((string) $o->ref), $m($o->montant), $m($o->retenu), $m($o->reste));
+				}
+			}
+		}
+		if (!empty($lignesAP)) {
+			salaires_pdf_titre($pdf, ecole_pdf_trans($ol, 'PdfAvancesPretsEnCours'));
+			ecole_pdf_table($pdf, array(ecole_pdf_trans($ol, 'Type'), ecole_pdf_trans($ol, 'Ref'), ecole_pdf_trans($ol, 'Montant'), ecole_pdf_trans($ol, 'PdfDejaRetenu'), ecole_pdf_trans($ol, 'PdfResteARetenir')),
+				array(1.2, 1.4, 1.3, 1.3, 1.3), array('L', 'C', 'R', 'R', 'R'), $lignesAP);
+		}
+	}
+
+	// Signatures (option du modèle)
+	if (ecole_pdf_option($pdf, 'opt_signatures_paie', true)) {
+		$pdf->Ln(8);
+		ecole_pdf_font($pdf, 'B', 9, $rtl);
+		$gauche = ecole_pdf_trans($ol, 'SignatureEmploye');
+		$droite = ecole_pdf_trans($ol, 'SignatureDirection');
+		$pdf->Cell($w / 2, 6, $rtl ? $droite : $gauche, 0, 0, 'C');
+		$pdf->Cell($w / 2, 6, $rtl ? $gauche : $droite, 0, 1, 'C');
+	}
 
 	// Tampon
 	if ((int) $b->status === EcoleSalaire::STATUS_BROUILLON) {
@@ -294,7 +325,7 @@ function salaires_pdf_fiche($db, $pdf, $b)
 
 	// Détail des séances (enseignants)
 	$seances = $b->getSeances();
-	if ($seances && getDolGlobalString('SALAIRES_PDF_SEANCES', '1')) {
+	if ($seances && getDolGlobalString('SALAIRES_PDF_SEANCES', '1') && ecole_pdf_option($pdf, 'opt_seances', true)) {
 		$pdf->SetMargins(12, 12, 12);
 		$pdf->AddPage();
 		salaires_pdf_titre($pdf, ecole_pdf_trans($ol, 'SeancesPeriode').' — '.$ltr($b->ref).' — '.($rtl ? $ltr($nom).' - '.$ltr($emp->ref) : $emp->ref.' - '.$nom));

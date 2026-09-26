@@ -40,5 +40,53 @@ if ($modele->type_doc === 'liste') {
 }
 $titres = array('liste' => 'PdfTypeListe', 'recu' => 'PdfTypeRecu', 'paie' => 'PdfTypePaie');
 ecole_pdf_start($pdf, ecole_pdf_trans($outputlangs, $titres[$modele->type_doc]), ecole_pdf_trans($outputlangs, 'ApercuDonneesExemple'), 'APERCU');
-ecole_pdf_table($pdf, $headers, array(0.5, 3, 1, 1.4), array('C', 'L', 'C', 'R'), $rows);
+$m = $pdf->getMargins();
+$w = $pdf->getPageWidth() - $m['left'] - $m['right'];
+$align = $rtl ? 'R' : 'L';
+$ligne = function ($label, $valeur) use ($pdf, $w, $rtl, $align) {
+	ecole_pdf_font($pdf, '', 9, $rtl);
+	$pdf->Cell($w, 5.5, ecole_pdf_bidi($label.' : '.$valeur, $rtl), 0, 1, $align);
+};
+if ($modele->type_doc === 'liste') {
+	$ds = ecole_export_pdf_colonnes(array('headers' => $headers, 'ratios' => array(0.5, 3, 1, 1.4), 'aligns' => array('C', 'L', 'C', 'R'), 'rows' => $rows), $pdf, $outputlangs);
+	ecole_pdf_table($pdf, $ds['headers'], $ds['ratios'], $ds['aligns'], $ds['rows']);
+	ecole_pdf_font($pdf, '', 8, $rtl);
+	$pdf->Ln(2);
+	if (ecole_pdf_option($pdf, 'opt_total', true)) {
+		$pdf->Cell($w, 5, ecole_pdf_bidi(ecole_pdf_trans($outputlangs, 'PdfNbLignes', count($rows)), $rtl), 0, 1, $align);
+	}
+	if (ecole_pdf_option($pdf, 'opt_date', true)) {
+		$pdf->Cell($w, 5, ecole_pdf_bidi(ecole_pdf_trans($outputlangs, 'PdfImprimeLe', dol_print_date(dol_now(), 'dayhour', 'tzuser', $outputlangs), ''), $rtl), 0, 1, $align);
+	}
+	if (ecole_pdf_option($pdf, 'opt_signature', false)) {
+		$pdf->Ln(4);
+		$pdf->Cell($w, 6, ecole_pdf_trans($outputlangs, 'PdfVisaDirection'), 0, 1, $rtl ? 'L' : 'R');
+		ecole_pdf_signature_cachet($pdf);
+	}
+} else {
+	$exemplaires = ($modele->type_doc === 'recu' && ecole_pdf_option($pdf, 'opt_souche', false)) ? array('PdfExemplairePayeur', 'PdfExemplaireEcole') : array('');
+	foreach ($exemplaires as $i => $ex) {
+		if ($i > 0) {
+			$pdf->Ln(3);
+			$pdf->SetLineStyle(array('width' => 0.3, 'dash' => '3,2', 'color' => array(150, 150, 160)));
+			$pdf->Line($m['left'], $pdf->GetY(), $m['left'] + $w, $pdf->GetY());
+			$pdf->SetLineStyle(array('width' => 0.2, 'dash' => 0));
+			$pdf->Ln(3);
+		}
+		if ($ex !== '') {
+			ecole_pdf_titre_section($pdf, ecole_pdf_trans($outputlangs, $ex));
+		}
+		$ligne(ecole_pdf_trans($outputlangs, 'ApercuColNom'), $noms[0]);
+		$ligne(ecole_pdf_trans($outputlangs, 'ApercuColClasse'), '4AS');
+		ecole_pdf_titre_section($pdf, ecole_pdf_trans($outputlangs, 'ApercuDonneesExemple'));
+		ecole_pdf_table($pdf, $headers, array(0.5, 3, 1, 1.4), array('C', 'L', 'C', 'R'), array_slice($rows, 0, $ex !== '' ? 3 : 5));
+		if (ecole_pdf_option($pdf, $modele->type_doc === 'recu' ? 'opt_lettres_recu' : 'opt_lettres_paie', false)) {
+			$ligne(ecole_pdf_trans($outputlangs, 'PdfArreteSomme'), ecole_montant_lettres(21500, $pdf));
+		}
+		if ($modele->type_doc === 'recu' && ecole_pdf_option($pdf, 'opt_signature_recu', true)) {
+			$pdf->Cell($w, 6, ecole_pdf_trans($outputlangs, 'PdfVisaDirection'), 0, 1, $rtl ? 'L' : 'R');
+			ecole_pdf_signature_cachet($pdf, 18.0);
+		}
+	}
+}
 $pdf->Output('apercu_'.$modele->ref.'_'.$lang.'.pdf', 'I');
