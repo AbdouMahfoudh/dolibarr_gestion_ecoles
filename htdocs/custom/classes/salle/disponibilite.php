@@ -20,7 +20,7 @@ $ouvrables = ecole_jours_ouvrables();
 // Jour affiché : celui demandé, sinon aujourd'hui s'il est ouvrable, sinon le premier jour ouvrable
 $jour = GETPOSTINT('jour');
 if (!in_array($jour, $ouvrables)) {
-	$today = (int) dol_print_date(dol_now(), '%u');
+	$today = (int) date('N', strtotime(dol_print_date(dol_now(), '%Y-%m-%d', 'tzuser'))); // 1 = lundi ... 7 = dimanche
 	$jour = in_array($today, $ouvrables) ? $today : (int) reset($ouvrables);
 }
 

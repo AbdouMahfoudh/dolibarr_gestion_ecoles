@@ -281,9 +281,12 @@ function ecole_dash_aujourdhui()
 	global $db;
 	$p = $db->prefix();
 	$jour = dol_print_date(dol_now(), '%Y-%m-%d', 'tzuser');
-	$dow = (int) dol_print_date(dol_now(), '%u', 'tzuser');
+	$dow = (int) date('N', strtotime($jour)); // 1 = lundi ... 7 = dimanche (comme l'emploi du temps)
 	$out = array('date' => $jour, 'cours' => 0, 'appels' => 0, 'absents' => 0, 'retards' => 0, 'renvoyes' => 0, 'profs_absents' => 0, 'examens' => array());
-	$out['cours'] = (int) ecole_dash_val("SELECT COUNT(*) FROM ".$p."ecole_edt_cours WHERE entity IN (".getEntity('ecole_classe').") AND jour = ".$dow);
+	// Cours de l'emploi du temps ce jour-là (classes actives), aucun un jour non ouvrable
+	if (!function_exists('ecole_jours_ouvrables') || in_array($dow, ecole_jours_ouvrables(), true)) {
+		$out['cours'] = (int) ecole_dash_val("SELECT COUNT(*) FROM ".$p."ecole_edt_cours e INNER JOIN ".$p."ecole_classe c ON c.rowid = e.fk_classe AND c.status = 1 WHERE e.entity IN (".getEntity('ecole_classe').") AND e.jour = ".$dow);
+	}
 	if (ecole_dash_table('ecole_appel')) {
 		$out['appels'] = (int) ecole_dash_val("SELECT COUNT(*) FROM ".$p."ecole_appel WHERE entity IN (".getEntity('ecole_appel').") AND date_appel = '".$db->escape($jour)."'");
 		$resql = $db->query("SELECT type, COUNT(DISTINCT fk_eleve) as nb FROM ".$p."ecole_absence WHERE date_appel = '".$db->escape($jour)."' GROUP BY type");
