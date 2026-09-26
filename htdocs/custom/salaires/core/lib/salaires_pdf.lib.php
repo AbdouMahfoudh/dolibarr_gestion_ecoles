@@ -36,13 +36,13 @@ class SalairesPDF extends EcolePDF
 		list($this->docTitle, $this->docSubtitle, $this->docRef) = $this->entetes[$p];
 		$registry = ecole_pdf_header_registry();
 		$style = isset($registry[$this->headerStyle]) ? $this->headerStyle : 'bandeau_bleu';
-		$this->SetTopMargin($registry[$style]['top']);
+		$this->SetTopMargin(ecole_pdf_header_top($this, $style));
 		$wasRtl = $this->getRTL();
 		$this->setRTL(false);
 		call_user_func($registry[$style]['render'], $this, $this->company);
 		$this->setRTL($wasRtl);
 		$this->SetTextColor(0, 0, 0);
-		$this->SetY($registry[$style]['top']);
+		$this->SetY(ecole_pdf_header_top($this, $style));
 	}
 }
 
@@ -71,6 +71,10 @@ function salaires_pdf_create($langs)
 	$pdf->SetAuthor($pdf->company['name']);
 	$pdf->setFontSubsetting(true);
 	$pdf->SetAutoPageBreak(true, 18);
+	// Modèle de bulletin de paie choisi à l'impression (&modele=), sinon le modèle par défaut
+	global $db;
+	dol_include_once('/classes/class/ecole_pdf_modele.class.php');
+	ecole_pdf_modele_appliquer($pdf, EcolePdfModele::charger($db, 'paie', GETPOSTINT('modele')));
 	return array($pdf, $outputlangs, $rtl);
 }
 
@@ -139,7 +143,8 @@ function salaires_pdf_titre($pdf, $titre)
 	$w = $pdf->getPageWidth() - $m['left'] - $m['right'];
 	$pdf->Ln(2);
 	ecole_pdf_font($pdf, 'B', 10, $pdf->isRtl);
-	$pdf->SetTextColor(40, 60, 120);
+	$c = $pdf->tableColor; // couleur du modèle de bulletin de paie
+	$pdf->SetTextColor($c[0], $c[1], $c[2]);
 	$pdf->Cell($w, 6, ecole_pdf_bidi(ecole_pdf_text($titre), $pdf->isRtl), 0, 1, $pdf->isRtl ? 'R' : 'L');
 	$pdf->SetTextColor(40, 40, 50);
 }
@@ -193,7 +198,7 @@ function salaires_pdf_fiche($db, $pdf, $b)
 
 	$moisLabel = ucfirst($ol->transnoentities('Month'.substr((string) $b->mois, 5, 2))).' '.substr((string) $b->mois, 0, 4);
 	$pdf->entetes[$pdf->getNumPages() + 1] = array(ecole_pdf_trans($ol, 'FicheDePaie').' — '.$moisLabel, $periode, $b->ref);
-	$pdf->SetMargins(12, $registry[$pdf->headerStyle]['top'], 12);
+	$pdf->SetMargins(12, ecole_pdf_header_top($pdf, $pdf->headerStyle), 12);
 	$pdf->AddPage();
 	$pageFiche = $pdf->getPage();
 	$pdf->SetTextColor(40, 40, 50);
@@ -341,7 +346,7 @@ function salaires_pdf_avance_pret($db, $object)
 	$date = dol_print_date($object->$champ, 'day', 'tzserver', $ol);
 	$registry = ecole_pdf_header_registry();
 	$pdf->entetes[1] = array(ecole_pdf_trans($ol, $pret ? 'ReconnaissancePret' : 'RecuAvance'), $date, $object->ref);
-	$pdf->SetMargins(12, $registry[$pdf->headerStyle]['top'], 12);
+	$pdf->SetMargins(12, ecole_pdf_header_top($pdf, $pdf->headerStyle), 12);
 	$pdf->AddPage();
 	$pdf->SetTextColor(40, 40, 50);
 	$mg = $pdf->getMargins();

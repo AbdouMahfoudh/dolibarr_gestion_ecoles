@@ -116,6 +116,9 @@ function eleves_pdf_recu($db, $recu)
 		return;
 	}
 	list($pdf, $outputlangs, $rtl) = ecole_pdf_create($langs, 'P', $format === 'A4' ? 'A4' : 'A5');
+	// Modèle de reçu choisi à l'impression (&modele=), sinon le modèle par défaut
+	dol_include_once('/classes/class/ecole_pdf_modele.class.php');
+	ecole_pdf_modele_appliquer($pdf, EcolePdfModele::charger($db, 'recu', GETPOSTINT('modele')));
 	$outputlangs->loadLangs(array('eleves@eleves', 'bills'));
 	ecole_pdf_start($pdf, ecole_pdf_trans($outputlangs, 'RecuDePaiement'), dol_print_date($recu->date_recu, 'day', 'tzuser', $outputlangs), $recu->ref);
 	if ($format !== 'A4') {

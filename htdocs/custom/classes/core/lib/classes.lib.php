@@ -626,6 +626,36 @@ function matiere_extra_view($object)
 }
 
 /**
+ * Colonne « Aperçu » de la liste des modèles de PDF : liens FR / AR.
+ *
+ * @param  EcolePdfModele $rec Modèle
+ * @return string
+ */
+function pdf_modele_col_apercu($rec)
+{
+	$url = dol_buildpath('/classes/pdf_modele/apercu.php', 1).'?id='.((int) $rec->id);
+	return '<a href="'.$url.'&lang=fr" target="_blank" rel="noopener">'.img_picto('', 'fa-file-pdf', 'class="pictofixedwidth"').'FR</a> &nbsp; <a href="'.$url.'&lang=ar" target="_blank" rel="noopener">'.img_picto('', 'fa-file-pdf', 'class="pictofixedwidth"').'AR</a>';
+}
+
+/**
+ * Sous la fiche d'un modèle de PDF : aperçu en français et en arabe, duplication.
+ *
+ * @param  EcolePdfModele $object Modèle
+ * @return void
+ */
+function pdf_modele_extra_view($object)
+{
+	global $langs, $user;
+	$url = dol_buildpath('/classes/pdf_modele/apercu.php', 1).'?id='.((int) $object->id);
+	print '<div class="tabsAction">';
+	print dolGetButtonAction('', $langs->trans('ApercuFr'), 'default', $url.'&lang=fr', '', 1, array('attr' => array('target' => '_blank')));
+	print dolGetButtonAction('', $langs->trans('ApercuAr'), 'default', $url.'&lang=ar', '', 1, array('attr' => array('target' => '_blank')));
+	print dolGetButtonAction('', $langs->trans('Dupliquer'), 'default', dol_buildpath('/classes/pdf_modele/card.php', 1).'?id='.((int) $object->id).'&action=dupliquer&token='.newToken(), '', $user->hasRight('classes', 'config'));
+	print '</div>';
+	print '<span class="opacitymedium small">'.$langs->trans('AideModelesPdf').'</span>';
+}
+
+/**
  * Nom complet d'un utilisateur Dolibarr.
  *
  * @param  DoliDB $db Handler base

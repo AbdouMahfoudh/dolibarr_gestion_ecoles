@@ -109,6 +109,9 @@ print '</table></div>';
 
 print '<div class="tabsAction">';
 print dolGetButtonAction('', $langs->trans('ImprimerRecu'), 'default', dol_buildpath('/eleves/recu/pdf.php', 1).'?id='.((int) $object->id), '', $canrecu, array('attr' => array('target' => '_blank')));
+if ($canrecu) {
+	print ecole_pdf_modele_choix_html('recu', dol_buildpath('/eleves/recu/pdf.php', 1).'?id='.((int) $object->id));
+}
 if ((int) $object->status === EcoleRecu::STATUS_VALIDE) {
 	print ecole_bouton_supprimer($langs->trans('AnnulerRecu'), $self.'&action=annuler&token='.newToken(), $canannuler, $object->getCancelBlockers());
 }

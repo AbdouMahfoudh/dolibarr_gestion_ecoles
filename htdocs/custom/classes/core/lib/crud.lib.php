@@ -216,6 +216,10 @@ function ecole_crud_config($name)
 					'search' => array('type' => 'range', 'kind' => 'number', 'expr' => 't.effectif_max')),
 				'edt' => array('label' => 'EcoleEmploiDuTemps', 'render' => 'classe_col_edt'),
 			)),
+		'pdf_modele' => array('dir' => 'pdf_modele', 'class' => 'EcolePdfModele', 'title' => 'ModelesPdf', 'ficheTitle' => 'ModelePdf', 'newLabel' => 'NouveauModelePdf',
+			'perm_read' => 'config', 'perm_write' => 'config', 'perm_delete' => 'config',
+			'extra_view' => 'pdf_modele_extra_view',
+			'extra_columns' => array('apercu' => array('label' => 'Apercu', 'render' => 'pdf_modele_col_apercu'))),
 		'salle' => array('dir' => 'salle', 'class' => 'EcoleSalle', 'title' => 'Salles', 'ficheTitle' => 'Salle', 'newLabel' => 'NouvelleSalle',
 			'perm_read' => 'lire', 'perm_write' => 'ecrire', 'perm_delete' => 'supprimer',
 			'head' => 'salle_prepare_head', 'extra_view' => 'salle_extra_view',
@@ -351,8 +355,35 @@ function ecole_export_buttons($obj, $param, $module = 'classes')
 	global $langs;
 	$base = dol_buildpath('/'.$module.'/export.php', 1).'?obj='.urlencode($obj).$param;
 	$out = dolGetButtonTitle($langs->trans('ExportPdf'), '', 'fa fa-file-pdf', $base.'&format=pdf', '', 1, array('attr' => array('target' => '_blank')));
+	$out .= ecole_pdf_modele_choix_html('liste', $base.'&format=pdf');
 	$out .= dolGetButtonTitle($langs->trans('ExportExcel'), '', 'fa fa-file-excel', $base.'&format=excel', '', 1, array('attr' => array('target' => '_blank')));
 	return $out;
+}
+
+/**
+ * Choix du modèle de PDF à l'impression, quand il y en a plusieurs pour ce type de document :
+ * menu déroulant qui ouvre le PDF avec le modèle choisi (sans choix : modèle par défaut).
+ *
+ * @param  string $type liste | recu | paie
+ * @param  string $url  Adresse du PDF (le paramètre &modele= est ajouté)
+ * @return string       HTML ('' si un seul modèle)
+ */
+function ecole_pdf_modele_choix_html($type, $url)
+{
+	global $db, $langs;
+	dol_include_once('/classes/class/ecole_pdf_modele.class.php');
+	$choix = EcolePdfModele::choix($db, $type);
+	if (count($choix) < 2) {
+		return '';
+	}
+	$langs->load('classes@classes');
+	$sep = (strpos($url, '?') === false) ? '?' : '&';
+	$out = '<select class="flat valignmiddle maxwidth200" title="'.dol_escape_htmltag($langs->trans('ChoisirModelePdf')).'" onchange="if(this.value){window.open(this.value,\'_blank\');this.selectedIndex=0;}">';
+	$out .= '<option value="">'.dol_escape_htmltag($langs->trans('PdfAvecModele')).'</option>';
+	foreach ($choix as $id => $label) {
+		$out .= '<option value="'.dol_escape_htmltag($url.$sep.'modele='.$id).'">'.dol_escape_htmltag($label).'</option>';
+	}
+	return $out.'</select>';
 }
 
 /**

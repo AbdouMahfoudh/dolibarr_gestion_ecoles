@@ -219,6 +219,12 @@ function ecole_defaut_sql($module, $p, $e, $now, $esc, $vide = null)
 				$sql[] = "INSERT IGNORE INTO ".$p."ecole_matiere (entity, ref, code, label_fr, label_ar, langue, date_creation, status) VALUES (".$e.", ".$q($d[0]).", ".$q($d[0]).", ".$q($d[1]).", ".$q($d[2]).", ".$q($d[3]).", ".$now.", 1)";
 			}
 		}
+		// Modèles de PDF de départ : un par type de document, par défaut (modifiables, duplicables)
+		if ($installer('ecole_pdf_modele')) {
+			foreach (array(array('LISTE', 'Liste standard', 'قائمة عادية', 'liste'), array('RECU', 'Reçu standard', 'وصل عادي', 'recu'), array('PAIE', 'Bulletin de paie standard', 'كشف راتب عادي', 'paie')) as $i => $d) {
+				$sql[] = "INSERT IGNORE INTO ".$p."ecole_pdf_modele (entity, ref, label_fr, label_ar, type_doc, couleur, orientation, taille_police, filigrane, par_defaut, position, date_creation, status) VALUES (".$e.", ".$q($d[0]).", ".$q($d[1]).", ".$q($d[2]).", ".$q($d[3]).", 'bleu', 'auto', 8, 'defaut', 1, ".(($i + 1) * 10).", ".$now.", 1)";
+			}
+		}
 		if ($installer('ecole_classe')) {
 			foreach (ecole_defaut_classes() as $d) {
 				$niv = "(SELECT n.rowid FROM ".$p."ecole_niveau n WHERE n.entity = ".$e." AND n.ref = ".$q($d[3]).")";

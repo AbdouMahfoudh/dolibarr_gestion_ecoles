@@ -292,6 +292,9 @@ print dolGetButtonAction($langs->trans('AucunBrouillon'), $langs->trans('Recalcu
 print dolGetButtonAction($langs->trans('AucunBrouillon'), $langs->trans('ValiderBrouillons').' ('.$nbBr.')', 'default', $self.'&action=valider&token='.newToken(), '', $canvalider && $nbBr > 0);
 print dolGetButtonAction($langs->trans('AucunBulletinValide'), $langs->trans('PayerValides').' ('.$nbVal.')', 'default', $self.'&action=payer&token='.newToken(), '', $canpayer && $nbVal > 0);
 print dolGetButtonAction('', $langs->trans('FichesDePaiePdf'), 'default', dol_buildpath('/salaires/lot/pdf.php', 1).'?id='.((int) $object->id), '', $canexport && count($bulletins) > 0, array('attr' => array('target' => '_blank')));
+if ($canexport && count($bulletins) > 0) {
+	print ecole_pdf_modele_choix_html('paie', dol_buildpath('/salaires/lot/pdf.php', 1).'?id='.((int) $object->id));
+}
 print ecole_bouton_supprimer($langs->trans('Delete'), $self.'&action=delete&token='.newToken(), $cancreer, $object->getDeleteBlockers());
 print '</div>';
 

@@ -65,7 +65,7 @@ class EcoleBulletinModele extends EcoleObject
 		'couleur' => array('type' => 'varchar(16)', 'label' => 'CouleurBulletin', 'enabled' => '1', 'visible' => 1, 'notnull' => 1, 'default' => 'bleu', 'position' => 46,
 			'arrayofkeyval' => array('bleu' => 'CouleurBleu', 'vert' => 'CouleurVert', 'bordeaux' => 'CouleurBordeaux', 'violet' => 'CouleurViolet', 'orange' => 'CouleurOrange', 'gris' => 'CouleurGris', 'aucune' => 'CouleurAucune'), 'help' => 'CouleurBulletinHelp'),
 		'entete' => array('type' => 'varchar(32)', 'label' => 'EnteteBulletin', 'enabled' => '1', 'visible' => 1, 'notnull' => 0, 'position' => 47,
-			'arrayofkeyval' => array('noir_blanc' => 'EnteteNoirBlanc', 'bandeau_bleu' => 'PdfHeaderBandeauBleu', 'bandeau_sombre' => 'PdfHeaderBandeauSombre', 'minimal' => 'PdfHeaderMinimal', 'compact' => 'PdfHeaderCompact', 'classique' => 'PdfHeaderClassique'), 'help' => 'EnteteBulletinHelp'),
+			'arrayofkeyval' => array('noir_blanc' => 'EnteteNoirBlanc', 'bandeau_bleu' => 'PdfHeaderBandeauBleu', 'bandeau_sombre' => 'PdfHeaderBandeauSombre', 'minimal' => 'PdfHeaderMinimal', 'compact' => 'PdfHeaderCompact', 'classique' => 'PdfHeaderClassique', 'image' => 'PdfHeaderImage'), 'help' => 'EnteteBulletinHelp'),
 		'simplifie' => array('type' => 'boolean', 'label' => 'ModeleSimplifie', 'enabled' => '1', 'visible' => 1, 'notnull' => 1, 'default' => '0', 'position' => 50, 'help' => 'ModeleSimplifieHelp'),
 		'aff_detail' => array('type' => 'boolean', 'label' => 'AffDetail', 'enabled' => '1', 'visible' => 1, 'notnull' => 1, 'default' => '1', 'position' => 60),
 		'aff_coef' => array('type' => 'boolean', 'label' => 'AffCoef', 'enabled' => '1', 'visible' => 1, 'notnull' => 1, 'default' => '1', 'position' => 61),

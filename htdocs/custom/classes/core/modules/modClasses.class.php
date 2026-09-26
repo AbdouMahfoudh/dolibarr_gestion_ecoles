@@ -112,6 +112,7 @@ class modClasses extends DolibarrModules
 			array('ecole_creneaux',  'ecole_config',   'MenuCreneaux',       '/classes/creneau/list.php',                'config',    33),
 			array('ecole_sessions',  'ecole_config',   'MenuSessions',       '/classes/session/list.php',                'config',    34),
 			array('ecole_reglages',  'ecole_config',   'MenuReglages',       '/classes/admin/setup.php',                 'config',    35),
+			array('ecole_pdfmod',    'ecole_config',   'MenuModelesPdf',     '/classes/pdf_modele/list.php',             'config',    36),
 		);
 		foreach ($left as $m) {
 			$fk = 'fk_mainmenu=classes';

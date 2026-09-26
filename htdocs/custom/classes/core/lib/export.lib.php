@@ -136,6 +136,39 @@ function ecole_export_filename($name, $ext)
 }
 
 /**
+ * Orientation automatique d'une liste : portrait (A4 vertical) dès que le tableau y tient, avec retours à la
+ * ligne dans les cellules ; paysage seulement si les colonnes sont trop nombreuses ou trop larges.
+ *
+ * @param  EcolePDF $pdf PDF (police et taille du texte des tableaux déjà réglées)
+ * @param  array    $ds  Jeu de données
+ * @return string        'P' ou 'L'
+ */
+function ecole_export_orientation($pdf, $ds)
+{
+	$size = isset($pdf->tableFontSize) ? $pdf->tableFontSize : 8;
+	ecole_pdf_font($pdf, '', $size, $pdf->isRtl);
+	$largeur = 0;
+	foreach (array_values($ds['headers']) as $i => $h) {
+		// Plus long mot du titre (le titre peut passer sur deux lignes)
+		$mot = 0;
+		foreach (preg_split('/\s+/u', (string) $h) as $w) {
+			$mot = max($mot, $pdf->GetStringWidth($w));
+		}
+		// Contenu : largeur utile plafonnée (les longs textes passent à la ligne)
+		$contenu = 0;
+		foreach (array_slice($ds['rows'], 0, 200) as $row) {
+			$row = array_values($row);
+			if (isset($row[$i])) {
+				$contenu = max($contenu, min(45, $pdf->GetStringWidth((string) $row[$i])));
+			}
+		}
+		$largeur += max($mot, $contenu) + 3;
+	}
+	// A4 portrait : 186 mm utiles ; une légère compression reste lisible grâce aux retours à la ligne
+	return ($largeur <= 200) ? 'P' : 'L';
+}
+
+/**
  * Écrit un jeu de données en PDF (affiché dans le navigateur).
  *
  * @param  array $ds Jeu de données
@@ -143,8 +176,19 @@ function ecole_export_filename($name, $ext)
  */
 function ecole_export_pdf($ds)
 {
-	global $langs;
-	list($pdf) = ecole_pdf_create($langs, count($ds['headers']) > 7 ? 'L' : 'P');
+	global $langs, $db;
+	dol_include_once('/classes/class/ecole_pdf_modele.class.php');
+	// Modèle de liste choisi à l'impression (&modele=), sinon le modèle par défaut
+	$modele = EcolePdfModele::charger($db, 'liste', GETPOSTINT('modele'));
+	list($pdf) = ecole_pdf_create($langs, 'P');
+	ecole_pdf_modele_appliquer($pdf, $modele);
+	$orientation = $modele ? $modele->orientation : 'auto';
+	if ($orientation === 'auto') {
+		$orientation = ecole_export_orientation($pdf, $ds);
+	}
+	if ($orientation === 'L') {
+		$pdf->setPageOrientation('L');
+	}
 	ecole_pdf_start($pdf, $ds['title'], $ds['subtitle'], $ds['ref']);
 	ecole_pdf_table($pdf, $ds['headers'], $ds['ratios'], $ds['aligns'], $ds['rows']);
 	$pdf->Output(ecole_export_filename($ds['filename'], 'pdf'), 'I');

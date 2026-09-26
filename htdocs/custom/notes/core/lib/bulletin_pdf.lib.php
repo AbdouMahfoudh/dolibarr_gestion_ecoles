@@ -46,13 +46,13 @@ class NotesPDF extends EcolePDF
 		}
 		$registry = ecole_pdf_header_registry();
 		$style = isset($registry[$this->headerStyle]) ? $this->headerStyle : 'bandeau_bleu';
-		$this->SetTopMargin($registry[$style]['top']);
+		$this->SetTopMargin(ecole_pdf_header_top($this, $style));
 		$wasRtl = $this->getRTL();
 		$this->setRTL(false);
 		call_user_func($registry[$style]['render'], $this, $this->company);
 		$this->setRTL($wasRtl);
 		$this->SetTextColor(0, 0, 0);
-		$this->SetY($registry[$style]['top']);
+		$this->SetY(ecole_pdf_header_top($this, $style));
 	}
 
 	/**
@@ -122,6 +122,7 @@ class NotesPDF extends EcolePDF
 			parent::Footer();
 			return;
 		}
+		$this->ecoleFiligrane();
 		$m = $this->getMargins();
 		$w = $this->getPageWidth() - $m['left'] - $m['right'];
 		$this->SetY(-14);
@@ -317,7 +318,7 @@ function notes_pdf_doc($mode, $style, $couleur = 'bleu', $entete = null)
 	$pdf->SetCreator('Dolibarr - Notes');
 	$pdf->SetAuthor($pdf->company['name']);
 	$pdf->setFontSubsetting(true);
-	$pdf->SetMargins(12, $pdf->headerStyle === NOTES_ENTETE_NB ? NOTES_ENTETE_NB_HAUT : $registry[$pdf->headerStyle]['top'], 12);
+	$pdf->SetMargins(12, $pdf->headerStyle === NOTES_ENTETE_NB ? NOTES_ENTETE_NB_HAUT : ecole_pdf_header_top($pdf, $pdf->headerStyle), 12);
 	$pdf->SetAutoPageBreak(true, 18);
 	$d->pdf = $pdf;
 	$d->layout = in_array($style, array('classique', 'lignes', 'encadre'), true) ? $style : 'classique';

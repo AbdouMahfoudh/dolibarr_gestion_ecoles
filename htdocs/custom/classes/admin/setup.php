@@ -8,6 +8,7 @@
 
 require '../init.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.form.class.php';
 dol_include_once('/classes/core/lib/ecole_pdf.lib.php');
 
 $langs->loadLangs(array('admin', 'classes@classes'));
@@ -18,6 +19,7 @@ if (!$user->hasRight('classes', 'config') && !$user->admin) {
 
 $action = GETPOST('action', 'aZ09');
 $registry = ecole_pdf_header_registry();
+$form = new Form($db);
 
 /*
  * Actions
@@ -56,6 +58,18 @@ if ($action == 'save') {
 		dolibarr_set_const($db, 'ECOLE_JOURS_OUVRABLES', implode(',', $jours), 'chaine', 0, '', $conf->entity);
 		if (isset($registry[$style])) {
 			dolibarr_set_const($db, 'ECOLE_PDF_HEADER_STYLE', $style, 'chaine', 0, '', $conf->entity);
+		}
+		// Filigrane de tous les documents (un modèle de PDF peut le remplacer ou le retirer)
+		$ftype = GETPOST('fil_type', 'aZ09');
+		if (in_array($ftype, array('aucun', 'texte', 'image'), true)) {
+			dolibarr_set_const($db, 'ECOLE_PDF_FILIGRANE_TYPE', $ftype, 'chaine', 0, '', $conf->entity);
+			dolibarr_set_const($db, 'ECOLE_PDF_FILIGRANE_TEXTE', dol_trunc(trim(GETPOST('fil_texte', 'alphanohtml')), 60, 'right', 'UTF-8', 1), 'chaine', 0, '', $conf->entity);
+			dolibarr_set_const($db, 'ECOLE_PDF_FILIGRANE_ANGLE', max(-90, min(90, GETPOSTINT('fil_angle'))), 'chaine', 0, '', $conf->entity);
+			dolibarr_set_const($db, 'ECOLE_PDF_FILIGRANE_OPACITE', max(1, min(100, GETPOSTINT('fil_opacite'))), 'chaine', 0, '', $conf->entity);
+			dolibarr_set_const($db, 'ECOLE_PDF_FILIGRANE_TAILLE', max(10, min(150, GETPOSTINT('fil_taille'))), 'chaine', 0, '', $conf->entity);
+			if (isset(ecole_pdf_couleurs()[GETPOST('fil_couleur', 'aZ09')])) {
+				dolibarr_set_const($db, 'ECOLE_PDF_FILIGRANE_COULEUR', GETPOST('fil_couleur', 'aZ09'), 'chaine', 0, '', $conf->entity);
+			}
 		}
 		// Police des PDF : une pour les documents en français, une pour les documents en arabe
 		$fonts = ecole_pdf_fonts();
@@ -152,7 +166,29 @@ foreach ($images as $const => $def) {
 	}
 	print '</td><td class="right"><input type="file" name="img_'.strtolower($const).'" accept="image/png,image/jpeg"></td></tr>';
 }
+print '</table><br>';
+
+// Filigrane de tous les documents PDF (remplaçable par modèle : Configuration > Modèles de PDF)
+$ft = getDolGlobalString('ECOLE_PDF_FILIGRANE_TYPE', 'aucun');
+print '<table class="noborder centpercent">';
+print '<tr class="liste_titre"><td colspan="2">'.$langs->trans('PdfFiligraneGlobal').' <span class="opacitymedium small">— '.$langs->trans('PdfFiligraneGlobalAide').'</span></td></tr>';
+print '<tr class="oddeven"><td class="titlefield">'.$langs->trans('PdfFiligrane').'</td><td>';
+foreach (array('aucun' => 'PdfFiligraneAucun', 'texte' => 'PdfFiligraneTexte', 'image' => 'PdfFiligraneImage') as $k => $lab) {
+	print '<label class="marginrightonly"><input type="radio" name="fil_type" value="'.$k.'"'.($ft === $k ? ' checked' : '').'> '.$langs->trans($lab).'</label> ';
+}
+print '<br><span class="opacitymedium small">'.$langs->trans('PdfFiligraneImageAide').'</span></td></tr>';
+print '<tr class="oddeven"><td>'.$langs->trans('PdfFilTexte').'</td><td><input type="text" class="flat minwidth300" name="fil_texte" maxlength="60" value="'.dol_escape_htmltag(getDolGlobalString('ECOLE_PDF_FILIGRANE_TEXTE')).'" placeholder="'.dol_escape_htmltag($langs->trans('PdfFilTexteExemple')).'"></td></tr>';
+print '<tr class="oddeven"><td>'.$langs->trans('PdfFilAngle').'</td><td><input type="number" min="-90" max="90" class="flat maxwidth75" name="fil_angle" value="'.getDolGlobalInt('ECOLE_PDF_FILIGRANE_ANGLE', 35).'"> °</td></tr>';
+print '<tr class="oddeven"><td>'.$langs->trans('PdfFilOpacite').'</td><td><input type="number" min="1" max="100" class="flat maxwidth75" name="fil_opacite" value="'.getDolGlobalInt('ECOLE_PDF_FILIGRANE_OPACITE', 10).'"> % <span class="opacitymedium small">'.$langs->trans('PdfFilOpaciteAide').'</span></td></tr>';
+print '<tr class="oddeven"><td>'.$langs->trans('PdfFilTaille').'</td><td><input type="number" min="10" max="150" class="flat maxwidth75" name="fil_taille" value="'.getDolGlobalInt('ECOLE_PDF_FILIGRANE_TAILLE', 50).'"> <span class="opacitymedium small">'.$langs->trans('PdfFilTailleAide').'</span></td></tr>';
+$fc = array();
+foreach (array_keys(ecole_pdf_couleurs()) as $k) {
+	$fc[$k] = $langs->trans('PdfCouleur'.ucfirst($k));
+}
+print '<tr class="oddeven"><td>'.$langs->trans('PdfFilCouleur').'</td><td>'.$form->selectarray('fil_couleur', $fc, getDolGlobalString('ECOLE_PDF_FILIGRANE_COULEUR', 'gris'), 0, 0, 0, '', 0, 0, 0, '', 'minwidth150').'</td></tr>';
+print '<tr class="oddeven"><td>'.$langs->trans('Apercu').'</td><td><a href="'.$preview.'?lang=fr" target="_blank" rel="noopener">'.img_picto('', 'fa-file-pdf', 'class="pictofixedwidth"').$langs->trans('ApercuFr').'</a> &nbsp; <a href="'.$preview.'?lang=ar" target="_blank" rel="noopener">'.img_picto('', 'fa-file-pdf', 'class="pictofixedwidth"').$langs->trans('ApercuAr').'</a> <span class="opacitymedium small">'.$langs->trans('ApercuApresEnregistrement').'</span></td></tr>';
 print '</table>';
+print '<div class="opacitymedium small"><br>'.$langs->trans('AideModelesPdfLien').' <a href="'.dol_buildpath('/classes/pdf_modele/list.php', 1).'">'.$langs->trans('MenuModelesPdf').'</a></div>';
 
 print '<div class="center"><br><input type="submit" class="button button-save" value="'.$langs->trans('Save').'"></div>';
 print '</form>';

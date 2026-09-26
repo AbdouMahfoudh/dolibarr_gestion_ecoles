@@ -429,6 +429,9 @@ if ((int) $object->status === EcoleSalaire::STATUS_PAYE) {
 	print ecole_bouton_supprimer($langs->trans('AnnulerPaiementSalaire'), $self.'&action=annulerpaiement&token='.newToken(), $canannulerpaie, $object->getCancelPaymentBlockers());
 }
 print dolGetButtonAction('', $langs->trans('FicheDePaiePdf'), 'default', dol_buildpath('/salaires/bulletin/pdf.php', 1).'?id='.((int) $object->id), '', $canexport, array('attr' => array('target' => '_blank')));
+if ($canexport) {
+	print ecole_pdf_modele_choix_html('paie', dol_buildpath('/salaires/bulletin/pdf.php', 1).'?id='.((int) $object->id));
+}
 if (in_array((int) $object->status, array(EcoleSalaire::STATUS_BROUILLON, EcoleSalaire::STATUS_VALIDE), true)) {
 	print ecole_bouton_supprimer($langs->trans('AnnulerBulletin'), $self.'&action=annuler&token='.newToken(), $canannuler);
 } elseif ((int) $object->status === EcoleSalaire::STATUS_PAYE) {

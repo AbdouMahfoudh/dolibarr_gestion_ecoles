@@ -13,6 +13,7 @@ require_once __DIR__.'/pdf_headers/header_bandeau.php';
 require_once __DIR__.'/pdf_headers/header_minimal.php';
 require_once __DIR__.'/pdf_headers/header_compact.php';
 require_once __DIR__.'/pdf_headers/header_classique.php';
+require_once __DIR__.'/pdf_headers/header_image.php';
 
 /* ----------------------------------------------------------------------
  * Langue
@@ -226,6 +227,8 @@ function ecole_pdf_images_config()
 	return array(
 		'ECOLE_PDF_SIGNATURE' => array('PdfImageSignature', 'PdfImageSignatureAide'),
 		'ECOLE_PDF_CACHET' => array('PdfImageCachet', 'PdfImageCachetAide'),
+		'ECOLE_PDF_ENTETE_IMAGE' => array('PdfImageEntete', 'PdfImageEnteteAide'),
+		'ECOLE_PDF_FILIGRANE_IMAGE' => array('PdfImageFiligrane', 'PdfImageFiligraneAide'),
 	);
 }
 
@@ -337,6 +340,116 @@ function ecole_pdf_signature_cachet($pdf, $hauteur = 28.0)
 }
 
 /**
+ * Couleurs proposées aux modèles de PDF : clé => RVB.
+ *
+ * @return array<string,int[]>
+ */
+function ecole_pdf_couleurs()
+{
+	return array(
+		'bleu' => array(66, 92, 199), 'vert' => array(38, 132, 84), 'bordeaux' => array(140, 32, 52), 'violet' => array(110, 64, 170),
+		'orange' => array(214, 110, 20), 'gris' => array(96, 102, 114), 'noir' => array(20, 20, 24), 'rouge' => array(200, 30, 30),
+	);
+}
+
+/**
+ * Réglage du filigrane : celui d'un modèle (filigrane « texte » ou « image »), sinon celui de la configuration
+ * (constantes ECOLE_PDF_FILIGRANE_*). null en retour de config = aucun filigrane.
+ *
+ * @param  object|null $modele Modèle de PDF (EcolePdfModele) ou null
+ * @return array|null          [type, texte, image, angle, opacité 0-1, taille, couleur RVB]
+ */
+function ecole_pdf_filigrane_config($modele)
+{
+	$couleurs = ecole_pdf_couleurs();
+	if ($modele && in_array($modele->filigrane, array('aucun', 'texte', 'image'), true)) {
+		if ($modele->filigrane === 'aucun') {
+			return array('type' => 'aucun');
+		}
+		$src = array('type' => $modele->filigrane, 'texte' => (string) $modele->fil_texte, 'angle' => (int) $modele->fil_angle,
+			'opacite' => (int) $modele->fil_opacite, 'taille' => (int) $modele->fil_taille, 'couleur' => (string) $modele->fil_couleur);
+	} else {
+		$src = array('type' => getDolGlobalString('ECOLE_PDF_FILIGRANE_TYPE', 'aucun'), 'texte' => getDolGlobalString('ECOLE_PDF_FILIGRANE_TEXTE'),
+			'angle' => getDolGlobalInt('ECOLE_PDF_FILIGRANE_ANGLE', 35), 'opacite' => getDolGlobalInt('ECOLE_PDF_FILIGRANE_OPACITE', 10),
+			'taille' => getDolGlobalInt('ECOLE_PDF_FILIGRANE_TAILLE', 50), 'couleur' => getDolGlobalString('ECOLE_PDF_FILIGRANE_COULEUR', 'gris'));
+	}
+	$src['image'] = ecole_pdf_image_path('ECOLE_PDF_FILIGRANE_IMAGE');
+	$src['rgb'] = isset($couleurs[$src['couleur']]) ? $couleurs[$src['couleur']] : $couleurs['gris'];
+	$src['opacite'] = min(1, max(0.01, $src['opacite'] / 100));
+	if (($src['type'] === 'texte' && trim($src['texte']) === '') || ($src['type'] === 'image' && $src['image'] === '') || !in_array($src['type'], array('texte', 'image'), true)) {
+		return array('type' => 'aucun');
+	}
+	return $src;
+}
+
+/**
+ * Dessine le filigrane (mot ou image) au centre de la page : inclinaison, transparence, taille, couleur.
+ *
+ * @param  EcolePDF   $pdf PDF
+ * @param  array|null $f   Réglage (ecole_pdf_filigrane_config)
+ * @return void
+ */
+function ecole_pdf_filigrane($pdf, $f)
+{
+	if (empty($f) || $f['type'] === 'aucun') {
+		return;
+	}
+	$cx = $pdf->getPageWidth() / 2;
+	$cy = $pdf->getPageHeight() / 2;
+	$x0 = $pdf->GetX();
+	$y0 = $pdf->GetY();
+	$bm = $pdf->getBreakMargin();
+	$abp = $pdf->getAutoPageBreak();
+	$pdf->SetAutoPageBreak(false, 0);
+	$pdf->StartTransform();
+	$pdf->Rotate((float) $f['angle'], $cx, $cy);
+	$pdf->SetAlpha($f['opacite']);
+	if ($f['type'] === 'image') {
+		// Taille : pourcentage de la largeur de la page
+		$w = $pdf->getPageWidth() * min(150, max(10, (int) $f['taille'])) / 100;
+		$size = @getimagesize($f['image']);
+		$h = ($size && $size[0] > 0) ? $w * $size[1] / $size[0] : $w;
+		$pdf->Image($f['image'], $cx - $w / 2, $cy - $h / 2, $w, $h, '', '', '', true, 150);
+	} else {
+		// Taille : corps du texte en points
+		$pdf->SetTextColor($f['rgb'][0], $f['rgb'][1], $f['rgb'][2]);
+		ecole_pdf_font($pdf, 'B', (float) $f['taille'], (bool) preg_match('/\p{Arabic}/u', $f['texte']));
+		$texte = ecole_pdf_bidi(ecole_pdf_text($f['texte']), (bool) preg_match('/\p{Arabic}/u', $f['texte']));
+		$tw = $pdf->GetStringWidth($texte);
+		$pdf->Text($cx - $tw / 2, $cy - $f['taille'] * 0.35 / 2, $texte);
+	}
+	$pdf->SetAlpha(1);
+	$pdf->StopTransform();
+	$pdf->SetAutoPageBreak($abp, $bm);
+	$pdf->SetTextColor(0, 0, 0);
+	$pdf->SetXY($x0, $y0);
+}
+
+/**
+ * Applique un modèle de PDF : en-tête, couleur et taille des tableaux, filigrane. Sans modèle : réglages de la configuration.
+ *
+ * @param  EcolePDF    $pdf    PDF
+ * @param  object|null $modele Modèle (EcolePdfModele)
+ * @return void
+ */
+function ecole_pdf_modele_appliquer($pdf, $modele)
+{
+	$pdf->filigrane = ecole_pdf_filigrane_config($modele);
+	if (!$modele) {
+		return;
+	}
+	$registry = ecole_pdf_header_registry();
+	if (!empty($modele->entete) && isset($registry[$modele->entete])) {
+		$pdf->headerStyle = $modele->entete;
+	}
+	$couleurs = ecole_pdf_couleurs();
+	if (isset($couleurs[$modele->couleur])) {
+		$pdf->tableColor = $couleurs[$modele->couleur];
+	}
+	$pdf->tableFontSize = min(12, max(6, (float) $modele->taille_police));
+}
+
+/**
  * Styles d'en-tête disponibles : clé => fonction de rendu, marge haute (mm), libellé, description.
  * Pour ajouter un style : un fichier dans core/lib/pdf_headers/ + une entrée ici + ses traductions.
  *
@@ -350,7 +463,25 @@ function ecole_pdf_header_registry()
 		'minimal' => array('render' => 'ecole_pdf_header_minimal', 'top' => 34.0, 'label' => 'PdfHeaderMinimal', 'desc' => 'PdfHeaderMinimalDesc'),
 		'compact' => array('render' => 'ecole_pdf_header_compact', 'top' => 24.0, 'label' => 'PdfHeaderCompact', 'desc' => 'PdfHeaderCompactDesc'),
 		'classique' => array('render' => 'ecole_pdf_header_classique', 'top' => 58.0, 'label' => 'PdfHeaderClassique', 'desc' => 'PdfHeaderClassiqueDesc'),
+		'image' => array('render' => 'ecole_pdf_header_image', 'top' => 42.0, 'label' => 'PdfHeaderImage', 'desc' => 'PdfHeaderImageDesc'),
 	);
+}
+
+/**
+ * Marge haute de la première page pour un style d'en-tête (en-tête image : selon la hauteur de l'image).
+ *
+ * @param  EcolePDF $pdf   PDF
+ * @param  string   $style Style
+ * @return float
+ */
+function ecole_pdf_header_top($pdf, $style)
+{
+	$registry = ecole_pdf_header_registry();
+	if ($style === 'image') {
+		$h = ecole_pdf_header_image_hauteur($pdf->getPageWidth());
+		return $h > 0 ? ECOLE_PDF_ENTETE_IMAGE_MARGE + $h + 14.0 : $registry['bandeau_bleu']['top'];
+	}
+	return isset($registry[$style]) ? $registry[$style]['top'] : $registry['bandeau_bleu']['top'];
 }
 
 /**
@@ -416,6 +547,25 @@ class EcolePDF extends TCPDF
 	public $fontFamily = 'dejavusans';
 	/** @var array<string,string> Symboles absents de la police et leur remplacement */
 	public $fontSubst = array();
+	/** @var int[] Couleur des en-têtes de tableaux (modèle de PDF) */
+	public $tableColor = array(66, 92, 199);
+	/** @var float Taille du texte des tableaux (modèle de PDF) */
+	public $tableFontSize = 8.0;
+	/** @var array|null Filigrane de chaque page (ecole_pdf_filigrane_config), null = celui de la configuration */
+	public $filigrane = null;
+
+	/**
+	 * Filigrane de la page courante (transparent, dessiné par-dessus le contenu depuis le pied de page).
+	 *
+	 * @return void
+	 */
+	public function ecoleFiligrane()
+	{
+		if ($this->filigrane === null) {
+			$this->filigrane = ecole_pdf_filigrane_config(null);
+		}
+		ecole_pdf_filigrane($this, $this->filigrane);
+	}
 
 	/**
 	 * Texte adapté à la police : symboles absents remplacés (sinon invisibles).
@@ -497,13 +647,13 @@ class EcolePDF extends TCPDF
 		}
 		$registry = ecole_pdf_header_registry();
 		$style = isset($registry[$this->headerStyle]) ? $this->headerStyle : 'bandeau_bleu';
-		$this->SetTopMargin($registry[$style]['top']);
+		$this->SetTopMargin(ecole_pdf_header_top($this, $style));
 		$wasRtl = $this->getRTL();
 		$this->setRTL(false);
 		call_user_func($registry[$style]['render'], $this, $this->company);
 		$this->setRTL($wasRtl);
 		$this->SetTextColor(0, 0, 0);
-		$this->SetY($registry[$style]['top']);
+		$this->SetY(ecole_pdf_header_top($this, $style));
 	}
 
 	/**
@@ -513,6 +663,7 @@ class EcolePDF extends TCPDF
 	 */
 	public function Footer()
 	{
+		$this->ecoleFiligrane(); // par-dessus le contenu (transparent), pour rester visible sur les tableaux
 		$m = $this->getMargins();
 		$w = $this->getPageWidth() - $m['left'] - $m['right'];
 		$this->SetY(-14);
@@ -575,7 +726,7 @@ function ecole_pdf_start($pdf, $title, $subtitle, $ref)
 	$pdf->docRef = $ref;
 	$pdf->SetTitle(ecole_pdf_text($title));
 	$pdf->SetSubject(ecole_pdf_text($subtitle));
-	$pdf->SetMargins(12, $registry[$pdf->headerStyle]['top'], 12);
+	$pdf->SetMargins(12, ecole_pdf_header_top($pdf, $pdf->headerStyle), 12);
 	$pdf->SetAutoPageBreak(true, 18);
 	$pdf->AddPage();
 }
@@ -615,8 +766,9 @@ function ecole_pdf_table($pdf, $headers, $ratios, $aligns, $rows)
 	}
 
 	$printHeader = function () use ($pdf, $headers, $widths, $rtl) {
-		ecole_pdf_font($pdf, 'B', 8, $rtl);
-		$pdf->SetFillColor(66, 92, 199);
+		ecole_pdf_font($pdf, 'B', isset($pdf->tableFontSize) ? $pdf->tableFontSize : 8, $rtl);
+		$c = isset($pdf->tableColor) ? $pdf->tableColor : array(66, 92, 199);
+		$pdf->SetFillColor($c[0], $c[1], $c[2]);
 		$pdf->SetTextColor(255, 255, 255);
 		$pdf->SetDrawColor(180, 185, 200);
 		$pdf->SetLineWidth(0.2);
@@ -643,7 +795,7 @@ function ecole_pdf_table($pdf, $headers, $ratios, $aligns, $rows)
 		if ($rtl) {
 			$cells = array_reverse($cells);
 		}
-		ecole_pdf_font($pdf, '', 8, $rtl);
+		ecole_pdf_font($pdf, '', isset($pdf->tableFontSize) ? $pdf->tableFontSize : 8, $rtl);
 		$h = 7;
 		foreach ($cells as $i => $c) {
 			$h = max($h, $pdf->getStringHeight($widths[$i], $c) + 1);
@@ -652,7 +804,7 @@ function ecole_pdf_table($pdf, $headers, $ratios, $aligns, $rows)
 		if ($pdf->GetY() + $h > $bottom) {
 			$pdf->AddPage();
 			$printHeader();
-			ecole_pdf_font($pdf, '', 8, $rtl);
+			ecole_pdf_font($pdf, '', isset($pdf->tableFontSize) ? $pdf->tableFontSize : 8, $rtl);
 		}
 		$alt = !$alt;
 		$pdf->SetFillColor($alt ? 248 : 255, $alt ? 249 : 255, $alt ? 252 : 255);
