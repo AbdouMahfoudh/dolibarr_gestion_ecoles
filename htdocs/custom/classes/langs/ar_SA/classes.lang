@@ -502,3 +502,10 @@ AnneeScolaire=السنة الدراسية
 AnneeEnCours=الحالية
 AnneePasseeLectureSeule=السنة الدراسية %s : للاطلاع فقط، لا يمكن تعديل أي شيء.
 RevenirAnneeEnCours=العودة إلى السنة الحالية
+AnneeSuivante=السنة المقبلة
+TarifsParAnnee=الرسوم حسب السنة
+MenuTarifs=الرسوم حسب السنة
+AideTarifsAnnees=رسوم السنة الحالية هي المسجلة في بطاقات الأقسام. يمكنكم تحضير رسوم %s مسبقا : تطبق عند الانتقال إلى السنة الجديدة (خانة فارغة = نفس رسوم هذه السنة).
+AideTarifsPasses=الرسوم المطبقة خلال هذه السنة الدراسية.
+ErrorTarifsInvalides=لم تسجل الرسوم : يجب أن تكون المبالغ موجبة.
+ClasseEdtAnnees=استعمالات الزمن للسنوات السابقة

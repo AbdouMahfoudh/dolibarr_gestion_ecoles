@@ -81,6 +81,7 @@ print ecole_dash_box($langs->trans('EdExamensAVenir'), 'fa-file-signature', $htm
 print ecole_dash_box($langs->trans('AccesRapides'), 'fa-bolt', ecole_dash_links(array(
 	array($user->hasRight('classes', 'ecrire'), $base.'classe/card.php?action=create', $langs->trans('MenuNouvelleClasse'), 'fa-plus'),
 	array(true, $base.'classe/emplois.php', $langs->trans('MenuEmploisDuTemps'), 'fa-calendar-alt'),
+	array(true, $base.'classe/tarifs.php', $langs->trans('MenuTarifs'), 'fa-money-bill-wave'),
 	array(true, $base.'salle/disponibilite.php', $langs->trans('MenuDisponibilite'), 'fa-door-open'),
 	array($user->hasRight('classes', 'ecrire'), $base.'matiere/card.php?action=create', $langs->trans('MenuNouvelleMatiere'), 'fa-book'),
 	array($user->hasRight('classes', 'config'), $base.'niveau/list.php', $langs->trans('MenuNiveaux'), 'fa-layer-group'),

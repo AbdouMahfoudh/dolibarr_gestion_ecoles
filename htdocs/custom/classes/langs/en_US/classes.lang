@@ -489,3 +489,10 @@ AnneeScolaire=School year
 AnneeEnCours=current
 AnneePasseeLectureSeule=School year %s: read only, nothing can be changed.
 RevenirAnneeEnCours=Back to the current year
+AnneeSuivante=next year
+TarifsParAnnee=Fees by year
+MenuTarifs=Fees by year
+AideTarifsAnnees=Current year fees are those of the class cards. You can prepare those of %s: they will be applied when moving to the new year (empty = same fees as this year).
+AideTarifsPasses=Fees applied during this school year.
+ErrorTarifsInvalides=Fees not saved: amounts must be positive.
+ClasseEdtAnnees=timetables of past years

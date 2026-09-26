@@ -29,6 +29,9 @@ if (!$user->hasRight('classes', 'lire')) {
 }
 $canedit = $user->hasRight('classes', 'edt');
 $canperiod = $canedit || $user->hasRight('classes', 'config');
+if (ecole_annee_passee()) {
+	$canedit = $canperiod = false; // année passée : consultation seulement
+}
 
 $object = new EcoleClasse($db);
 if ($id <= 0 || $object->fetch($id) <= 0) {
@@ -145,7 +148,8 @@ if ($canedit) {
  * Données de la session affichée
  */
 $session = $sid ? $sessions[$sid] : null;
-$periode = $session ? ecole_jours_periode($session->date_debut, $session->date_fin) : array();
+$periode = ($session && !ecole_annee_passee()) ? ecole_jours_periode($session->date_debut, $session->date_fin) : array();
+list($debutAnnee, $finAnnee) = ecole_annee_bornes(ecole_annee_vue());
 
 $matieres = array();
 $resql = $db->query("SELECT m.rowid, m.ref, m.label_fr, m.label_ar FROM ".$p."ecole_classe_matiere cm INNER JOIN ".$p."ecole_matiere m ON m.rowid = cm.fk_matiere WHERE cm.fk_classe = ".((int) $id)." ORDER BY m.label_fr");
@@ -156,7 +160,8 @@ while ($resql && ($o = $db->fetch_object($resql))) {
 $exams = array();
 $sql = "SELECT e.rowid, e.date_examen, e.heure_debut, e.heure_fin, e.fk_matiere, e.fk_salle, e.fk_user, m.label_fr, m.label_ar";
 $sql .= " FROM ".$p."ecole_edt_examen e INNER JOIN ".$p."ecole_matiere m ON m.rowid = e.fk_matiere";
-$sql .= " WHERE e.fk_classe = ".((int) $id)." AND e.fk_session = ".((int) $sid)." ORDER BY e.date_examen, e.heure_debut";
+$sql .= " WHERE e.fk_classe = ".((int) $id)." AND e.fk_session = ".((int) $sid);
+$sql .= " AND e.date_examen >= '".$debutAnnee."' AND e.date_examen <= '".$finAnnee."' ORDER BY e.date_examen, e.heure_debut";
 $resql = $db->query($sql);
 while ($resql && ($o = $db->fetch_object($resql))) {
 	$exams[] = $o;
@@ -174,6 +179,7 @@ if ($action == 'delete' && $lineid > 0) {
 classe_print_header($object, 'examens');
 
 print '<div class="fichecenter"><br>';
+print ecole_annee_selecteur(array('id', 'sid'));
 
 if (empty($sessions)) {
 	print '<div class="warning">'.$langs->trans('AucuneSession').' <a href="'.dol_buildpath('/classes/session/card.php', 1).'?action=create">'.$langs->trans('NouvelleSession').'</a></div>';
@@ -201,7 +207,7 @@ if (!empty($periode) && $action != 'periode') {
 	if ($canperiod) {
 		print ' &nbsp; <a class="editfielda" href="'.$self.'&action=periode&token='.newToken().'">'.img_edit($langs->trans('ModifierPeriode')).'</a>';
 	}
-} elseif (!$showperiodform) {
+} elseif (!$showperiodform && !ecole_annee_passee()) {
 	print '<div class="warning">'.$langs->trans('PeriodeNonDefinie').'</div>';
 }
 if ($showperiodform) {

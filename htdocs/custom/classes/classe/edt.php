@@ -23,7 +23,7 @@ $showhistory = GETPOSTINT('history');
 if (!$user->hasRight('classes', 'lire')) {
 	accessforbidden();
 }
-$canedit = $user->hasRight('classes', 'edt');
+$canedit = $user->hasRight('classes', 'edt') && !ecole_annee_passee(); // année passée : consultation seulement
 
 $object = new EcoleClasse($db);
 if ($id <= 0 || $object->fetch($id) <= 0) {
@@ -110,6 +110,7 @@ if ($action == 'delete' && $lineid > 0) {
 classe_print_header($object, 'edt');
 
 print '<div class="fichecenter"><br>';
+print ecole_annee_selecteur(array('id'));
 
 if (empty($creneaux)) {
 	print '<div class="warning">'.$langs->trans('AucunCreneau').' <a href="'.dol_buildpath('/classes/creneau/card.php', 1).'?action=create">'.$langs->trans('NouveauCreneau').'</a></div>';

@@ -145,6 +145,7 @@ class EcoleClasse extends EcoleObject
 			array('ecole_appel', 'fk_classe', 'ClasseAppels', ''),
 			array('ecole_evaluation', 'fk_classe', 'ClasseEvaluations', 'status = 1'),
 			array('ecole_bulletin', 'fk_classe', 'ClasseBulletins', ''),
+			array('ecole_edt_annee', 'fk_classe', 'ClasseEdtAnnees', ''),
 		);
 		foreach ($plus as $u) {
 			$nb = $this->countUsage($u[0], $u[1], $u[3]);

@@ -71,6 +71,9 @@ if ($type === 'salle') {
 	}
 }
 
+if (ecole_annee_passee()) {
+	$subtitle .= ' — '.ecole_pdf_trans($outputlangs, 'AnneeScolaire').' '.ecole_annee_label(ecole_annee_vue());
+}
 ecole_pdf_start($pdf, $title, $subtitle, $ref);
 if (empty($data['columns'])) {
 	ecole_pdf_font($pdf, 'I', 10, $rtl);

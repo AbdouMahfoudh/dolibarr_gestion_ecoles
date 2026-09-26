@@ -25,12 +25,25 @@ $salles = ecole_salles($db);
 
 $sql = "SELECT c.rowid, c.ref, c.label_fr, c.label_ar, c.fk_salle, n.rowid as nid, n.label_fr as nlabel_fr, n.label_ar as nlabel_ar";
 $sql .= " FROM ".$p."ecole_classe c INNER JOIN ".$p."ecole_niveau n ON n.rowid = c.fk_niveau";
-$sql .= " WHERE c.entity IN (".getEntity('ecole_classe').") AND c.status = 1";
+$passee = ecole_annee_passee();
+$sql .= " WHERE c.entity IN (".getEntity('ecole_classe').")";
+if ($passee) {
+	// Année passée : les classes de l'emploi du temps gardé cette année-là, avec leurs heures
+	$minPassee = array();
+	$r = $db->query("SELECT fk_classe, heure_debut, heure_fin FROM ".$p."ecole_edt_annee WHERE annee = ".ecole_annee_vue());
+	while ($r && ($o = $db->fetch_object($r))) {
+		$minPassee[(int) $o->fk_classe] = (isset($minPassee[(int) $o->fk_classe]) ? $minPassee[(int) $o->fk_classe] : 0) + max(0, ecole_hhmm_to_min($o->heure_fin) - ecole_hhmm_to_min($o->heure_debut));
+	}
+	$sql .= " AND c.rowid IN (".(empty($minPassee) ? '0' : implode(',', array_keys($minPassee))).")";
+} else {
+	$sql .= " AND c.status = 1";
+}
 $sql .= " ORDER BY n.position, c.rowid";
 $resql = $db->query($sql);
 
 llxHeader('', $langs->trans('MenuEmploisDuTemps'), '', '', 0, 0, '', '', '', 'mod-classes page-emplois');
 print load_fiche_titre($langs->trans('MenuEmploisDuTemps'), '', 'fa-calendar-alt');
+print ecole_annee_selecteur();
 print '<div class="opacitymedium">'.$langs->trans('AideEmploisDuTemps').'</div><br>';
 
 $nbcreneaux = 0;
@@ -55,7 +68,7 @@ while ($resql && ($o = $db->fetch_object($resql))) {
 		print '<tr class="liste_titre_sub"><td colspan="6"><b>'.dol_escape_htmltag(ecole_label((object) array('label_fr' => $o->nlabel_fr, 'label_ar' => $o->nlabel_ar))).'</b></td></tr>';
 	}
 	$id = (int) $o->rowid;
-	$min = ecole_minutes_semaine($db, 'e.fk_classe = '.$id);
+	$min = $passee ? (isset($minPassee[$id]) ? $minPassee[$id] : 0) : ecole_minutes_semaine($db, 'e.fk_classe = '.$id);
 	$nm = isset($nbmat[$id]) ? $nbmat[$id] : 0;
 	$edturl = dol_buildpath('/classes/classe/edt.php', 1).'?id='.$id;
 	print '<tr class="oddeven">';

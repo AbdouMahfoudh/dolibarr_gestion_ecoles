@@ -37,6 +37,7 @@ $linkback = '<a href="'.dol_buildpath('/classes/salle/list.php', 1).'">'.$langs-
 dol_banner_tab($object, 'id', $linkback, 0, 'rowid', 'ref', '<div class="refidno">'.dol_escape_htmltag(ecole_label($object)).'</div>', '', 0, '', ''); // le statut est ajouté par Dolibarr
 
 print '<div class="fichecenter"><br>';
+print ecole_annee_selecteur(array('id'));
 
 $attitrees = array();
 foreach ($object->getClassesAttitrees() as $c) {

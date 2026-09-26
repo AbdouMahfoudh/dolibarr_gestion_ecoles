@@ -55,6 +55,9 @@ function ecole_edt_semaine($creneaux)
  */
 function ecole_edt_classe_data($db, $classeId)
 {
+	if (ecole_annee_passee()) {
+		return ecole_edt_annee_data($db, 'e.fk_classe = '.((int) $classeId), 'classe');
+	}
 	$creneaux = ecole_creneaux_actifs($db);
 	list($columns, $bands, $bandids) = ecole_edt_semaine($creneaux);
 	$salles = ecole_salles($db);
@@ -94,6 +97,9 @@ function ecole_edt_classe_data($db, $classeId)
  */
 function ecole_edt_salle_data($db, $salleId)
 {
+	if (ecole_annee_passee()) {
+		return ecole_edt_annee_data($db, 'e.fk_salle = '.((int) $salleId), 'salle');
+	}
 	$creneaux = ecole_creneaux_actifs($db);
 	list($columns, $bands) = ecole_edt_semaine($creneaux);
 
@@ -136,7 +142,9 @@ function ecole_edt_examens_data($db, $classeId, $session)
 	global $langs;
 	$jours = ecole_jours();
 	$salles = ecole_salles($db);
-	$periode = ecole_jours_periode($session->date_debut, $session->date_fin);
+	// Année passée : seulement les jours d'épreuve (les dates de la session sont celles de l'année en cours)
+	$periode = ecole_annee_passee() ? array() : ecole_jours_periode($session->date_debut, $session->date_fin);
+	list($debutAnnee, $finAnnee) = ecole_annee_bornes(ecole_annee_vue());
 
 	$columns = array();
 	foreach ($periode as $d => $t) {
@@ -145,7 +153,8 @@ function ecole_edt_examens_data($db, $classeId, $session)
 	$events = array();
 	$sql = "SELECT e.rowid, e.date_examen, e.heure_debut, e.heure_fin, e.fk_matiere, e.fk_salle, e.fk_user, m.label_fr, m.label_ar";
 	$sql .= " FROM ".$db->prefix()."ecole_edt_examen e INNER JOIN ".$db->prefix()."ecole_matiere m ON m.rowid = e.fk_matiere";
-	$sql .= " WHERE e.fk_classe = ".((int) $classeId)." AND e.fk_session = ".((int) $session->rowid)." ORDER BY e.date_examen, e.heure_debut";
+	$sql .= " WHERE e.fk_classe = ".((int) $classeId)." AND e.fk_session = ".((int) $session->rowid);
+	$sql .= " AND e.date_examen >= '".$debutAnnee."' AND e.date_examen <= '".$finAnnee."' ORDER BY e.date_examen, e.heure_debut";
 	$resql = $db->query($sql);
 	while ($resql && ($o = $db->fetch_object($resql))) {
 		$d = substr($o->date_examen, 0, 10);
@@ -168,4 +177,61 @@ function ecole_edt_examens_data($db, $classeId, $session)
 	}
 	ksort($columns);
 	return array('columns' => $columns, 'events' => $events, 'periode' => $periode);
+}
+
+/**
+ * Emploi du temps d'une année passée (copie gardée au passage à l'année suivante), pour une classe ou une salle.
+ * Les bandes horaires sont celles de cette année-là.
+ *
+ * @param  DoliDB $db    Handler base
+ * @param  string $where Condition sur la copie (alias e)
+ * @param  string $vue   'classe' | 'salle'
+ * @return array{columns:array,bands:array,bandids:int[],events:array}
+ */
+function ecole_edt_annee_data($db, $where, $vue)
+{
+	global $langs;
+	$p = $db->prefix();
+	$annee = ecole_annee_vue();
+	$jours = ecole_jours();
+	$columns = array();
+	foreach (ecole_jours_ouvrables() as $j) {
+		$columns[$j] = array('label' => $langs->trans($jours[$j]));
+	}
+	$bands = array();
+	$bandids = array();
+	$resql = $db->query("SELECT DISTINCT heure_debut, heure_fin, fk_creneau FROM ".$p."ecole_edt_annee WHERE annee = ".((int) $annee)." ORDER BY heure_debut, heure_fin");
+	$vu = array();
+	while ($resql && ($o = $db->fetch_object($resql))) {
+		$k = $o->heure_debut.'-'.$o->heure_fin;
+		if (!isset($vu[$k])) {
+			$vu[$k] = true;
+			$bands[] = array('start' => $o->heure_debut, 'end' => $o->heure_fin, 'label' => $o->heure_debut.' - '.$o->heure_fin);
+			$bandids[] = (int) $o->fk_creneau;
+		}
+	}
+	$salles = ecole_salles($db);
+	$events = array();
+	$sql = "SELECT e.rowid, e.jour, e.heure_debut, e.heure_fin, e.fk_classe, e.fk_matiere, e.fk_user, e.fk_salle, c.ref as cref, m.label_fr, m.label_ar";
+	$sql .= " FROM ".$p."ecole_edt_annee e INNER JOIN ".$p."ecole_matiere m ON m.rowid = e.fk_matiere LEFT JOIN ".$p."ecole_classe c ON c.rowid = e.fk_classe";
+	$sql .= " WHERE e.annee = ".((int) $annee)." AND ".$where;
+	$resql = $db->query($sql);
+	while ($resql && ($o = $db->fetch_object($resql))) {
+		if (!isset($columns[(int) $o->jour])) {
+			$columns[(int) $o->jour] = array('label' => $langs->trans($jours[(int) $o->jour]));
+		}
+		$prof = $o->fk_user > 0 ? ecole_user_label($db, $o->fk_user) : '';
+		$events[] = array(
+			'rowid' => 0,
+			'fk_classe' => (int) $o->fk_classe,
+			'col' => (int) $o->jour,
+			'start' => $o->heure_debut,
+			'end' => $o->heure_fin,
+			'title' => $vue === 'salle' ? $o->cref : ecole_label($o),
+			'lines' => $vue === 'salle' ? array(ecole_label($o), $prof) : array($prof, isset($salles[(int) $o->fk_salle]) ? $salles[(int) $o->fk_salle] : ''),
+			'color' => $vue === 'salle' ? (int) $o->fk_classe : (int) $o->fk_matiere,
+		);
+	}
+	ksort($columns);
+	return array('columns' => $columns, 'bands' => $bands, 'bandids' => $bandids, 'events' => $events);
 }

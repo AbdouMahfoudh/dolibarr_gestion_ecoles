@@ -13,7 +13,7 @@
 define('ECOLE_ANNEE_PARAM', 'annee_vue');
 
 /** Version du schéma « année scolaire » (colonnes annee, clés uniques) */
-define('ECOLE_ANNEE_SCHEMA', 1);
+define('ECOLE_ANNEE_SCHEMA', 2);
 
 /**
  * Année scolaire active (réglage ELEVES_ANNEE_SCOLAIRE, sinon d'après la date : à partir d'août, année en cours).
@@ -89,11 +89,11 @@ function ecole_annees()
 	}
 	$active = ecole_annee_active();
 	$annees = array($active => $active);
-	foreach (array('ecole_evaluation', 'ecole_bulletin', 'ecole_note_cloture') as $t) {
+	foreach (array('ecole_evaluation', 'ecole_bulletin', 'ecole_note_cloture', 'ecole_edt_annee', 'ecole_classe_tarif') as $t) {
 		if (!function_exists('ecole_table_exists') || !ecole_table_exists($db, $t)) {
 			continue;
 		}
-		$resql = $db->query("SELECT DISTINCT annee FROM ".$db->prefix().$t." WHERE annee > 2000");
+		$resql = $db->query("SELECT DISTINCT annee FROM ".$db->prefix().$t." WHERE annee > 2000 AND annee <= ".$active);
 		while ($resql && ($o = $db->fetch_object($resql))) {
 			$annees[(int) $o->annee] = (int) $o->annee;
 		}
@@ -244,6 +244,15 @@ function ecole_annee_migrer($db)
 	}
 	$p = $db->prefix();
 	$active = ecole_annee_active();
+	$ok = true;
+	// Tables des années (tarifs, emplois du temps passés) : créées d'après leur fichier sql/
+	foreach (array('ecole_classe_tarif', 'ecole_edt_annee') as $t) {
+		if (!ecole_table_exists($db, $t)) {
+			$sql = preg_replace('/^\s*--.*$/m', '', (string) @file_get_contents(dirname(__DIR__, 2).'/sql/llx_'.$t.'.sql'));
+			$sql = str_replace('CREATE TABLE llx_', 'CREATE TABLE IF NOT EXISTS '.$p, trim($sql));
+			$ok = ($sql !== '' && $db->query(rtrim($sql, "; \n"))) && $ok;
+		}
+	}
 	// table => array(ancienne clé unique, nouvelle clé unique (colonnes))
 	$tables = array(
 		'ecole_evaluation' => array('', ''),
@@ -251,7 +260,6 @@ function ecole_annee_migrer($db)
 		'ecole_bulletin' => array('uk_ecole_bulletin', 'fk_eleve, trimestre, annee'),
 		'ecole_paiement' => array('', ''),
 	);
-	$ok = true;
 	foreach ($tables as $t => $cle) {
 		if (!ecole_table_exists($db, $t)) {
 			continue;
@@ -309,4 +317,123 @@ function ecole_eleve_classe_annee($db, $fk_eleve, $fk_actuel, $annee = null)
 	$resql = $db->query($sql);
 	$o = $resql ? $db->fetch_object($resql) : null;
 	return $o ? (int) $o->fk_classe : 0;
+}
+
+/* ------------------------------------------------------------------
+ * Tarifs des classes par année
+ * ---------------------------------------------------------------- */
+
+/**
+ * Tarifs enregistrés pour une année : fk_classe => ligne (mensualite, frais_inscription, frais_reinscription).
+ *
+ * @param  DoliDB $db    Handler base
+ * @param  int    $annee Année scolaire
+ * @return array<int,object>
+ */
+function ecole_tarifs_annee($db, $annee)
+{
+	$out = array();
+	if (!ecole_table_exists($db, 'ecole_classe_tarif')) {
+		return $out;
+	}
+	$resql = $db->query("SELECT fk_classe, mensualite, frais_inscription, frais_reinscription FROM ".$db->prefix()."ecole_classe_tarif WHERE annee = ".((int) $annee)." AND entity IN (".getEntity('ecole_classe').")");
+	while ($resql && ($o = $db->fetch_object($resql))) {
+		$out[(int) $o->fk_classe] = $o;
+	}
+	return $out;
+}
+
+/**
+ * Tarifs d'une classe pour une année : fiche de la classe pour l'année en cours, tarifs enregistrés sinon
+ * (à défaut, ceux de la fiche). Retourne un objet (mensualite, frais_inscription, frais_reinscription, enregistre).
+ *
+ * @param  DoliDB $db        Handler base
+ * @param  int    $fk_classe Classe
+ * @param  int    $annee     Année scolaire (null = année consultée)
+ * @return object
+ */
+function ecole_classe_tarif($db, $fk_classe, $annee = null)
+{
+	static $cache = array();
+	$annee = $annee === null ? ecole_annee_vue() : (int) $annee;
+	$k = ((int) $fk_classe).'|'.$annee;
+	if (isset($cache[$k])) {
+		return $cache[$k];
+	}
+	$out = (object) array('mensualite' => 0.0, 'frais_inscription' => 0.0, 'frais_reinscription' => null, 'enregistre' => false);
+	$resql = $db->query("SELECT mensualite, frais_inscription FROM ".$db->prefix()."ecole_classe WHERE rowid = ".((int) $fk_classe));
+	if ($resql && ($o = $db->fetch_object($resql))) {
+		$out->mensualite = (float) $o->mensualite;
+		$out->frais_inscription = (float) $o->frais_inscription;
+	}
+	$t = ecole_tarifs_annee($db, $annee);
+	if (isset($t[(int) $fk_classe])) {
+		$r = $t[(int) $fk_classe];
+		if ($annee !== ecole_annee_active()) {
+			$out->mensualite = (float) $r->mensualite;
+			$out->frais_inscription = (float) $r->frais_inscription;
+		}
+		$out->frais_reinscription = $r->frais_reinscription === null ? null : (float) $r->frais_reinscription;
+		$out->enregistre = true;
+	}
+	return $cache[$k] = $out;
+}
+
+/**
+ * Enregistre les tarifs d'une classe pour une année. Pour l'année en cours, la fiche de la classe est aussi mise à jour.
+ *
+ * @param  DoliDB     $db           Handler base
+ * @param  User       $user         Utilisateur
+ * @param  int        $fk_classe    Classe
+ * @param  int        $annee        Année scolaire (année en cours ou suivante)
+ * @param  float      $mensualite   Mensualité
+ * @param  float      $inscription  Frais d'inscription
+ * @param  float|null $reinscription Frais de réinscription (null = règle générale)
+ * @return int                       1 si OK, -1 sinon
+ */
+function ecole_tarif_enregistrer($db, $user, $fk_classe, $annee, $mensualite, $inscription, $reinscription = null)
+{
+	global $conf;
+	$annee = (int) $annee;
+	if ($annee < ecole_annee_active() || $annee > ecole_annee_active() + 1 || $mensualite < 0 || $inscription < 0 || ($reinscription !== null && $reinscription < 0)) {
+		return -1;
+	}
+	$m = (float) price2num($mensualite, 'MT');
+	$i = (float) price2num($inscription, 'MT');
+	$r = $reinscription === null ? 'NULL' : (string) ((float) price2num($reinscription, 'MT'));
+	$sql = "INSERT INTO ".$db->prefix()."ecole_classe_tarif (entity, annee, fk_classe, mensualite, frais_inscription, frais_reinscription, date_creation, fk_user_creat)";
+	$sql .= " VALUES (".((int) $conf->entity).", ".$annee.", ".((int) $fk_classe).", ".$m.", ".$i.", ".$r.", '".$db->idate(dol_now())."', ".((int) $user->id).")";
+	$sql .= " ON DUPLICATE KEY UPDATE mensualite = ".$m.", frais_inscription = ".$i.", frais_reinscription = ".$r.", fk_user_modif = ".((int) $user->id);
+	if (!$db->query($sql)) {
+		return -1;
+	}
+	if ($annee === ecole_annee_active()) {
+		if (!$db->query("UPDATE ".$db->prefix()."ecole_classe SET mensualite = ".$m.", frais_inscription = ".$i.", fk_user_modif = ".((int) $user->id)." WHERE rowid = ".((int) $fk_classe))) {
+			return -1;
+		}
+	}
+	return 1;
+}
+
+/**
+ * Garde les tarifs et l'emploi du temps de l'année en cours (fait au passage à l'année suivante, et refait sans risque).
+ *
+ * @param  DoliDB $db    Handler base
+ * @param  User   $user  Utilisateur
+ * @param  int    $annee Année scolaire à garder (l'année en cours)
+ * @return int           1 si OK, -1 sinon
+ */
+function ecole_annee_archiver($db, $user, $annee)
+{
+	$p = $db->prefix();
+	$annee = (int) $annee;
+	$now = "'".$db->idate(dol_now())."'";
+	$ok = $db->query("INSERT INTO ".$p."ecole_classe_tarif (entity, annee, fk_classe, mensualite, frais_inscription, date_creation, fk_user_creat)"
+		." SELECT c.entity, ".$annee.", c.rowid, c.mensualite, c.frais_inscription, ".$now.", ".((int) $user->id)." FROM ".$p."ecole_classe c"
+		." ON DUPLICATE KEY UPDATE mensualite = VALUES(mensualite), frais_inscription = VALUES(frais_inscription)");
+	$ok = $ok && $db->query("DELETE FROM ".$p."ecole_edt_annee WHERE annee = ".$annee);
+	$ok = $ok && $db->query("INSERT INTO ".$p."ecole_edt_annee (entity, annee, fk_classe, jour, fk_creneau, heure_debut, heure_fin, fk_matiere, fk_user, fk_salle, date_creation)"
+		." SELECT e.entity, ".$annee.", e.fk_classe, e.jour, e.fk_creneau, cr.heure_debut, cr.heure_fin, e.fk_matiere, e.fk_user, e.fk_salle, ".$now
+		." FROM ".$p."ecole_edt_cours e INNER JOIN ".$p."ecole_creneau cr ON cr.rowid = e.fk_creneau");
+	return $ok ? 1 : -1;
 }

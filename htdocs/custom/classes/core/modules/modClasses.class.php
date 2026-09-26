@@ -101,6 +101,7 @@ class modClasses extends DolibarrModules
 		$left = array(
 			array('ecole_classes',   '',               'MenuClasses',        '/classes/classe/list.php',                 'lire',      10),
 			array('ecole_classes_n', 'ecole_classes',  'MenuNouvelleClasse', '/classes/classe/card.php?action=create',   'ecrire',    11),
+			array('ecole_tarifs',    'ecole_classes',  'MenuTarifs',         '/classes/classe/tarifs.php',               'lire',      12),
 			array('ecole_edt',       '',               'MenuEmploisDuTemps', '/classes/classe/emplois.php',              'lire',      15),
 			array('ecole_matieres',  '',               'MenuMatieres',       '/classes/matiere/list.php',                'lire',      20),
 			array('ecole_matieres_n', 'ecole_matieres', 'MenuNouvelleMatiere', '/classes/matiere/card.php?action=create', 'ecrire',   21),

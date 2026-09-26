@@ -498,3 +498,10 @@ AnneeScolaire=Année scolaire
 AnneeEnCours=en cours
 AnneePasseeLectureSeule=Année scolaire %s : consultation seulement, rien ne peut être modifié.
 RevenirAnneeEnCours=Revenir à l'année en cours
+AnneeSuivante=année suivante
+TarifsParAnnee=Tarifs par année
+MenuTarifs=Tarifs par année
+AideTarifsAnnees=Les tarifs de l'année en cours sont ceux des fiches des classes. Vous pouvez préparer ceux de %s : ils seront appliqués au passage à la nouvelle année (case vide = mêmes tarifs que cette année).
+AideTarifsPasses=Tarifs appliqués pendant cette année scolaire.
+ErrorTarifsInvalides=Tarifs non enregistrés : les montants doivent être positifs.
+ClasseEdtAnnees=emplois du temps des années passées
