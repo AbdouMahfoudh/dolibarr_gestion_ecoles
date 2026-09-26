@@ -25,6 +25,11 @@ if (!isset($eleves[$id])) {
 }
 $e = $eleves[$id];
 $erreur = '';
+// Documents selon les permissions du compte (certificat, bulletins, reçus)
+$permDoc = array('certificat' => 'certificat_pdf', 'bulletin' => 'bulletin_pdf', 'recu' => 'recu_pdf');
+if (!isset($permDoc[$doc]) || !espace_perm($db, $acces->type, (int) $acces->fk_cible, $permDoc[$doc])) {
+	$doc = '';
+}
 
 if ($doc === 'certificat' && isModEnabled('notes')) {
 	dol_include_once('/notes/core/lib/bulletin_pdf.lib.php');

@@ -40,19 +40,30 @@ $classe->fetch((int) $e->fk_classe);
 $fk_classe = (int) $e->fk_classe;
 $rtl = espace_rtl();
 
+// Onglets et documents selon les permissions du compte (données par la direction) : permission retirée = onglet absent
+$perms = espace_perms($db, $acces->type, (int) $acces->fk_cible);
+$peut = function ($k) use ($perms) {
+	return in_array($k, $perms, true);
+};
 $onglets = array();
-if ($avecNotes) {
+if ($avecNotes && $peut('notes')) {
 	$onglets['notes'] = array('OngletNotes', 'fa-star');
 }
-$onglets['edt'] = array('EmploiDuTemps', 'fa-calendar-alt');
-$onglets['absences'] = array('AbsencesEtSanctions', 'fa-user-clock');
-$onglets['paiements'] = array('Paiements', 'fa-coins');
-if ($parent) {
+if ($peut('edt')) {
+	$onglets['edt'] = array('EmploiDuTemps', 'fa-calendar-alt');
+}
+if ($peut('absences')) {
+	$onglets['absences'] = array('AbsencesEtSanctions', 'fa-user-clock');
+}
+if ($peut('paiements')) {
+	$onglets['paiements'] = array('Paiements', 'fa-coins');
+}
+if ($parent && $peut('dossier')) {
 	$onglets['dossier'] = array('DossierPieces', 'fa-folder-open');
 }
 $onglet = GETPOST('onglet', 'aZ09');
 if (!isset($onglets[$onglet])) {
-	$onglet = key($onglets);
+	$onglet = empty($onglets) ? '' : key($onglets);
 }
 $url = function ($periode) use ($id) {
 	return espace_eleve_url($id, 'notes', $periode);
@@ -74,7 +85,7 @@ if ((int) $e->status === EcoleEleve::STATUS_SUSPENDU) {
 	print '<span class="es-chip es-chip-orange">'.dol_escape_htmltag($e->LibStatut($e->status, 0)).'</span>';
 }
 print '</div>';
-if ($avecNotes) {
+if ($avecNotes && $peut('certificat_pdf')) {
 	print '<a class="es-btn es-btn-light es-btn-sm" href="'.dol_escape_htmltag(espace_document_url($id, 'certificat')).'" target="_blank" rel="noopener"><i class="fas fa-certificate"></i> '.$langs->trans('CertificatScolarite').'</a>';
 }
 print '</section>';
@@ -85,6 +96,9 @@ foreach ($onglets as $k => $o) {
 	print '<a class="es-tab'.($k === $onglet ? ' active' : '').'" href="'.dol_escape_htmltag(espace_eleve_url($id, $k)).'"><i class="fas '.$o[1].'"></i><span>'.$langs->trans($o[0]).'</span></a>';
 }
 print '</nav>';
+if (empty($onglets)) {
+	print espace_msg($langs->trans('EspAucuneRubrique'), 'info');
+}
 
 /*
  * Notes
@@ -205,7 +219,7 @@ if ($onglet === 'notes') {
 		if ($c && $c->observation) {
 			print '<div class="es-obs"><div class="es-muted es-small">'.$langs->trans('ObservationDirection').'</div>'.dol_nl2br(dol_escape_htmltag($c->observation)).'</div>';
 		}
-		print '<a class="es-btn es-btn-primary es-btn-block" href="'.dol_escape_htmltag(espace_document_url($id, 'bulletin', $periode)).'" target="_blank" rel="noopener"><i class="fas fa-file-pdf"></i> '.$langs->trans($annee ? 'ReleveAnnuel' : 'BulletinDeNotes').'</a>';
+		if ($peut('bulletin_pdf')) print '<a class="es-btn es-btn-primary es-btn-block" href="'.dol_escape_htmltag(espace_document_url($id, 'bulletin', $periode)).'" target="_blank" rel="noopener"><i class="fas fa-file-pdf"></i> '.$langs->trans($annee ? 'ReleveAnnuel' : 'BulletinDeNotes').'</a>';
 		print '</div>';
 	}
 }
@@ -364,7 +378,7 @@ if ($onglet === 'paiements') {
 		print '<div class="es-item-side">'.espace_montant($o->montant);
 		if ($annule) {
 			print '<span class="es-chip">'.$langs->trans('RecuAnnule').'</span>';
-		} else {
+		} elseif ($peut('recu_pdf')) {
 			print '<a class="es-btn es-btn-light es-btn-sm" href="'.dol_escape_htmltag(espace_document_url($id, 'recu', (int) $o->rowid)).'" target="_blank" rel="noopener"><i class="fas fa-file-pdf"></i> PDF</a>';
 		}
 		print '</div></div>';

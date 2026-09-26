@@ -13,6 +13,10 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 dol_include_once('/personnel/class/ecole_employe.class.php');
 dol_include_once('/personnel/class/ecole_employe_motif.class.php');
+if (isModEnabled('espace')) {
+	dol_include_once('/espace/core/lib/espace.lib.php');
+	$langs->load('espace@espace');
+}
 
 $langs->loadLangs(array('personnel@personnel', 'classes@classes', 'companies', 'users', 'other'));
 
@@ -372,11 +376,10 @@ function employe_print_form($object, $extrafields, $create, $canpaieedit)
 		employe_bloc_row($langs->trans('CompteUtilisateur'), $u ? dol_escape_htmltag($u->login) : '<span class="opacitymedium">'.$langs->trans('AucunCompte').'</span>', 'titlefieldcreate');
 		print '<tr><td colspan="2"><span class="opacitymedium small">'.$langs->trans('CompteAideModif').'</span></td></tr>';
 	}
+	// Ce que l'employé peut faire dans son espace : permissions de l'onglet « Accès espace » (plus de réglage ici)
 	print '<tr class="liste_titre"><td colspan="2">'.img_picto('', 'fa-mobile-alt', 'class="pictofixedwidth"').$langs->trans('BlocEspacePersonnel').'</td></tr>';
-	employe_form_rows($object, $keys, 'espace');
+	print '<tr><td colspan="2"><span class="opacitymedium small">'.$langs->trans('AidePermissionsEspaceOnglet').'</span></td></tr>';
 	print '</table><br>';
-	// « Saisie des notes » seulement pour un enseignant, « Envoi WhatsApp » seulement pour un surveillant (selon les catégories choisies)
-	print '<script>$(function(){function t(){var c=$("#categories").val()||[];$("tr.field_saisie_notes").toggle(c.indexOf("enseignant")>=0);$("tr.field_envoi_whatsapp").toggle(c.indexOf("surveillant")>=0);}$("#categories").on("change",t);t();});</script>';
 
 	// Champs supplémentaires définis par l'établissement
 	if (!empty($extrafields->attributes[$object->table_element]['label'])) {
@@ -588,20 +591,17 @@ if ($action == 'create') {
 	print '<tr><td colspan="2"><span class="opacitymedium small">'.$langs->trans('CompteAideVue').'</span></td></tr>';
 	// Ce que la direction permet dans l'espace du personnel
 	print '<tr class="liste_titre"><td colspan="2">'.img_picto('', 'fa-mobile-alt', 'class="pictofixedwidth"').$langs->trans('BlocEspacePersonnel').'</td></tr>';
-	$permis = function ($ok) use ($langs) {
-		return $ok ? '<span class="badge badge-status4">'.$langs->trans('Autorisee').'</span>' : '<span class="badge badge-status8">'.$langs->trans('Bloquee').'</span>';
-	};
-	if (in_array('enseignant', $object->getCategories(), true)) {
-		employe_bloc_row($form->textwithpicto($langs->trans('SaisieNotesEspace'), $langs->trans('SaisieNotesEspaceHelp')), $permis(personnel_saisie_notes_autorisee($object)));
+	if (function_exists('espace_perms')) {
+		// Permissions de l'espace (réglées dans l'onglet « Accès espace »)
+		$cat = espace_perm_catalogue(ESPACE_EMPLOYE);
+		$badges = array();
+		foreach (espace_perms($db, ESPACE_EMPLOYE, (int) $object->id, $object) as $k) {
+			$badges[] = '<span class="badge badge-status4 marginrightonly">'.dol_escape_htmltag($langs->trans($cat[$k][0])).'</span>';
+		}
+		$regle = espace_perm_regle($db, ESPACE_EMPLOYE, (int) $object->id) !== null;
+		employe_bloc_row($langs->trans('PermissionsEspace'), (empty($badges) ? '<span class="opacitymedium">'.$langs->trans('AucunePermission').'</span>' : implode(' ', $badges))
+			.'<br><span class="opacitymedium small">'.$langs->trans($regle ? 'PermReglageDirection' : 'PermModeleCategorie').' — <a href="'.dol_buildpath('/espace/acces.php', 1).'?type=employe&id='.((int) $object->id).'">'.$langs->trans('ModifierPermissions').'</a></span>');
 	}
-	if (in_array('surveillant', $object->getCategories(), true)) {
-		employe_bloc_row($form->textwithpicto($langs->trans('EnvoiWhatsappEspace'), $langs->trans('EnvoiWhatsappEspaceHelp')), $permis(personnel_whatsapp_autorise($object)));
-	}
-	$mp = $permis(personnel_modif_profil_autorisee($object));
-	if ($object->modif_profil === null || $object->modif_profil === '') {
-		$mp .= ' <span class="opacitymedium">'.$langs->trans('ReglageGeneral').'</span>';
-	}
-	employe_bloc_row($form->textwithpicto($langs->trans('ModifProfilEspace'), $langs->trans('ModifProfilEspaceHelp')), $mp);
 	print '</table><br>';
 
 	// Pièces du dossier

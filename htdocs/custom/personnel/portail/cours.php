@@ -37,7 +37,8 @@ $remplacant = $sel && $sel->rec && (int) $sel->rec->fk_remplacant === (int) $emp
  * Actions
  */
 $action = GETPOST('action', 'aZ09');
-if ($sel && $action === 'declarer' && $titulaire) {
+$peutDeclarer = espace_perm($db, ESPACE_EMPLOYE, (int) $emp->id, 'cours_declarer', $emp);
+if ($sel && $action === 'declarer' && $titulaire && $peutDeclarer) {
 	$error = '';
 	if (personnel_cours_declarer($db, $moi, $date, (int) $sel->fk_creneau, (int) $sel->fk_classe, GETPOST('sujet', 'alphanohtml'), $error) > 0) {
 		pe_flash($langs->trans('CoursDeclareOk'));
@@ -47,7 +48,7 @@ if ($sel && $action === 'declarer' && $titulaire) {
 	header('Location: '.$urlSel);
 	exit;
 }
-if ($sel && $action === 'renvoi' && ($titulaire || $remplacant) && $date === $aujourdhui && $sel->etat !== 'absent') {
+if ($sel && $action === 'renvoi' && $peutDeclarer && ($titulaire || $remplacant) && $date === $aujourdhui && $sel->etat !== 'absent') {
 	$eleves = eleves_appel_eleves($db, (int) $sel->fk_classe, $date);
 	$eid = espace_id_par_jeton('eleve', GETPOST('eleve', 'alphanohtml'), array_keys($eleves));
 	if ($eid > 0 && $eleves[$eid]->etat_special === '') {
@@ -124,7 +125,7 @@ if ($rec && (int) $rec->declare_cours) {
 if ($rec && trim((string) $rec->sujet) !== '') {
 	print '<div class="es-line"><span class="es-muted">'.$langs->trans('SujetTraite').'</span><span>'.dol_escape_htmltag($rec->sujet).'</span></div>';
 }
-if ($titulaire) {
+if ($titulaire && $peutDeclarer) {
 	if ($sel->etat === 'absent') {
 		print espace_msg($langs->trans('DeclarationImpossibleAbsent'), 'warn');
 	} elseif ($date > $aujourdhui) {
@@ -144,7 +145,7 @@ print '</section>';
 $eleves = eleves_appel_eleves($db, (int) $sel->fk_classe, $date);
 $appel = eleves_appel_fetch($db, (int) $sel->fk_classe, $date, (int) $sel->fk_creneau);
 $lignes = $appel ? eleves_appel_lignes($db, (int) $appel->rowid) : array();
-$peutRenvoyer = ($titulaire || $remplacant) && $date === $aujourdhui && $sel->etat !== 'absent';
+$peutRenvoyer = $peutDeclarer && ($titulaire || $remplacant) && $date === $aujourdhui && $sel->etat !== 'absent';
 print '<a id="eleves"></a><h2 class="es-h2"><i class="fas fa-users"></i> '.$langs->trans('EspElevesDuCours').' <span class="es-muted es-small">('.count($eleves).')</span></h2>';
 print '<p class="es-muted es-small">'.($appel ? $langs->trans('EspAppelFaitPar', dol_escape_htmltag(ecole_user_label($db, $appel->fk_user_creat))) : $langs->trans('EspAppelPasFait')).'</p>';
 print '<div class="es-list">';

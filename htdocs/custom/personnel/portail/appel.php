@@ -41,7 +41,8 @@ if ($fk_classe && !$fk_creneau && !empty($creneaux)) {
 $urlJour = espace_page_url('appel/'.$date);
 $urlAppel = ($fk_classe && $fk_creneau) ? espace_page_url('appel/'.$date.'/'.espace_jeton('classe', $fk_classe).'/'.espace_jeton('creneau', $fk_creneau)) : $urlJour;
 $appel = ($fk_classe && $fk_creneau) ? eleves_appel_fetch($db, $fk_classe, $date, $fk_creneau) : null;
-$editable = ($fk_classe && $fk_creneau && isset($creneaux[$fk_creneau])) && (!$appel || $date === $aujourdhui);
+// Correction d'un appel déjà fait : le jour même, avec la permission « corriger un appel »
+$editable = ($fk_classe && $fk_creneau && isset($creneaux[$fk_creneau])) && (!$appel || ($date === $aujourdhui && espace_perm($db, ESPACE_EMPLOYE, (int) $emp->id, 'appel_corriger', $emp)));
 
 /*
  * Actions

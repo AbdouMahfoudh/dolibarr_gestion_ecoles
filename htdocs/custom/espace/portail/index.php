@@ -40,6 +40,7 @@ if (!empty($_SESSION['ecole_espace_msg'])) {
 print '<h1 class="es-hello">'.$langs->trans('Bonjour').' '.dol_escape_htmltag(ecole_label($resp)).'</h1>';
 print '<p class="es-muted">'.$langs->trans(count($eleves) > 1 ? 'VosEnfants' : 'VotreEnfant').'</p>';
 
+$perms = espace_perms($db, $acces->type, (int) $acces->fk_cible);
 print '<div class="es-cards">';
 foreach ($eleves as $id => $e) {
 	$classe = new EcoleClasse($db);
@@ -53,20 +54,22 @@ foreach ($eleves as $id => $e) {
 	print '<i class="fas fa-chevron-'.(espace_rtl() ? 'left' : 'right').' es-chev"></i></div>';
 
 	print '<div class="es-chips">';
-	if ($s['impaye'] > 0) {
+	if (!in_array('paiements', $perms, true)) {
+		// pas de rubrique Paiements : rien sur les paiements
+	} elseif ($s['impaye'] > 0) {
 		print '<span class="es-chip es-chip-red"><i class="fas fa-coins"></i> '.$langs->trans('Impaye').' : '.espace_montant($s['impaye']).'</span>';
 	} elseif ($s['actif']) {
 		print '<span class="es-chip es-chip-green"><i class="fas fa-check"></i> '.$langs->trans('PaiementsAJour').'</span>';
 	}
-	if ($c['absences_nj'] > 0) {
+	if ($c['absences_nj'] > 0 && in_array('absences', $perms, true)) {
 		print '<span class="es-chip es-chip-orange"><i class="fas fa-user-clock"></i> '.$langs->trans('NbAbsencesNonJustifiees', $c['absences_nj']).'</span>';
 	}
-	if ($c['retards_nj'] > 0) {
+	if ($c['retards_nj'] > 0 && in_array('absences', $perms, true)) {
 		print '<span class="es-chip es-chip-orange"><i class="fas fa-clock"></i> '.$langs->trans('NbRetardsNonJustifies', $c['retards_nj']).'</span>';
 	}
 	print '</div>';
 
-	$notes = espace_dernieres_notes($db, $e, 3);
+	$notes = in_array('notes', $perms, true) ? espace_dernieres_notes($db, $e, 3) : array();
 	if (!empty($notes)) {
 		print '<div class="es-last"><div class="es-small es-muted">'.$langs->trans('DernieresNotes').'</div>';
 		foreach ($notes as $n) {

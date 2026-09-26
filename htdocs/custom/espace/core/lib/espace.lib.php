@@ -9,6 +9,7 @@
 
 dol_include_once('/eleves/class/ecole_eleve.class.php');
 dol_include_once('/eleves/class/ecole_responsable.class.php');
+dol_include_once('/espace/core/lib/permissions.lib.php');
 
 /** Accès d'un responsable : voit tous ses enfants inscrits */
 define('ESPACE_PARENT', 'parent');
@@ -59,41 +60,54 @@ function espace_employe_gestion($db, $emp)
 }
 
 /**
- * Rubriques de l'espace d'un employé, selon ses catégories (plusieurs catégories = toutes les rubriques réunies) :
- * clé => [clé de traduction, icône, route].
- *  - tous : accueil, heures et paie, absences, dossier ;
- *  - enseignant : cours du jour (déclaration), emploi du temps, notes, classes, examens ;
- *  - surveillant : appel, appels faits, surveillances d'examens.
+ * Rubriques de l'espace d'un employé, selon ses permissions (onglet « Accès espace » de sa fiche ; sans réglage,
+ * modèle de ses catégories) : clé => [clé de traduction, icône, route]. Permission retirée = rubrique absente.
+ * L'accueil et le dossier (consultation) sont toujours présents.
  *
  * @param  EcoleEmploye $emp Employé
  * @return array<string,array{0:string,1:string,2:string}>
  */
 function espace_rubriques_employe($emp)
 {
-	$cats = $emp->getCategories();
-	$ens = in_array('enseignant', $cats, true);
-	$surv = in_array('surveillant', $cats, true);
+	global $db;
+	$perms = espace_perms($db, ESPACE_EMPLOYE, (int) $emp->id, $emp);
+	$a = function ($k) use ($perms) {
+		return in_array($k, $perms, true);
+	};
 	$out = array('accueil' => array('EspAccueil', 'fa-home', ''));
-	if ($ens) {
+	if ($a('cours_voir') || $a('cours_declarer')) {
 		$out['cours'] = array('EspMesCours', 'fa-chalkboard-teacher', 'cours');
+	}
+	if ($a('edt')) {
 		$out['edt'] = array('EspEmploiDuTemps', 'fa-calendar-alt', 'emploi-du-temps');
-		if (isModEnabled('notes')) {
-			$out['notes'] = array('EspSaisieNotes', 'fa-star', 'notes');
-		}
+	}
+	if (isModEnabled('notes') && ($a('notes_voir') || $a('notes_saisir'))) {
+		$out['notes'] = array('EspSaisieNotes', 'fa-star', 'notes');
+	}
+	if ($a('classes')) {
 		$out['classes'] = array('EspMesClasses', 'fa-users', 'classes');
 	}
-	if ($surv) {
+	if ($a('appel')) {
 		$out['appel'] = array('EspAppel', 'fa-clipboard-check', 'appel');
+	}
+	if ($a('mesappels')) {
 		$out['mesappels'] = array('EspMesAppels', 'fa-history', 'mes-appels');
 	}
-	if ($ens || $surv) {
+	if ($a('signales')) {
+		$out['signales'] = array('EspElevesSignales', 'fa-flag', 'signales');
+	}
+	if ($a('examens')) {
 		$out['examens'] = array('EspExamens', 'fa-file-signature', 'examens');
 	}
-	$out['heures'] = array('EspHeuresPaie', 'fa-coins', 'heures');
-	if (isModEnabled('salaires')) {
+	if ($a('heures')) {
+		$out['heures'] = array('EspHeuresPaie', 'fa-coins', 'heures');
+	}
+	if (isModEnabled('salaires') && $a('salaires')) {
 		$out['salaires'] = array('EspMesSalaires', 'fa-money-check-alt', 'salaires'); // bulletins de paie, avances et prêts (module Salaires)
 	}
-	$out['absences'] = array('EspMesAbsences', 'fa-user-clock', 'absences');
+	if ($a('absences')) {
+		$out['absences'] = array('EspMesAbsences', 'fa-user-clock', 'absences');
+	}
 	$out['profil'] = array('EspMonDossier', 'fa-id-card', 'profil');
 	return $out;
 }

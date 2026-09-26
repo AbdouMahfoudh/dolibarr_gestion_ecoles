@@ -120,6 +120,10 @@ function employe_col_categories($rec)
  */
 function personnel_saisie_notes_autorisee($emp)
 {
+	global $db;
+	if (function_exists('espace_perm')) {
+		return espace_perm($db, ESPACE_EMPLOYE, (int) $emp->id, 'notes_saisir', $emp); // permission de l'espace
+	}
 	return !isset($emp->saisie_notes) || $emp->saisie_notes === null || $emp->saisie_notes === '' || (int) $emp->saisie_notes === 1;
 }
 
@@ -131,6 +135,10 @@ function personnel_saisie_notes_autorisee($emp)
  */
 function personnel_whatsapp_autorise($emp)
 {
+	global $db;
+	if (function_exists('espace_perm')) {
+		return espace_perm($db, ESPACE_EMPLOYE, (int) $emp->id, 'whatsapp', $emp); // permission de l'espace
+	}
 	return !isset($emp->envoi_whatsapp) || $emp->envoi_whatsapp === null || $emp->envoi_whatsapp === '' || (int) $emp->envoi_whatsapp === 1;
 }
 
@@ -143,6 +151,10 @@ function personnel_whatsapp_autorise($emp)
  */
 function personnel_modif_profil_autorisee($emp)
 {
+	global $db;
+	if (function_exists('espace_perm')) {
+		return espace_perm($db, ESPACE_EMPLOYE, (int) $emp->id, 'profil_modifier', $emp); // permission de l'espace
+	}
 	if (!isset($emp->modif_profil) || $emp->modif_profil === null || $emp->modif_profil === '') {
 		return getDolGlobalInt('PERSONNEL_ESPACE_MODIF_PROFIL') === 1;
 	}

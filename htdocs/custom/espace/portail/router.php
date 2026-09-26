@@ -22,6 +22,7 @@
  *   appel[/<AAAA-MM-JJ>[/<classe>[/<créneau>]]] appel (surveillant)
  *   heures[/<AAAA-MM>]                         heures du mois, estimation
  *   salaires[/fiche/<code du bulletin>]         bulletins de paie (mois, paiement), avances et prêts ; fiche de paie PDF
+ *   signales                                   élèves signalés (seuils d'absences et de retards)
  *
  * Fichier : custom/espace/portail/router.php
  */
@@ -46,7 +47,7 @@ $pages = array('connexion' => 'login.php', 'deconnexion' => 'logout.php', 'mot-d
 
 // Espace du personnel : ces pages sont dans le module Personnel (codes passés en paramètres, jamais de numéro)
 $pagesPersonnel = array('cours' => 3, 'emploi-du-temps' => 1, 'notes' => 5, 'classes' => 2, 'examens' => 1, 'appel' => 4, 'mes-appels' => 1,
-	'heures' => 2, 'salaires' => 3, 'absences' => 1, 'profil' => 1);
+	'heures' => 2, 'salaires' => 3, 'absences' => 1, 'profil' => 1, 'signales' => 1);
 $dirPersonnel = dirname(__DIR__, 2).'/personnel/portail/';
 
 $zonePersonnel = defined('ESPACE_ZONE') && ESPACE_ZONE === 'personnel';

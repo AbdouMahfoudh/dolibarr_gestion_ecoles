@@ -67,6 +67,29 @@ if ($peutGerer) {
 		header('Location: '.$self);
 		exit;
 	}
+	// Permissions de l'espace : la direction les donne ou les retire, compte par compte
+	if ($action === 'setperms') {
+		$choix = GETPOST('perms', 'array');
+		$perms = array();
+		foreach (array_keys(espace_perm_catalogue($type)) as $k) {
+			if (!empty($choix[$k])) {
+				$perms[] = $k;
+			}
+		}
+		if (espace_perm_enregistrer($db, $user, $type, $id, $perms) > 0) {
+			setEventMessages($langs->trans('PermissionsEnregistrees'), null, 'mesgs');
+		} else {
+			setEventMessages($db->lasterror(), null, 'errors');
+		}
+		header('Location: '.$self);
+		exit;
+	}
+	if ($action === 'confirm_permmodele' && GETPOST('confirm', 'alpha') === 'yes') {
+		espace_perm_enregistrer($db, $user, $type, $id, null);
+		setEventMessages($langs->trans('PermissionsModeleRetabli'), null, 'mesgs');
+		header('Location: '.$self);
+		exit;
+	}
 	if ($action === 'setenable' && $acces) {
 		espace_set_status($db, $acces, 1);
 		setEventMessages($langs->trans('AccesReactiveMsg'), null, 'mesgs');
@@ -85,6 +108,9 @@ llxHeader('', $cible->ref.' - '.$titre, '', '', 0, 0, '', '', '', 'mod-espace pa
 
 if ($action === 'reinit' && $peutGerer) {
 	print $form->formconfirm($self, $langs->trans('ReinitialiserMotDePasse'), $langs->trans('ConfirmReinitialiser'), 'confirm_reinit', '', 'yes', 1);
+}
+if ($action === 'permmodele' && $peutGerer) {
+	print $form->formconfirm($self, $langs->trans('RetablirModele'), $langs->trans('ConfirmRetablirModele'), 'confirm_permmodele', '', 'yes', 1);
 }
 if ($action === 'disable' && $peutGerer) {
 	print $form->formconfirm($self, $langs->trans('DesactiverAcces'), $langs->trans('ConfirmDesactiver'), 'confirm_disable', '', 'yes', 1);
@@ -145,7 +171,7 @@ print '</table>';
 print '</div><div class="fichehalfright">';
 
 if ($type === ESPACE_EMPLOYE) {
-	// Ce que l'employé voit dans son espace, selon ses catégories
+	// Ce que l'employé voit dans son espace, selon ses permissions (réglées plus bas)
 	print '<table class="noborder centpercent">';
 	print '<tr class="liste_titre"><td>'.img_picto('', 'fa-th-large', 'class="pictofixedwidth"').$langs->trans('RubriquesEspace').'</td></tr>';
 	print '<tr class="oddeven"><td>'.personnel_categories_badges((string) $cible->categories).'</td></tr>';
@@ -153,7 +179,6 @@ if ($type === ESPACE_EMPLOYE) {
 		print '<tr class="oddeven"><td>'.img_picto('', $r[1], 'class="pictofixedwidth"').dol_escape_htmltag($langs->trans($r[0])).'</td></tr>';
 	}
 	print '</table>';
-	print '<span class="opacitymedium small">'.$langs->trans('AideRubriquesEspace').'</span>';
 	$eleves = array('employe');
 } else {
 // Élèves visibles avec cet accès
@@ -169,6 +194,40 @@ print '</table>';
 print '<span class="opacitymedium small">'.$langs->trans('AideElevesVisibles').'</span>';
 }
 print '</div></div><div class="clearboth"></div>';
+
+// Permissions de l'espace : une case par chose que le compte peut consulter ou faire
+$catalogue = espace_perm_catalogue($type);
+$accordees = espace_perms($db, $type, $id, $cible);
+$regle = espace_perm_regle($db, $type, $id) !== null;
+$modele = espace_perm_modele($type, $cible);
+print '<br>';
+if ($peutGerer) {
+	print '<form method="POST" action="'.dol_escape_htmltag($self).'">';
+	print '<input type="hidden" name="token" value="'.newToken().'"><input type="hidden" name="action" value="setperms">';
+}
+print '<table class="noborder centpercent">';
+print '<tr class="liste_titre"><td colspan="3">'.img_picto('', 'fa-user-shield', 'class="pictofixedwidth"').$langs->trans('PermissionsEspace');
+print ' &nbsp; <span class="badge '.($regle ? 'badge-status1' : 'badge-status4').'">'.$langs->trans($regle ? 'PermReglageDirection' : 'PermModeleCategorie').'</span></td></tr>';
+$groupe = '';
+foreach ($catalogue as $k => $def) {
+	if ($def[2] !== $groupe) {
+		$groupe = $def[2];
+		print '<tr class="liste_titre"><td colspan="3" class="small">'.$langs->trans($groupe).'</td></tr>';
+	}
+	$on = in_array($k, $accordees, true);
+	print '<tr class="oddeven"><td class="width25 center"><input type="checkbox" id="perm_'.$k.'" name="perms['.$k.']" value="1"'.($on ? ' checked' : '').($peutGerer ? '' : ' disabled').'></td>';
+	print '<td><label for="perm_'.$k.'">'.img_picto('', (strpos($def[1], 'whatsapp') !== false ? 'fab ' : '').$def[1], 'class="pictofixedwidth"').$langs->trans($def[0]).'</label></td>';
+	print '<td class="right opacitymedium small">'.(in_array($k, $modele, true) ? $langs->trans('DansLeModele') : '').'</td></tr>';
+}
+print '</table>';
+print '<span class="opacitymedium small">'.$langs->trans('AidePermissionsEspace').'</span>';
+if ($peutGerer) {
+	print '<div class="center"><input type="submit" class="button button-save" value="'.$langs->trans('Save').'">';
+	if ($regle) {
+		print ' &nbsp; <a class="button button-cancel" href="'.$self.'&action=permmodele&token='.newToken().'">'.$langs->trans('RetablirModele').'</a>';
+	}
+	print '</div></form>';
+}
 
 print dol_get_fiche_end();
 
