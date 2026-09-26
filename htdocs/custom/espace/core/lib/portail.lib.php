@@ -440,3 +440,119 @@ function espace_moy_html($v)
 	$cls = ($v < 10) ? 'es-note-bas' : (($v < 14) ? 'es-note-moyen' : 'es-note-bon');
 	return '<span class="es-note '.$cls.'" dir="ltr"><b>'.dol_escape_htmltag(notes_moy($v)).'</b><small>/20</small></span>';
 }
+
+/* ------------------------------------------------------------------
+ * Années scolaires passées dans l'espace (consultation seulement)
+ * ---------------------------------------------------------------- */
+
+/**
+ * Années scolaires consultables avec un accès : année en cours + années où un enfant du responsable
+ * (ou l'élève lui-même) était à l'école (dossier gardé au passage d'année). La plus récente d'abord.
+ *
+ * @param  DoliDB $db    Handler base
+ * @param  object $acces Accès
+ * @return int[]
+ */
+function espace_annees($db, $acces)
+{
+	$active = ecole_annee_active();
+	$out = array($active => $active);
+	if (($acces->type === ESPACE_PARENT || $acces->type === ESPACE_ELEVE) && ecole_table_exists($db, 'ecole_eleve_annee')) {
+		$p = $db->prefix();
+		$sql = "SELECT DISTINCT a.annee FROM ".$p."ecole_eleve_annee a INNER JOIN ".$p."ecole_eleve e ON e.rowid = a.fk_eleve";
+		$sql .= " WHERE ".($acces->type === ESPACE_PARENT ? "e.fk_responsable" : "e.rowid")." = ".((int) $acces->fk_cible)." AND a.annee < ".$active;
+		$resql = $db->query($sql);
+		while ($resql && ($o = $db->fetch_object($resql))) {
+			$out[(int) $o->annee] = (int) $o->annee;
+		}
+	}
+	krsort($out);
+	return array_values($out);
+}
+
+/**
+ * Année consultée dans l'espace (?annee=AAAA, gardée dans la session de l'espace) ; l'année en cours par défaut.
+ * Les calculs de notes et d'emploi du temps suivent cette année.
+ *
+ * @param  DoliDB $db    Handler base
+ * @param  object $acces Accès
+ * @return int
+ */
+function espace_annee($db, $acces)
+{
+	$cle = espace_session_cle();
+	$annees = espace_annees($db, $acces);
+	if (GETPOSTISSET('annee')) {
+		$_SESSION[$cle]['annee'] = GETPOSTINT('annee');
+	}
+	$a = isset($_SESSION[$cle]['annee']) ? (int) $_SESSION[$cle]['annee'] : ecole_annee_active();
+	if (!in_array($a, $annees, true)) {
+		$a = ecole_annee_active();
+	}
+	ecole_annee_vue_forcer($a);
+	return $a;
+}
+
+/**
+ * Élèves visibles pour une année : ceux d'aujourd'hui pour l'année en cours, sinon les enfants (ou l'élève)
+ * qui étaient à l'école cette année-là ; chaque élève porte alors sa classe de l'année (fk_classe).
+ *
+ * @param  DoliDB $db    Handler base
+ * @param  object $acces Accès
+ * @param  int    $annee Année scolaire
+ * @return EcoleEleve[]  id => élève
+ */
+function espace_eleves_annee($db, $acces, $annee)
+{
+	if ((int) $annee === ecole_annee_active()) {
+		return espace_eleves_visibles($db, $acces->type, (int) $acces->fk_cible);
+	}
+	$out = array();
+	if ($acces->type !== ESPACE_PARENT && $acces->type !== ESPACE_ELEVE) {
+		return $out;
+	}
+	$p = $db->prefix();
+	$sql = "SELECT a.fk_eleve, a.fk_classe FROM ".$p."ecole_eleve_annee a INNER JOIN ".$p."ecole_eleve e ON e.rowid = a.fk_eleve";
+	$sql .= " WHERE a.annee = ".((int) $annee)." AND ".($acces->type === ESPACE_PARENT ? "e.fk_responsable" : "e.rowid")." = ".((int) $acces->fk_cible)." ORDER BY e.nom_fr";
+	$resql = $db->query($sql);
+	$rows = array();
+	while ($resql && ($o = $db->fetch_object($resql))) {
+		$rows[(int) $o->fk_eleve] = (int) $o->fk_classe;
+	}
+	foreach ($rows as $id => $cid) {
+		$e = new EcoleEleve($db);
+		if ($e->fetch($id) > 0) {
+			$e->fk_classe = $cid; // classe de cette année-là
+			$out[$id] = $e;
+		}
+	}
+	return $out;
+}
+
+/**
+ * Sélecteur d'année de l'espace (seulement s'il y a des années passées) et bandeau « année passée ».
+ *
+ * @param  DoliDB $db    Handler base
+ * @param  object $acces Accès
+ * @param  int    $annee Année consultée
+ * @param  string $url   Adresse de la page (sans le paramètre annee)
+ * @return string        HTML
+ */
+function espace_annee_selecteur($db, $acces, $annee, $url)
+{
+	global $langs;
+	$annees = espace_annees($db, $acces);
+	if (count($annees) < 2) {
+		return '';
+	}
+	$sep = strpos($url, '?') === false ? '?' : '&';
+	$out = '<div class="es-seg es-years">';
+	foreach ($annees as $a) {
+		$out .= '<a class="'.($a === (int) $annee ? 'active' : '').'" href="'.dol_escape_htmltag($url.$sep.'annee='.$a).'" dir="ltr">'.dol_escape_htmltag(ecole_annee_label($a)).'</a>';
+	}
+	$out .= '</div>';
+	if ((int) $annee !== ecole_annee_active()) {
+		$out .= espace_msg($langs->trans('EspAnneePassee', ecole_annee_label($annee)), 'info');
+	}
+	return $out;
+}

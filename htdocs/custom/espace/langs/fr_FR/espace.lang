@@ -236,3 +236,19 @@ PermRecuPdf=Télécharger les reçus de paiement (PDF)
 PermCertificatPdf=Télécharger le certificat de scolarité (PDF)
 
 EdTableauDeBord=Tableau de bord
+# Années scolaires
+EtatAccesExpire=Code expiré
+AideEtatExpire=Le code de l'année précédente a expiré au passage à la nouvelle année : donnez un nouveau code (il est aussi créé automatiquement quand l'inscription d'un ancien élève est validée).
+NouveauCodeAnnee=Nouveau code pour %s
+ConfirmNouveauCode=Créer un nouveau mot de passe provisoire pour la nouvelle année ? Imprimez ensuite la fiche d'accès ou envoyez-la par WhatsApp.
+CodeRenouvele=Nouveau code créé pour %s : imprimez la fiche d'accès.
+RenouvelerCodesPersonnel=Nouveaux codes du personnel
+ConfirmRenouvelerCodesPersonnel=Créer un nouveau code pour %s à tout le personnel présent dont le code a expiré ? (La direction, le secrétariat et la comptabilité gardent leur mot de passe.)
+CodesPersonnelRenouveles=%s nouveau(x) code(s) du personnel : imprimez les fiches d'accès.
+CodesExpiresInfo=Nouvelle année %s : les codes du personnel de l'an dernier ont expiré.
+NouveauCodeParentCree=Nouveau code de l'espace parents créé pour la nouvelle année : imprimez la fiche d'accès du responsable.
+NouveauCodeEleveCree=Nouveau code de l'espace élève créé pour la nouvelle année : imprimez la fiche d'accès de l'élève.
+VoirAcces=Voir l'accès
+EspAnneePassee=Année %s : consultation seulement.
+EspArriereReporte=Arriéré reporté
+EspCodeExpire=Votre code de l'année précédente a expiré. Demandez votre nouveau code à l'école.

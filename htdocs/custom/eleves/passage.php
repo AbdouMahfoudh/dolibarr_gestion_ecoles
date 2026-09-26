@@ -166,7 +166,11 @@ if ($etape === 1) {
 		print '<tr class="oddeven"><td colspan="6"><span class="opacitymedium">'.$langs->trans('NoRecordFound').'</span></td></tr>';
 	}
 	print '</table></div>';
-	print '<div class="info">'.$langs->trans('PassageExplication', ecole_annee_label($suivante)).'</div>';
+	print '<div class="info">'.$langs->trans('PassageExplication', ecole_annee_label($suivante));
+	if (isModEnabled('espace')) {
+		print '<br>'.$langs->trans('PassageCodesExpirent');
+	}
+	print '</div>';
 	print '<div class="center"><br><a class="button button-cancel" href="'.$self.'?'.dol_escape_htmltag(http_build_query(array('etape' => 1, 'suivante' => $suivantes))).'">'.$langs->trans('Back').'</a> ';
 	print '<input type="submit" class="button button-save" value="'.dol_escape_htmltag($langs->trans('PasserAnnee', ecole_annee_label($suivante))).'"></div>';
 	print '</form>';

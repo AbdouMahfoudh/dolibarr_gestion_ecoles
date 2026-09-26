@@ -697,3 +697,4 @@ ReinscriptionFraisMode_dus=Re-enrolment fees: the class enrolment fees.
 ReinscriptionFraisMode_exoneres=Re-enrolment fees: none (former students exempted).
 ReinscriptionFraisMode_montant=Re-enrolment fees: the class re-enrolment amount (Fees by year).
 MenuAnciensAttendus=Expected former students
+PassageCodesExpirent=This year's parents, students and staff space codes expire: a new code is created when the re-enrolment is validated (parents, students); for staff, from the access list. Management, secretariat and accounting keep their account.

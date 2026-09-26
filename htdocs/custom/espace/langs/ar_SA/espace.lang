@@ -236,3 +236,19 @@ PermRecuPdf=تحميل وصولات الدفع (PDF)
 PermCertificatPdf=تحميل شهادة مدرسية (PDF)
 
 EdTableauDeBord=لوحة القيادة
+# Années scolaires
+EtatAccesExpire=رمز منتهي
+AideEtatExpire=انتهى رمز السنة الماضية عند الانتقال إلى السنة الجديدة : أعطوا رمزا جديدا (يُنشأ أيضا تلقائيا عند المصادقة على تسجيل تلميذ قديم).
+NouveauCodeAnnee=رمز جديد لـ %s
+ConfirmNouveauCode=إنشاء كلمة مرور مؤقتة جديدة للسنة الجديدة ؟ اطبعوا بعد ذلك بطاقة الدخول أو أرسلوها عبر واتساب.
+CodeRenouvele=تم إنشاء رمز جديد لـ %s : اطبعوا بطاقة الدخول.
+RenouvelerCodesPersonnel=رموز جديدة للموظفين
+ConfirmRenouvelerCodesPersonnel=إنشاء رمز جديد لـ %s لكل الموظفين الحاضرين الذين انتهى رمزهم ؟ (تحتفظ الإدارة والسكرتارية والمحاسبة بكلمة مرورها.)
+CodesPersonnelRenouveles=%s رمز جديد للموظفين : اطبعوا بطاقات الدخول.
+CodesExpiresInfo=سنة جديدة %s : انتهت رموز الموظفين للسنة الماضية.
+NouveauCodeParentCree=تم إنشاء رمز جديد لفضاء الأولياء للسنة الجديدة : اطبعوا بطاقة دخول الولي.
+NouveauCodeEleveCree=تم إنشاء رمز جديد لفضاء التلميذ للسنة الجديدة : اطبعوا بطاقة دخول التلميذ.
+VoirAcces=عرض الدخول
+EspAnneePassee=السنة %s : للاطلاع فقط.
+EspArriereReporte=متأخرات منقولة
+EspCodeExpire=انتهى رمزكم للسنة الماضية. اطلبوا رمزكم الجديد من المدرسة.

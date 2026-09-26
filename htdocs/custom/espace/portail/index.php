@@ -19,16 +19,17 @@ if (espace_zone() === ESPACE_ZONE_PERSONNEL) {
 	exit;
 }
 $langs = espace_langs_init(espace_langue_code($db, $acces));
-$eleves = espace_eleves_visibles($db, $acces->type, (int) $acces->fk_cible);
+$annee = espace_annee($db, $acces);
+$passee = ($annee !== ecole_annee_active());
+$eleves = espace_eleves_annee($db, $acces, $annee);
 
 if ($acces->type === ESPACE_ELEVE) {
-	$e = reset($eleves);
-	header('Location: '.espace_eleve_url((int) $e->id));
+	header('Location: '.espace_eleve_url((int) $acces->fk_cible));
 	exit;
 }
 
 $resp = espace_cible($db, ESPACE_PARENT, (int) $acces->fk_cible);
-$situations = eleves_situations($db, $eleves);
+$situations = $passee ? array() : eleves_situations($db, $eleves);
 
 espace_header($langs->trans('TitreEspace'), $acces);
 
@@ -38,6 +39,7 @@ if (!empty($_SESSION['ecole_espace_msg'])) {
 }
 
 print '<h1 class="es-hello">'.$langs->trans('Bonjour').' '.dol_escape_htmltag(ecole_label($resp)).'</h1>';
+print espace_annee_selecteur($db, $acces, $annee, espace_page_url(''));
 print '<p class="es-muted">'.$langs->trans(count($eleves) > 1 ? 'VosEnfants' : 'VotreEnfant').'</p>';
 
 $perms = espace_perms($db, $acces->type, (int) $acces->fk_cible);
@@ -45,7 +47,7 @@ print '<div class="es-cards">';
 foreach ($eleves as $id => $e) {
 	$classe = new EcoleClasse($db);
 	$classe->fetch((int) $e->fk_classe);
-	$s = $situations[$id];
+	$s = isset($situations[$id]) ? $situations[$id] : null;
 	$c = eleves_compteurs_eleve($db, $id);
 
 	print '<a class="es-card es-child" href="'.dol_escape_htmltag(espace_eleve_url($id)).'">';
@@ -54,8 +56,8 @@ foreach ($eleves as $id => $e) {
 	print '<i class="fas fa-chevron-'.(espace_rtl() ? 'left' : 'right').' es-chev"></i></div>';
 
 	print '<div class="es-chips">';
-	if (!in_array('paiements', $perms, true)) {
-		// pas de rubrique Paiements : rien sur les paiements
+	if (!in_array('paiements', $perms, true) || !$s) {
+		// pas de rubrique Paiements (ou année passée) : rien sur les paiements
 	} elseif ($s['impaye'] > 0) {
 		print '<span class="es-chip es-chip-red"><i class="fas fa-coins"></i> '.$langs->trans('Impaye').' : '.espace_montant($s['impaye']).'</span>';
 	} elseif ($s['actif']) {
@@ -69,7 +71,7 @@ foreach ($eleves as $id => $e) {
 	}
 	print '</div>';
 
-	$notes = in_array('notes', $perms, true) ? espace_dernieres_notes($db, $e, 3) : array();
+	$notes = (in_array('notes', $perms, true) && !$passee) ? espace_dernieres_notes($db, $e, 3) : array();
 	if (!empty($notes)) {
 		print '<div class="es-last"><div class="es-small es-muted">'.$langs->trans('DernieresNotes').'</div>';
 		foreach ($notes as $n) {

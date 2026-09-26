@@ -697,3 +697,4 @@ ReinscriptionFraisMode_dus=Frais de réinscription : les frais d'inscription de 
 ReinscriptionFraisMode_exoneres=Frais de réinscription : aucun (anciens élèves exonérés).
 ReinscriptionFraisMode_montant=Frais de réinscription : le montant de réinscription de la classe (Tarifs par année).
 MenuAnciensAttendus=Anciens attendus
+PassageCodesExpirent=Les codes des espaces parents, élèves et personnel de cette année expirent : un nouveau code est créé à la validation de la réinscription (parents, élèves) ; pour le personnel, depuis la liste des accès. La direction, le secrétariat et la comptabilité gardent leur compte.

@@ -27,7 +27,10 @@ if ($avecNotes) {
 
 $acces = espace_exiger_session($db);
 $langs = espace_langs_init(espace_langue_code($db, $acces));
-$eleves = espace_eleves_visibles($db, $acces->type, (int) $acces->fk_cible);
+$annee = espace_annee($db, $acces);
+$passee = ($annee !== ecole_annee_active());
+list($debutAnnee, $finAnnee) = ecole_annee_bornes($annee);
+$eleves = espace_eleves_annee($db, $acces, $annee);
 $id = espace_id_par_jeton('eleve', GETPOST('jeton', 'alphanohtml'), array_keys($eleves));
 if (!isset($eleves[$id])) {
 	header('Location: '.espace_page_url(''));
@@ -58,7 +61,7 @@ if ($peut('absences')) {
 if ($peut('paiements')) {
 	$onglets['paiements'] = array('Paiements', 'fa-coins');
 }
-if ($parent && $peut('dossier')) {
+if ($parent && $peut('dossier') && !$passee) {
 	$onglets['dossier'] = array('DossierPieces', 'fa-folder-open');
 }
 $onglet = GETPOST('onglet', 'aZ09');
@@ -85,10 +88,12 @@ if ((int) $e->status === EcoleEleve::STATUS_SUSPENDU) {
 	print '<span class="es-chip es-chip-orange">'.dol_escape_htmltag($e->LibStatut($e->status, 0)).'</span>';
 }
 print '</div>';
-if ($avecNotes && $peut('certificat_pdf')) {
+if ($avecNotes && $peut('certificat_pdf') && !$passee) {
 	print '<a class="es-btn es-btn-light es-btn-sm" href="'.dol_escape_htmltag(espace_document_url($id, 'certificat')).'" target="_blank" rel="noopener"><i class="fas fa-certificate"></i> '.$langs->trans('CertificatScolarite').'</a>';
 }
 print '</section>';
+
+print espace_annee_selecteur($db, $acces, $annee, espace_eleve_url($id, $onglet));
 
 // Onglets
 print '<nav class="es-tabs">';
@@ -281,7 +286,7 @@ if ($onglet === 'absences') {
 	print '<div class="es-card es-kpi"><span>'.$langs->trans('Sanctions').'</span><b>'.$cpt['sanctions'].'</b></div>';
 	print '</div>';
 
-	$f = array('du' => '', 'au' => '', 'classe' => 0, 'eleve' => '', 'type' => 0, 'etat' => '', 'creneau' => 0, 'fk_eleve' => $id);
+	$f = array('du' => $debutAnnee, 'au' => $finAnnee, 'classe' => 0, 'eleve' => '', 'type' => 0, 'etat' => '', 'creneau' => 0, 'fk_eleve' => $id);
 	$total = 0;
 	$lignes = eleves_absences_liste($db, $f, 0, 0, $total);
 	print '<h2 class="es-h2">'.$langs->trans('AbsencesEtRetards').' ('.$total.')</h2>';
@@ -325,13 +330,30 @@ if ($onglet === 'absences') {
 /*
  * Paiements
  */
-if ($onglet === 'paiements') {
+if ($onglet === 'paiements' && $passee) {
+	// Année passée : bilan gardé au passage d'année (montants dus, payés, arriéré reporté)
+	$resql = $db->query("SELECT total_du, total_paye, arriere FROM ".$db->prefix()."ecole_eleve_annee WHERE fk_eleve = ".$id." AND annee = ".((int) $annee));
+	$b = $resql ? $db->fetch_object($resql) : null;
+	if ($b) {
+		print '<div class="es-kpis">';
+		print '<div class="es-card es-kpi"><span>'.$langs->trans('MontantDu').'</span><b>'.espace_montant($b->total_du).'</b></div>';
+		print '<div class="es-card es-kpi"><span>'.$langs->trans('TotalPaye').'</span><b>'.espace_montant($b->total_paye).'</b></div>';
+		print '<div class="es-card es-kpi'.((float) $b->arriere > 0 ? ' es-kpi-red' : ' es-kpi-green').'"><span>'.$langs->trans('EspArriereReporte').'</span><b>'.((float) $b->arriere > 0 ? espace_montant($b->arriere) : $langs->trans('AJour')).'</b></div>';
+		print '</div>';
+	}
+}
+if ($onglet === 'paiements' && !$passee) {
 	$s = eleves_situation($db, $e);
 	print '<div class="es-kpis">';
 	print '<div class="es-card es-kpi'.($s['impaye'] > 0 ? ' es-kpi-red' : ' es-kpi-green').'"><span>'.$langs->trans('Impaye').'</span><b>'.($s['impaye'] > 0 ? espace_montant($s['impaye']) : $langs->trans('AJour')).'</b></div>';
 	print '<div class="es-card es-kpi"><span>'.$langs->trans('TotalPaye').'</span><b>'.espace_montant($s['total_paye']).'</b></div>';
 	print '<div class="es-card es-kpi"><span>'.$langs->trans('ResteAnnee').'</span><b>'.espace_montant($s['reste']).'</b></div>';
 	print '</div>';
+	foreach ($s['arrieres'] as $ar) {
+		if ($ar['reste'] > 0) {
+			print espace_msg($langs->trans('ArrieresDe', $ar['label']).' : '.espace_montant($ar['reste']), 'warn');
+		}
+	}
 	if ($s['impaye'] > 0 && !empty($s['impaye_mois'])) {
 		$mois = array();
 		foreach ($s['impaye_mois'] as $per) {
@@ -362,11 +384,13 @@ if ($onglet === 'paiements') {
 	print '</div>';
 	print '<p class="es-muted es-small">'.$langs->trans('AideJourLimite', min(28, max(1, getDolGlobalInt('ELEVES_JOUR_LIMITE', 10)))).'</p>';
 
-	// Reçus : montant payé pour cet élève sur chaque reçu
+}
+if ($onglet === 'paiements') {
+	// Reçus de l'année consultée : montant payé pour cet élève sur chaque reçu
 	print '<h2 class="es-h2">'.$langs->trans('RecusDePaiement').'</h2>';
 	$sql = "SELECT r.rowid, r.ref, r.date_recu, r.status, r.fk_mode, SUM(l.montant) as montant, COUNT(DISTINCT l.fk_eleve) as nb";
 	$sql .= " FROM ".$db->prefix()."ecole_paiement l INNER JOIN ".$db->prefix()."ecole_recu r ON r.rowid = l.fk_recu";
-	$sql .= " WHERE l.fk_eleve = ".$id." GROUP BY r.rowid, r.ref, r.date_recu, r.status, r.fk_mode ORDER BY r.date_recu DESC, r.rowid DESC";
+	$sql .= " WHERE l.fk_eleve = ".$id." AND r.date_recu >= '".$debutAnnee."' AND r.date_recu <= '".$finAnnee."' GROUP BY r.rowid, r.ref, r.date_recu, r.status, r.fk_mode ORDER BY r.date_recu DESC, r.rowid DESC";
 	$resql = $db->query($sql);
 	$nb = 0;
 	print '<div class="es-list">';

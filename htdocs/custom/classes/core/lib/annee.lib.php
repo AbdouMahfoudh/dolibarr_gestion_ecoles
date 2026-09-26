@@ -13,7 +13,7 @@
 define('ECOLE_ANNEE_PARAM', 'annee_vue');
 
 /** Version du schéma « année scolaire » (colonnes annee, clés uniques) */
-define('ECOLE_ANNEE_SCHEMA', 3);
+define('ECOLE_ANNEE_SCHEMA', 4);
 
 /**
  * Année scolaire active (réglage ELEVES_ANNEE_SCOLAIRE, sinon d'après la date : à partir d'août, année en cours).
@@ -259,6 +259,7 @@ function ecole_annee_migrer($db)
 		'ecole_note_cloture' => array('uk_ecole_note_cloture', 'fk_classe, trimestre, annee'),
 		'ecole_bulletin' => array('uk_ecole_bulletin', 'fk_eleve, trimestre, annee'),
 		'ecole_paiement' => array('', ''),
+		'ecole_acces' => array('', ''),
 	);
 	foreach ($tables as $t => $cle) {
 		if (!ecole_table_exists($db, $t)) {

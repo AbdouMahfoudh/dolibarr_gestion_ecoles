@@ -20,6 +20,14 @@ if (!$user->hasRight('espace', 'acces', 'lire')) {
 	accessforbidden();
 }
 $form = new Form($db);
+$action = GETPOST('action', 'aZ09');
+// Nouveaux codes pour tout le personnel dont le code a expiré (passage d'année)
+if ($action === 'confirm_renouvperso' && GETPOST('confirm', 'alpha') === 'yes' && $user->hasRight('espace', 'acces', 'gerer')) {
+	$n = espace_renouveler_personnel($db, $user);
+	setEventMessages($langs->trans('CodesPersonnelRenouveles', $n), null, 'mesgs');
+	header('Location: '.$_SERVER['PHP_SELF'].'?search_type='.ESPACE_EMPLOYE.'&search_mdp=provisoire');
+	exit;
+}
 
 if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
 	header('Location: '.$_SERVER['PHP_SELF']);
@@ -40,6 +48,18 @@ $el = espace_liste_eleves($db, $lignes);
 $param = $fl['param'].($limit != $conf->liste_limit ? '&limit='.$limit : '');
 
 llxHeader('', $langs->trans('AccesEspace'), '', '', 0, 0, '', '', '', 'mod-espace page-list');
+if ($action === 'renouvperso') {
+	print $form->formconfirm($_SERVER['PHP_SELF'], $langs->trans('RenouvelerCodesPersonnel'), $langs->trans('ConfirmRenouvelerCodesPersonnel', ecole_annee_label(ecole_annee_active())), 'confirm_renouvperso', '', 'yes', 1);
+}
+// Codes du personnel expirés (nouvelle année) : un bouton pour les renouveler tous
+if (in_array(ESPACE_EMPLOYE, espace_types(), true) && $user->hasRight('espace', 'acces', 'gerer')) {
+	$r = $db->query("SELECT COUNT(*) as nb FROM ".$db->prefix()."ecole_acces WHERE entity IN (".getEntity('ecole_acces').") AND type = '".ESPACE_EMPLOYE."' AND annee > 0 AND annee < ".((int) ecole_annee_active()));
+	$o = $r ? $db->fetch_object($r) : null;
+	if ($o && (int) $o->nb > 0) {
+		print '<div class="warning">'.$langs->trans('CodesExpiresInfo', ecole_annee_label(ecole_annee_active()));
+		print ' <a class="butAction smallpaddingimp" href="'.$_SERVER['PHP_SELF'].'?action=renouvperso&token='.newToken().'">'.$langs->trans('RenouvelerCodesPersonnel').'</a></div>';
+	}
+}
 
 print '<form method="POST" action="'.dol_escape_htmltag($_SERVER['PHP_SELF']).'">';
 print '<input type="hidden" name="token" value="'.newToken().'">';
@@ -61,7 +81,7 @@ if (in_array(ESPACE_EMPLOYE, espace_types(), true)) {
 	$types[ESPACE_EMPLOYE] = $langs->trans('TypeEmploye');
 }
 $icones = array(ESPACE_PARENT => 'fa-user-friends', ESPACE_ELEVE => 'fa-user-graduate', ESPACE_EMPLOYE => 'fa-id-badge');
-$etats = array('actif' => $langs->trans('EtatAccesActif'), 'jamais' => $langs->trans('EtatAccesJamais'), 'coupe' => $langs->trans('EtatAccesCoupe'), 'desactive' => $langs->trans('EtatAccesDesactive'));
+$etats = array('actif' => $langs->trans('EtatAccesActif'), 'jamais' => $langs->trans('EtatAccesJamais'), 'coupe' => $langs->trans('EtatAccesCoupe'), 'expire' => $langs->trans('EtatAccesExpire'), 'desactive' => $langs->trans('EtatAccesDesactive'));
 $mdps = array('provisoire' => $langs->trans('MotDePasseProvisoire'), 'personnel' => $langs->trans('MotDePassePersonnel'));
 print '<tr class="liste_titre_filter">';
 print '<td class="liste_titre">'.$form->selectarray('search_type', $types, $f['type'], 1, 0, 0, '', 0, 0, 0, '', 'maxwidth100').'</td>';

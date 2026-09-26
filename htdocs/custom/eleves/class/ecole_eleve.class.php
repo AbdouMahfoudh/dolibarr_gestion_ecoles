@@ -882,6 +882,16 @@ class EcoleEleve extends EcoleObject
 			$this->db->commit();
 			$this->date_validation = dol_now();
 			$this->fk_user_valid = $user->id;
+			$this->status = self::STATUS_INSCRIT;
+			// Ancien élève réinscrit : nouveaux codes de l'espace pour l'année (accès du responsable et de l'élève)
+			if (isModEnabled('espace') && dol_include_once('/espace/core/lib/espace.lib.php') && function_exists('espace_renouveler_eleve')) {
+				global $langs;
+				$langs->load('espace@espace');
+				foreach (espace_renouveler_eleve($this->db, $user, $this) as $a) {
+					$url = dol_buildpath('/espace/acces.php', 1).'?type='.$a->type.'&id='.((int) $a->fk_cible);
+					setEventMessages($langs->trans($a->type === 'parent' ? 'NouveauCodeParentCree' : 'NouveauCodeEleveCree').' <a href="'.$url.'">'.$langs->trans('VoirAcces').'</a>', null, 'warnings');
+				}
+			}
 			return 1;
 		}
 		$this->db->rollback();

@@ -146,7 +146,7 @@ function espace_acces_eleves_actif()
  */
 function espace_acces_cols()
 {
-	return "rowid, type, fk_cible, fk_user, mdp_provisoire, mdp_fiche, langue, date_derniere_connexion, nb_connexions, date_reinit, fk_user_reinit, date_creation, fk_user_creat, status";
+	return "rowid, type, fk_cible, fk_user, annee, mdp_provisoire, mdp_fiche, langue, date_derniere_connexion, nb_connexions, date_reinit, fk_user_reinit, date_creation, fk_user_creat, status";
 }
 
 /**
@@ -281,12 +281,122 @@ function espace_etat($db, $acces)
 	if (!(int) $acces->status || ($acces->type === ESPACE_ELEVE && !espace_acces_eleves_actif())) {
 		return 'desactive';
 	}
+	if (espace_acces_expire($db, $acces)) {
+		return 'expire';
+	}
 	if ($acces->type === ESPACE_EMPLOYE) {
 		// Employé parti (ou module Personnel désactivé) : accès coupé ; il revient à la réembauche
 		$emp = espace_cible($db, ESPACE_EMPLOYE, (int) $acces->fk_cible);
 		return ($emp && $emp->estPresent()) ? 'actif' : 'coupe';
 	}
 	return empty(espace_eleves_visibles($db, $acces->type, (int) $acces->fk_cible)) ? 'coupe' : 'actif';
+}
+
+/**
+ * Le code d'un accès a-t-il expiré ? Les codes valent pour une année scolaire : au passage à l'année suivante,
+ * parents, élèves et personnel doivent recevoir un nouveau code (sauf la direction, le secrétariat et la
+ * comptabilité, qui gardent leur compte de l'interface de gestion).
+ *
+ * @param  DoliDB $db    Handler base
+ * @param  object $acces Accès
+ * @return bool
+ */
+function espace_acces_expire($db, $acces)
+{
+	if (!isset($acces->annee) || (int) $acces->annee <= 0 || (int) $acces->annee >= ecole_annee_active()) {
+		return false;
+	}
+	if ($acces->type === ESPACE_EMPLOYE) {
+		$emp = espace_cible($db, ESPACE_EMPLOYE, (int) $acces->fk_cible);
+		if ($emp && espace_employe_gestion($db, $emp)) {
+			return false;
+		}
+	}
+	return true;
+}
+
+/**
+ * Nouveau code pour l'année en cours (accès expiré ou non) : nouveau mot de passe provisoire (pas pour le personnel
+ * de gestion), accès réactivé et rattaché à l'année en cours.
+ *
+ * @param  DoliDB $db    Handler base
+ * @param  User   $user  Utilisateur
+ * @param  object $acces Accès
+ * @param  string $error Message d'erreur (sortie)
+ * @return int           >0 si OK
+ */
+function espace_renouveler($db, $user, $acces, &$error)
+{
+	$error = '';
+	$raison = '';
+	if (!espace_peut_creer($db, $acces->type, (int) $acces->fk_cible, $raison)) {
+		$error = $raison;
+		return -1;
+	}
+	$gestion = false;
+	if ($acces->type === ESPACE_EMPLOYE) {
+		$emp = espace_cible($db, ESPACE_EMPLOYE, (int) $acces->fk_cible);
+		$gestion = $emp && espace_employe_gestion($db, $emp);
+	}
+	if (!$gestion && espace_reinitialiser($db, $user, $acces, $error) < 0) {
+		return -1;
+	}
+	if (!(int) $acces->status && espace_set_status($db, $acces, 1) < 0) {
+		$error = $db->lasterror();
+		return -1;
+	}
+	if (!$db->query("UPDATE ".$db->prefix()."ecole_acces SET annee = ".((int) ecole_annee_active())." WHERE rowid = ".((int) $acces->rowid))) {
+		$error = $db->lasterror();
+		return -1;
+	}
+	return 1;
+}
+
+/**
+ * Après la validation de l'inscription d'un élève : nouveaux codes pour les accès expirés de son responsable
+ * et de l'élève lui-même (ancien élève réinscrit). Retourne les accès renouvelés.
+ *
+ * @param  DoliDB     $db   Handler base
+ * @param  User       $user Utilisateur
+ * @param  EcoleEleve $e    Élève
+ * @return object[]
+ */
+function espace_renouveler_eleve($db, $user, $e)
+{
+	$out = array();
+	foreach (array(array(ESPACE_PARENT, (int) $e->fk_responsable), array(ESPACE_ELEVE, (int) $e->id)) as $c) {
+		$a = $c[1] > 0 ? espace_acces_fetch($db, $c[0], $c[1]) : null;
+		$err = '';
+		if ($a && espace_acces_expire($db, $a) && espace_renouveler($db, $user, $a, $err) > 0) {
+			$out[] = $a;
+		}
+	}
+	return $out;
+}
+
+/**
+ * Nouveaux codes pour tout le personnel présent dont le code a expiré (après le passage d'année).
+ *
+ * @param  DoliDB $db   Handler base
+ * @param  User   $user Utilisateur
+ * @return int          Nombre de codes renouvelés
+ */
+function espace_renouveler_personnel($db, $user)
+{
+	$n = 0;
+	$resql = $db->query("SELECT rowid FROM ".$db->prefix()."ecole_acces WHERE entity IN (".getEntity('ecole_acces').") AND type = '".ESPACE_EMPLOYE."' AND annee > 0 AND annee < ".((int) ecole_annee_active()));
+	$ids = array();
+	while ($resql && ($o = $db->fetch_object($resql))) {
+		$ids[] = (int) $o->rowid;
+	}
+	foreach ($ids as $id) {
+		$a = espace_acces_fetch_id($db, $id);
+		$err = '';
+		if ($a && espace_acces_expire($db, $a) && espace_renouveler($db, $user, $a, $err) > 0) {
+			$n++;
+		}
+	}
+	return $n;
 }
 
 /**
@@ -300,6 +410,7 @@ function espace_etats()
 		'actif' => array('EtatAccesActif', 'badge-status4'),
 		'jamais' => array('EtatAccesJamais', 'badge-status1'),
 		'coupe' => array('EtatAccesCoupe', 'badge-status8'),
+		'expire' => array('EtatAccesExpire', 'badge-status8'),
 		'desactive' => array('EtatAccesDesactive', 'badge-status9'),
 		'aucun' => array('EtatAccesAucun', 'badge-status0'),
 	);
@@ -484,8 +595,8 @@ function espace_creer($db, $user, $type, $cible, &$error)
 	}
 	espace_user_sans_droits($db, $u->id);
 
-	$sql = "INSERT INTO ".$db->prefix()."ecole_acces (entity, type, fk_cible, fk_user, mdp_provisoire, mdp_fiche, date_creation, fk_user_creat, status)";
-	$sql .= " VALUES (".((int) $conf->entity).", '".$db->escape($type)."', ".((int) $cible).", ".((int) $u->id).", 1, '".$db->escape(dolEncrypt($mdp))."',";
+	$sql = "INSERT INTO ".$db->prefix()."ecole_acces (entity, annee, type, fk_cible, fk_user, mdp_provisoire, mdp_fiche, date_creation, fk_user_creat, status)";
+	$sql .= " VALUES (".((int) $conf->entity).", ".((int) ecole_annee_active()).", '".$db->escape($type)."', ".((int) $cible).", ".((int) $u->id).", 1, '".$db->escape(dolEncrypt($mdp))."',";
 	$sql .= " '".$db->idate(dol_now())."', ".((int) $user->id).", 1)";
 	if (!$db->query($sql)) {
 		$db->rollback();
@@ -526,8 +637,8 @@ function espace_creer_employe($db, $user, $emp, &$error)
 		$error = $db->lasterror();
 		return -1;
 	}
-	$sql = "INSERT INTO ".$db->prefix()."ecole_acces (entity, type, fk_cible, fk_user, mdp_provisoire, mdp_fiche, date_creation, fk_user_creat, status)";
-	$sql .= " VALUES (".((int) $conf->entity).", '".ESPACE_EMPLOYE."', ".((int) $emp->id).", ".((int) $emp->fk_user).", ".($gestion ? 0 : 1);
+	$sql = "INSERT INTO ".$db->prefix()."ecole_acces (entity, annee, type, fk_cible, fk_user, mdp_provisoire, mdp_fiche, date_creation, fk_user_creat, status)";
+	$sql .= " VALUES (".((int) $conf->entity).", ".((int) ecole_annee_active()).", '".ESPACE_EMPLOYE."', ".((int) $emp->id).", ".((int) $emp->fk_user).", ".($gestion ? 0 : 1);
 	$sql .= ", ".($gestion ? "NULL" : "'".$db->escape(dolEncrypt($mdp))."'").", '".$db->idate(dol_now())."', ".((int) $user->id).", 1)";
 	if (!$db->query($sql)) {
 		$db->rollback();
@@ -1056,7 +1167,7 @@ function espace_liste_filtres()
 	if (!in_array($f['type'], espace_types(), true)) {
 		$f['type'] = '';
 	}
-	if (!in_array($f['etat'], array('actif', 'jamais', 'coupe', 'desactive'), true)) {
+	if (!in_array($f['etat'], array('actif', 'jamais', 'coupe', 'expire', 'desactive'), true)) {
 		$f['etat'] = '';
 	}
 	if (!in_array($f['mdp'], array('provisoire', 'personnel'), true)) {
@@ -1088,20 +1199,26 @@ function espace_acces_liste($db, $f, $sort, $order, $limit, $offset, &$total)
 	$p = $db->prefix();
 	$occ = implode(',', EcoleEleve::statusOccupantPlace());
 	$elevesOk = espace_acces_eleves_actif() ? '1' : '0';
-	$inner = "SELECT a.rowid, a.type, a.fk_cible, a.fk_user, a.mdp_provisoire, a.date_derniere_connexion, a.nb_connexions, a.date_creation, a.status,";
+	$inner = "SELECT a.rowid, a.type, a.fk_cible, a.fk_user, a.annee, a.mdp_provisoire, COALESCE(u.admin, 0) as uadmin, a.date_derniere_connexion, a.nb_connexions, a.date_creation, a.status,";
 	$emp = isModEnabled('personnel') && espace_table_existe($db, 'ecole_employe');
 	$inner .= " COALESCE(r.ref, el.ref".($emp ? ", em.ref" : "").") as ref, COALESCE(r.nom_fr, el.nom_fr".($emp ? ", em.nom_fr" : "").") as nom_fr";
 	$inner .= ", COALESCE(r.nom_ar, el.nom_ar".($emp ? ", em.nom_ar" : "").") as nom_ar,".($emp ? " em.categories," : " NULL as categories,");
 	$inner .= " CASE WHEN a.type = 'employe' THEN ".($emp ? "(CASE WHEN em.status <> 4 THEN 1 ELSE 0 END)" : "0");
 	$inner .= " ELSE (SELECT COUNT(*) FROM ".$p."ecole_eleve v WHERE v.status IN (".$occ.") AND ((a.type = 'parent' AND v.fk_responsable = a.fk_cible) OR (a.type = 'eleve' AND v.rowid = a.fk_cible))) END as nbvis";
-	$inner .= " FROM ".$p."ecole_acces a";
+	$inner .= " FROM ".$p."ecole_acces a LEFT JOIN ".$p."user u ON u.rowid = a.fk_user";
 	$inner .= " LEFT JOIN ".$p."ecole_responsable r ON a.type = 'parent' AND r.rowid = a.fk_cible";
 	$inner .= " LEFT JOIN ".$p."ecole_eleve el ON a.type = 'eleve' AND el.rowid = a.fk_cible";
 	if ($emp) {
 		$inner .= " LEFT JOIN ".$p."ecole_employe em ON a.type = 'employe' AND em.rowid = a.fk_cible";
 	}
 	$inner .= " WHERE a.entity IN (".getEntity('ecole_acces').")";
-	$etat = "CASE WHEN t.status = 0 OR (t.type = 'eleve' AND ".$elevesOk." = 0) THEN 'desactive' WHEN t.nbvis = 0 THEN 'coupe' WHEN t.date_derniere_connexion IS NULL THEN 'jamais' ELSE 'actif' END";
+	// Code d'une année passée : expiré (sauf personnel de gestion : direction, secrétariat, comptabilité, administrateur)
+	$gestion = "(t.type = 'employe' AND (t.uadmin = 1";
+	foreach (espace_categories_gestion() as $cat) {
+		$gestion .= " OR t.categories LIKE '%".$db->escape($cat)."%'";
+	}
+	$gestion .= "))";
+	$etat = "CASE WHEN t.status = 0 OR (t.type = 'eleve' AND ".$elevesOk." = 0) THEN 'desactive' WHEN t.annee > 0 AND t.annee < ".((int) ecole_annee_active())." AND NOT ".$gestion." THEN 'expire' WHEN t.nbvis = 0 THEN 'coupe' WHEN t.date_derniere_connexion IS NULL THEN 'jamais' ELSE 'actif' END";
 
 	$w = array('1 = 1');
 	if ($f['type'] !== '') {

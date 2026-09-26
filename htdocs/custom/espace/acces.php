@@ -61,6 +61,15 @@ if ($peutGerer) {
 		header('Location: '.$self);
 		exit;
 	}
+	if ($action === 'confirm_renouveler' && GETPOST('confirm', 'alpha') === 'yes' && $acces) {
+		if (espace_renouveler($db, $user, $acces, $error) > 0) {
+			setEventMessages($langs->trans('CodeRenouvele', ecole_annee_label(ecole_annee_active())), null, 'mesgs');
+		} else {
+			setEventMessages($error, null, 'errors');
+		}
+		header('Location: '.$self);
+		exit;
+	}
 	if ($action === 'confirm_disable' && GETPOST('confirm', 'alpha') === 'yes' && $acces) {
 		espace_set_status($db, $acces, 0);
 		setEventMessages($langs->trans('AccesDesactiveMsg'), null, 'mesgs');
@@ -112,6 +121,9 @@ if ($action === 'reinit' && $peutGerer) {
 if ($action === 'permmodele' && $peutGerer) {
 	print $form->formconfirm($self, $langs->trans('RetablirModele'), $langs->trans('ConfirmRetablirModele'), 'confirm_permmodele', '', 'yes', 1);
 }
+if ($action === 'renouveler' && $peutGerer) {
+	print $form->formconfirm($self, $langs->trans('NouveauCodeAnnee', ecole_annee_label(ecole_annee_active())), $langs->trans('ConfirmNouveauCode'), 'confirm_renouveler', '', 'yes', 1);
+}
 if ($action === 'disable' && $peutGerer) {
 	print $form->formconfirm($self, $langs->trans('DesactiverAcces'), $langs->trans('ConfirmDesactiver'), 'confirm_disable', '', 'yes', 1);
 }
@@ -134,7 +146,7 @@ $eleves = espace_eleves_visibles($db, $type, $id);
 print '<div class="fichecenter"><div class="fichehalfleft">';
 print '<table class="border centpercent tableforfield">';
 print '<tr><td class="titlefield">'.$langs->trans('EtatAcces').'</td><td>'.espace_etat_badge($etat);
-$aides = array('aucun' => 'AideEtatAucun', 'coupe' => ($type === ESPACE_PARENT ? 'AideEtatCoupeParent' : ($type === ESPACE_EMPLOYE ? 'AideEtatCoupeEmploye' : 'AideEtatCoupeEleve')), 'desactive' => ($type === ESPACE_EMPLOYE ? 'AideEtatDesactiveEmploye' : 'AideEtatDesactive'));
+$aides = array('expire' => 'AideEtatExpire', 'aucun' => 'AideEtatAucun', 'coupe' => ($type === ESPACE_PARENT ? 'AideEtatCoupeParent' : ($type === ESPACE_EMPLOYE ? 'AideEtatCoupeEmploye' : 'AideEtatCoupeEleve')), 'desactive' => ($type === ESPACE_EMPLOYE ? 'AideEtatDesactiveEmploye' : 'AideEtatDesactive'));
 if (isset($aides[$etat])) {
 	print '<br><span class="opacitymedium small">'.$langs->trans($aides[$etat]).'</span>';
 }
@@ -248,6 +260,11 @@ if (!$acces) {
 		if ($wa !== '') {
 			print '<a class="butAction wa-btn" href="'.dol_escape_htmltag($wa).'" target="_blank" rel="noopener" style="background:#25d366;color:#fff;border-color:#25d366">'.img_picto('', 'fab fa-whatsapp', 'class="pictofixedwidth"').$langs->trans('EnvoyerWhatsApp').'</a>';
 		}
+	}
+	if ($etat === 'expire') {
+		$raison = '';
+		$ok = espace_peut_creer($db, $type, $id, $raison);
+		print dolGetButtonAction($ok ? '' : $raison, $langs->trans('NouveauCodeAnnee', ecole_annee_label(ecole_annee_active())), 'default', $ok ? $self.'&action=renouveler&token='.newToken() : '#', '', $peutGerer && $ok);
 	}
 	if (!$gestion) {
 		print dolGetButtonAction('', $langs->trans('ReinitialiserMotDePasse'), 'default', $self.'&action=reinit&token='.newToken(), '', $peutGerer);

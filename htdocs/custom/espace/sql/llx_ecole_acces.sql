@@ -7,7 +7,8 @@ CREATE TABLE llx_ecole_acces
 	entity                  INTEGER NOT NULL DEFAULT 1,
 	type                    VARCHAR(8) NOT NULL,              -- 'parent' ou 'eleve'
 	fk_cible                INTEGER NOT NULL,                 -- llx_ecole_responsable.rowid ou llx_ecole_eleve.rowid
-	fk_user                 INTEGER NOT NULL,                 -- compte utilisateur Dolibarr
+	fk_user                 INTEGER NOT NULL,
+	annee                   INTEGER NOT NULL DEFAULT 0,       -- année scolaire du code (expire au passage à l'année suivante)                 -- compte utilisateur Dolibarr
 	mdp_provisoire          SMALLINT NOT NULL DEFAULT 1,      -- 1 = mot de passe donné par l'école, à changer à la première connexion
 	mdp_fiche               VARCHAR(255),                     -- mot de passe provisoire chiffré (réimpression de la fiche), effacé dès qu'il est changé
 	langue                  VARCHAR(8),                       -- langue choisie dans l'espace (NULL = celle de la configuration)

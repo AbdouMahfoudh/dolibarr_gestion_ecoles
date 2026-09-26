@@ -236,3 +236,19 @@ PermRecuPdf=Download payment receipts (PDF)
 PermCertificatPdf=Download the school certificate (PDF)
 
 EdTableauDeBord=Dashboard
+# School years
+EtatAccesExpire=Code expired
+AideEtatExpire=Last year's code expired when moving to the new year: give a new code (it is also created automatically when a former student's enrolment is validated).
+NouveauCodeAnnee=New code for %s
+ConfirmNouveauCode=Create a new temporary password for the new year? Then print the access sheet or send it by WhatsApp.
+CodeRenouvele=New code created for %s: print the access sheet.
+RenouvelerCodesPersonnel=New staff codes
+ConfirmRenouvelerCodesPersonnel=Create a new code for %s for all present staff whose code expired? (Management, secretariat and accounting keep their password.)
+CodesPersonnelRenouveles=%s new staff code(s): print the access sheets.
+CodesExpiresInfo=New year %s: last year's staff codes have expired.
+NouveauCodeParentCree=New parents' space code created for the new year: print the guardian's access sheet.
+NouveauCodeEleveCree=New student space code created for the new year: print the student's access sheet.
+VoirAcces=See access
+EspAnneePassee=Year %s: read only.
+EspArriereReporte=Arrears carried over
+EspCodeExpire=Your code from last year has expired. Ask the school for your new code.

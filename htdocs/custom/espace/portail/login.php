@@ -53,8 +53,8 @@ if (GETPOST('action', 'aZ09') === 'login') {
 	if (!$acces || $loginok === '' || $loginok === '--bad-login-validity--' || dol_strtoupper($loginok) !== dol_strtoupper($login)) {
 		sleep(1); // ralentit les essais de mots de passe
 		$erreur = $langs->trans('ErreurIdentifiants');
-	} elseif (espace_etat($db, $acces) !== 'actif') {
-		$erreur = $langs->trans('AccesPlusActif');
+	} elseif (($etatAcces = espace_etat($db, $acces)) !== 'actif') {
+		$erreur = $langs->trans($etatAcces === 'expire' ? 'EspCodeExpire' : 'AccesPlusActif');
 	} else {
 		espace_session_ouvrir($db, $acces);
 		header('Location: '.espace_page_url((int) $acces->mdp_provisoire ? 'mot-de-passe' : ''));

@@ -635,7 +635,7 @@ function eleves_compteurs($db, $where, $du = '', $au = '')
 }
 
 /**
- * Compteurs d'un élève (toute l'année : une base = une année scolaire).
+ * Compteurs d'un élève pour l'année scolaire consultée (année en cours par défaut).
  *
  * @param  DoliDB $db       Handler base
  * @param  int    $fk_eleve Élève
@@ -643,7 +643,8 @@ function eleves_compteurs($db, $where, $du = '', $au = '')
  */
 function eleves_compteurs_eleve($db, $fk_eleve)
 {
-	$c = eleves_compteurs($db, 'fk_eleve = '.((int) $fk_eleve));
+	list($du, $au) = function_exists('ecole_annee_bornes') ? ecole_annee_bornes(ecole_annee_vue()) : array('', '');
+	$c = eleves_compteurs($db, 'fk_eleve = '.((int) $fk_eleve), $du, $au);
 	return isset($c[(int) $fk_eleve]) ? $c[(int) $fk_eleve] : array('absences' => 0, 'absences_nj' => 0, 'retards' => 0, 'retards_nj' => 0, 'renvois' => 0, 'sanctions' => 0);
 }
 

@@ -16,7 +16,9 @@ require 'boot.php';
 
 $acces = espace_exiger_session($db);
 $langs = espace_langs_init(espace_langue_code($db, $acces));
-$eleves = espace_eleves_visibles($db, $acces->type, (int) $acces->fk_cible);
+// Année consultée dans l'espace : bulletins et reçus des années passées aussi (certificat : année en cours)
+$annee = espace_annee($db, $acces);
+$eleves = espace_eleves_annee($db, $acces, $annee);
 $id = espace_id_par_jeton('eleve', GETPOST('jeton', 'alphanohtml'), array_keys($eleves));
 $doc = GETPOST('doc', 'aZ09');
 if (!isset($eleves[$id])) {
@@ -31,6 +33,9 @@ if (!isset($permDoc[$doc]) || !espace_perm($db, $acces->type, (int) $acces->fk_c
 	$doc = '';
 }
 
+if ($doc === 'certificat' && $annee !== ecole_annee_active()) {
+	$doc = '';
+}
 if ($doc === 'certificat' && isModEnabled('notes')) {
 	dol_include_once('/notes/core/lib/bulletin_pdf.lib.php');
 	notes_pdf_certificat($db, $e);
