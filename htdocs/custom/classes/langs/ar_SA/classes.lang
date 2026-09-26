@@ -274,3 +274,12 @@ LangueFrancais=الفرنسية
 LangueArabe=العربية
 CommeLaMatiere=مثل المادة
 LangueClasseAide=لغة التدريس : « مثل المادة » تأخذ اللغة المختارة في بطاقة المادة ؛ اختر « الفرنسية » أو « العربية » لاستثناء في هذا القسم (مثلا الرياضيات بالعربية في شعبة عربية).
+
+# بطاقة المادة : الأقسام والأساتذة (من جدول الحصص)
+MatiereClasses=الأقسام التي تُدرَّس فيها المادة
+MatiereEnseignants=أساتذة المادة
+NbCoursSemaine=الحصص / الأسبوع
+Enseignants=الأساتذة
+MatiereAucuneClasse=هذه المادة غير مسندة إلى أي قسم.
+MatiereAucunEnseignant=لا يوجد أستاذ لديه هذه المادة في جدول الحصص.
+MatiereSourceEdt=يُحسب تلقائيا من جدول الحصص.

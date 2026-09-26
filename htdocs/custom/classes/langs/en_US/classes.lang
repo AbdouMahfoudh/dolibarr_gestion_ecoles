@@ -261,3 +261,12 @@ LangueFrancais=French
 LangueArabe=Arabic
 CommeLaMatiere=Same as subject
 LangueClasseAide=Teaching language: "Same as subject" uses the language set on the subject card; choose "French" or "Arabic" for an exception in this class.
+
+# Subject card: classes and teachers (from the timetable)
+MatiereClasses=Classes where the subject is taught
+MatiereEnseignants=Teachers of the subject
+NbCoursSemaine=Lessons / week
+Enseignants=Teachers
+MatiereAucuneClasse=This subject is not assigned to any class.
+MatiereAucunEnseignant=No teacher has this subject in the timetable.
+MatiereSourceEdt=Computed automatically from the lessons timetable.

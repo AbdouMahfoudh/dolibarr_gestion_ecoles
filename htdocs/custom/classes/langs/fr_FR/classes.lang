@@ -270,3 +270,12 @@ LangueFrancais=Français
 LangueArabe=Arabe
 CommeLaMatiere=Comme la matière
 LangueClasseAide=Langue d'enseignement : « Comme la matière » reprend la langue choisie sur la fiche de la matière ; choisissez « Français » ou « Arabe » pour une exception dans cette classe (ex. mathématiques enseignées en arabe dans une section arabe).
+
+# Fiche matière : classes et enseignants (depuis l'emploi du temps)
+MatiereClasses=Classes où la matière est enseignée
+MatiereEnseignants=Enseignants de la matière
+NbCoursSemaine=Cours / semaine
+Enseignants=Enseignants
+MatiereAucuneClasse=Cette matière n'est attribuée à aucune classe.
+MatiereAucunEnseignant=Aucun enseignant n'a cette matière à l'emploi du temps.
+MatiereSourceEdt=Calculé automatiquement depuis l'emploi du temps des cours.

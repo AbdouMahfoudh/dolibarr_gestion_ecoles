@@ -531,6 +531,101 @@ function salle_extra_view($object)
 }
 
 /**
+ * Informations sous la fiche d'une matière, calculées depuis l'emploi du temps des cours :
+ * classes où elle est attribuée (nombre de cours et heures par semaine, enseignants) et enseignants qui l'enseignent.
+ *
+ * @param  EcoleMatiere $object Matière
+ * @return void
+ */
+function matiere_extra_view($object)
+{
+	global $db, $langs;
+
+	$p = $db->prefix();
+	$id = (int) $object->id;
+
+	// Classes où la matière est attribuée (coefficients), même sans cours à l'emploi du temps
+	$classes = array();
+	$sql = "SELECT c.rowid, c.ref, c.label_fr, c.label_ar FROM ".$p."ecole_classe_matiere cm INNER JOIN ".$p."ecole_classe c ON c.rowid = cm.fk_classe";
+	$sql .= " LEFT JOIN ".$p."ecole_niveau n ON n.rowid = c.fk_niveau WHERE cm.fk_matiere = ".$id." ORDER BY n.position, c.rowid";
+	$resql = $db->query($sql);
+	while ($resql && ($o = $db->fetch_object($resql))) {
+		$classes[(int) $o->rowid] = (object) array('ref' => $o->ref, 'label_fr' => $o->label_fr, 'label_ar' => $o->label_ar, 'nb' => 0, 'minutes' => 0, 'profs' => array());
+	}
+
+	// Cours de l'emploi du temps
+	$profs = array();
+	$sql = "SELECT e.fk_classe, e.fk_user, cr.heure_debut, cr.heure_fin, c.ref, c.label_fr, c.label_ar FROM ".$p."ecole_edt_cours e";
+	$sql .= " INNER JOIN ".$p."ecole_creneau cr ON cr.rowid = e.fk_creneau INNER JOIN ".$p."ecole_classe c ON c.rowid = e.fk_classe";
+	$sql .= " WHERE e.fk_matiere = ".$id;
+	$resql = $db->query($sql);
+	while ($resql && ($o = $db->fetch_object($resql))) {
+		$cid = (int) $o->fk_classe;
+		if (!isset($classes[$cid])) {
+			$classes[$cid] = (object) array('ref' => $o->ref, 'label_fr' => $o->label_fr, 'label_ar' => $o->label_ar, 'nb' => 0, 'minutes' => 0, 'profs' => array());
+		}
+		$min = max(0, ecole_hhmm_to_min($o->heure_fin) - ecole_hhmm_to_min($o->heure_debut));
+		$classes[$cid]->nb++;
+		$classes[$cid]->minutes += $min;
+		$uid = (int) $o->fk_user;
+		if ($uid > 0) {
+			$classes[$cid]->profs[$uid] = 1;
+			if (!isset($profs[$uid])) {
+				$profs[$uid] = array('classes' => array(), 'nb' => 0, 'minutes' => 0);
+			}
+			$profs[$uid]['classes'][$cid] = $o->ref;
+			$profs[$uid]['nb']++;
+			$profs[$uid]['minutes'] += $min;
+		}
+	}
+
+	print '<div class="fichecenter"><br>';
+
+	// Classes
+	print load_fiche_titre($langs->trans('MatiereClasses').' ('.count($classes).')', '', 'fa-chalkboard');
+	print '<div class="div-table-responsive-no-min"><table class="noborder centpercent">';
+	print '<tr class="liste_titre"><td>'.$langs->trans('Classe').'</td><td class="center">'.$langs->trans('NbCoursSemaine').'</td><td class="center">'.$langs->trans('HeuresSemaine').'</td><td>'.$langs->trans('Enseignants').'</td><td></td></tr>';
+	if (empty($classes)) {
+		print '<tr class="oddeven"><td colspan="5"><span class="opacitymedium">'.$langs->trans('MatiereAucuneClasse').'</span></td></tr>';
+	}
+	$totnb = 0;
+	$totmin = 0;
+	foreach ($classes as $cid => $c) {
+		$totnb += $c->nb;
+		$totmin += $c->minutes;
+		$noms = array();
+		foreach (array_keys($c->profs) as $uid) {
+			$noms[] = dol_escape_htmltag(ecole_user_label($db, $uid));
+		}
+		print '<tr class="oddeven"><td class="nowraponall"><a href="'.dol_buildpath('/classes/classe/card.php', 1).'?id='.$cid.'">'.img_picto('', 'fa-chalkboard', 'class="pictofixedwidth"').dol_escape_htmltag($c->ref).'</a> <span class="opacitymedium" dir="auto">'.dol_escape_htmltag(ecole_label($c)).'</span></td>';
+		print '<td class="center">'.($c->nb ? '<b>'.$c->nb.'</b>' : '<span class="opacitymedium">0</span>').'</td>';
+		print '<td class="center">'.($c->minutes ? ecole_duree($c->minutes) : '<span class="opacitymedium">—</span>').'</td>';
+		print '<td>'.(empty($noms) ? '<span class="opacitymedium">—</span>' : implode(', ', $noms)).'</td>';
+		print '<td class="right"><a href="'.dol_buildpath('/classes/classe/edt.php', 1).'?id='.$cid.'">'.$langs->trans('EcoleEmploiDuTemps').'</a></td></tr>';
+	}
+	if (count($classes) > 1) {
+		print '<tr class="liste_total"><td>'.$langs->trans('Total').'</td><td class="center">'.$totnb.'</td><td class="center">'.ecole_duree($totmin).'</td><td colspan="2"></td></tr>';
+	}
+	print '</table></div>';
+
+	// Enseignants
+	print '<br>'.load_fiche_titre($langs->trans('MatiereEnseignants').' ('.count($profs).')', '', 'fa-chalkboard-teacher');
+	print '<div class="div-table-responsive-no-min"><table class="noborder centpercent">';
+	print '<tr class="liste_titre"><td>'.$langs->trans('Enseignant').'</td><td>'.$langs->trans('Classes').'</td><td class="center">'.$langs->trans('NbCoursSemaine').'</td><td class="center">'.$langs->trans('HeuresSemaine').'</td></tr>';
+	if (empty($profs)) {
+		print '<tr class="oddeven"><td colspan="4"><span class="opacitymedium">'.$langs->trans('MatiereAucunEnseignant').'</span></td></tr>';
+	}
+	foreach ($profs as $uid => $x) {
+		print '<tr class="oddeven"><td class="nowraponall">'.img_picto('', 'fa-chalkboard-teacher', 'class="pictofixedwidth"').dol_escape_htmltag(ecole_user_label($db, $uid)).'</td>';
+		print '<td>'.dol_escape_htmltag(implode(', ', $x['classes'])).'</td>';
+		print '<td class="center"><b>'.$x['nb'].'</b></td><td class="center">'.ecole_duree($x['minutes']).'</td></tr>';
+	}
+	print '</table></div>';
+	print '<div class="opacitymedium small">'.$langs->trans('MatiereSourceEdt').'</div>';
+	print '</div><br>';
+}
+
+/**
  * Nom complet d'un utilisateur Dolibarr.
  *
  * @param  DoliDB $db Handler base

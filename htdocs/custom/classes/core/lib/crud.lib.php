@@ -206,7 +206,7 @@ function ecole_crud_config($name)
 		'session' => array('dir' => 'session', 'class' => 'EcoleSession', 'title' => 'SessionsExamen', 'ficheTitle' => 'SessionExamen', 'newLabel' => 'NouvelleSession',
 			'perm_read' => 'lire', 'perm_write' => 'config', 'perm_delete' => 'config'),
 		'matiere' => array('dir' => 'matiere', 'class' => 'EcoleMatiere', 'title' => 'Matieres', 'ficheTitle' => 'Matiere', 'newLabel' => 'NouvelleMatiere',
-			'perm_read' => 'lire', 'perm_write' => 'ecrire', 'perm_delete' => 'supprimer'),
+			'perm_read' => 'lire', 'perm_write' => 'ecrire', 'perm_delete' => 'supprimer', 'extra_view' => 'matiere_extra_view'),
 		'classe' => array('dir' => 'classe', 'class' => 'EcoleClasse', 'title' => 'Classes', 'ficheTitle' => 'Classe', 'newLabel' => 'NouvelleClasse',
 			'perm_read' => 'lire', 'perm_write' => 'ecrire', 'perm_delete' => 'supprimer',
 			'head' => 'classe_prepare_head', 'extra_view' => 'classe_extra_view',
