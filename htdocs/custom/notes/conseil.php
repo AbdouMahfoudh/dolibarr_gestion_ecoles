@@ -142,7 +142,7 @@ foreach (notes_ordre_rang($calc) as $eid) {
 	$retenue = notes_distinction($db, $c, $r['moyenne']);
 	print '<tr class="oddeven">';
 	print '<td class="center" data-f="'.($r['rang'] !== null ? (int) $r['rang'] : '').'"><b>'.dol_escape_htmltag(notes_rang_label($r['rang'], $r['exaequo'])).'</b></td>';
-	print '<td class="nowraponall">'.dol_escape_htmltag($e->nom_fr).(!empty($e->nom_ar) ? ' <span dir="rtl" class="opacitymedium">'.dol_escape_htmltag($e->nom_ar).'</span>' : '').'</td>';
+	print '<td class="nowraponall" dir="auto">'.dol_escape_htmltag(ecole_label($e)).'</td>';
 	print '<td class="center" data-f="'.($r['moyenne'] !== null ? round($r['moyenne'], 2) : '').'"><b>'.notes_moy($r['moyenne']).'</b></td>';
 	print '<td data-f="'.($mention ? dol_escape_htmltag($mention->ref) : '').'">'.($mention ? dol_escape_htmltag(ecole_label($mention)) : '').'</td>';
 	print '<td data-f="'.($retenue ? dol_escape_htmltag($retenue->ref) : '-').'">';

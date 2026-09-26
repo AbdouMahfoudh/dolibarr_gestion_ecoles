@@ -518,10 +518,7 @@ function eleve_print_banner($object, $tab)
 
 	$linkback = '<a href="'.dol_buildpath('/eleves/eleve/list.php', 1).'?restore_lastsearch_values=1">'.$langs->trans('BackToList').'</a>';
 	$morehtmlref = '<div class="refidno">';
-	$morehtmlref .= '<span class="bold">'.dol_escape_htmltag($object->nom_fr).'</span>';
-	if (!empty($object->nom_ar)) {
-		$morehtmlref .= ' &nbsp; <span dir="rtl" class="bold">'.dol_escape_htmltag($object->nom_ar).'</span>';
-	}
+	$morehtmlref .= '<span class="bold" dir="auto">'.dol_escape_htmltag(ecole_label($object)).'</span>';
 	$morehtmlref .= '<br>'.img_picto('', 'fa-chalkboard', 'class="pictofixedwidth"').ecole_link_label($db, 'EcoleClasse', 'classes/class/ecole_classe.class.php', $object->fk_classe);
 	if (!empty($object->rip)) {
 		$morehtmlref .= ' &nbsp; <span class="opacitymedium">'.$langs->trans('RIP').' :</span> '.dol_escape_htmltag($object->rip);
@@ -661,7 +658,7 @@ function eleves_export_dataset_classe_eleves($db, $classe)
 	$labels = EcoleEleve::statusLabels();
 	$rows = array();
 	foreach (eleves_liste_classe($db, (int) $classe->id) as $e) {
-		$rows[] = array($e->numero_appel ? (string) $e->numero_appel : '', $e->ref, $e->nom_fr, (string) $e->nom_ar,
+		$rows[] = array($e->numero_appel ? (string) $e->numero_appel : '', $e->ref, ecole_label($e),
 			$e->sexe ? ecole_pdf_trans($langs, $e->sexe === 'F' ? 'SexeF' : 'SexeM') : '',
 			ecole_label((object) array('nom_fr' => (string) $e->rnom_fr, 'nom_ar' => (string) $e->rnom_ar)), (string) $e->telephone,
 			isset($labels[(int) $e->status]) ? ecole_pdf_trans($langs, $labels[(int) $e->status][0]) : '');
@@ -670,10 +667,10 @@ function eleves_export_dataset_classe_eleves($db, $classe)
 		'title' => ecole_pdf_trans($langs, 'ListeClasseTitre', $classe->ref),
 		'subtitle' => ecole_label($classe).' — '.ecole_pdf_trans($langs, 'NbEnregistrements', count($rows)),
 		'ref' => 'LST-'.$classe->ref,
-		'headers' => array(ecole_pdf_trans($langs, 'NumeroAppelCourt'), ecole_pdf_trans($langs, 'Matricule'), ecole_pdf_trans($langs, 'NomCompletFr'), ecole_pdf_trans($langs, 'NomCompletAr'),
+		'headers' => array(ecole_pdf_trans($langs, 'NumeroAppelCourt'), ecole_pdf_trans($langs, 'Matricule'), ecole_pdf_trans($langs, 'NomComplet'),
 			ecole_pdf_trans($langs, 'Sexe'), ecole_pdf_trans($langs, 'Responsable'), ecole_pdf_trans($langs, 'TelephoneResponsable'), ecole_pdf_trans($langs, 'StatutEleve')),
-		'ratios' => array(0.5, 1.1, 2.6, 2.6, 0.7, 2.2, 1.4, 1.2),
-		'aligns' => array('C', 'C', 'L', 'R', 'C', 'L', 'C', 'C'),
+		'ratios' => array(0.5, 1.1, 3.2, 0.7, 2.4, 1.4, 1.2),
+		'aligns' => array('C', 'C', 'L', 'C', 'L', 'C', 'C'),
 		'rows' => $rows,
 		'filename' => 'liste_'.$classe->ref,
 	);

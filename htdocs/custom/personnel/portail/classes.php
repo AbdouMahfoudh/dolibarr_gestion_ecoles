@@ -63,10 +63,6 @@ foreach ($eleves as $o) {
 	$e = new EcoleEleve($db);
 	$e->fetch((int) $o->rowid);
 	print '<div class="es-card es-item"><div class="es-child-head">'.espace_avatar($e).'<div><div><b dir="ltr">'.($o->numero_appel ? (int) $o->numero_appel.'.' : '').'</b> '.dol_escape_htmltag(ecole_label($o)).'</div>';
-	$autre = espace_rtl() ? $o->nom_fr : $o->nom_ar;
-	if (!empty($autre)) {
-		print '<div class="es-muted es-small" dir="auto">'.dol_escape_htmltag($autre).'</div>';
-	}
 	print '</div></div>';
 	if ((int) $o->status === EcoleEleve::STATUS_SUSPENDU) {
 		print '<span class="es-chip es-chip-orange">'.$langs->trans('StatutSuspendu').'</span>';

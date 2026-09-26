@@ -390,7 +390,7 @@ function employe_print_form($object, $extrafields, $create, $canpaieedit)
 
 $title = $langs->trans('Employe');
 if ($object->id > 0) {
-	$title = $object->ref.' - '.$object->nom_fr;
+	$title = $object->ref.' - '.ecole_label($object);
 }
 llxHeader('', $title, '', '', 0, 0, '', '', '', 'mod-personnel page-card');
 print '<style>input[name$="_ar"],textarea[name$="_ar"]{direction:rtl;text-align:right}table.employe-bloc td.titlefield{width:35%}</style>';
@@ -440,7 +440,7 @@ if ($action == 'create') {
 			$q[] = array('type' => 'date', 'name' => 'datefin', 'label' => $langs->trans('FinPrevue'), 'value' => -1);
 		}
 		$q[] = array('type' => 'text', 'name' => 'motif', 'label' => $langs->trans('Commentaire'), 'morecss' => 'minwidth300');
-		print $form->formconfirm($page, $langs->trans('StatutCas_'.$cas), $langs->trans('ConfirmStatutCas_'.$cas, $object->nom_fr), 'confirm_statut', $q, 'yes', 1, 0, 600);
+		print $form->formconfirm($page, $langs->trans('StatutCas_'.$cas), $langs->trans('ConfirmStatutCas_'.$cas, ecole_label($object)), 'confirm_statut', $q, 'yes', 1, 0, 600);
 	}
 	if ($action == 'sync' && $canedit) {
 		print $form->formconfirm($page, $langs->trans('MettreAJourCompte'), $langs->trans('ConfirmMettreAJourCompte'), 'confirm_sync', '', 'yes', 1);

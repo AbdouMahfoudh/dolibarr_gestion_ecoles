@@ -619,9 +619,10 @@ function ecole_row_label($db, $table, $id)
 	if ((int) $id <= 0) {
 		return '';
 	}
-	$resql = $db->query("SELECT ref, label_fr FROM ".$db->prefix().$db->sanitize($table)." WHERE rowid = ".((int) $id));
+	$resql = $db->query("SELECT ref, label_fr, label_ar FROM ".$db->prefix().$db->sanitize($table)." WHERE rowid = ".((int) $id));
 	if ($resql && ($o = $db->fetch_object($resql))) {
-		return $o->ref.($o->label_fr ? ' - '.$o->label_fr : '');
+		$l = ecole_label($o);
+		return $o->ref.($l !== '' ? ' - '.$l : '');
 	}
 	return '';
 }
@@ -658,10 +659,12 @@ function ecole_label($o)
 	global $langs;
 	$fr = isset($o->label_fr) ? 'label_fr' : (isset($o->nom_fr) ? 'nom_fr' : 'label_fr');
 	$ar = ($fr === 'nom_fr') ? 'nom_ar' : 'label_ar';
-	if (!empty($o->$ar) && strpos((string) $langs->defaultlang, 'ar') === 0) {
-		return $o->$ar;
+	$vfr = isset($o->$fr) ? trim((string) $o->$fr) : '';
+	$var = isset($o->$ar) ? trim((string) $o->$ar) : '';
+	if (strpos((string) $langs->defaultlang, 'ar') === 0) {
+		return $var !== '' ? $var : $vfr; // arabe, repli sur le français
 	}
-	return isset($o->$fr) ? (string) $o->$fr : '';
+	return $vfr !== '' ? $vfr : $var; // français, repli sur l'arabe
 }
 
 /**

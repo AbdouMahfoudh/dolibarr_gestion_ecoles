@@ -64,13 +64,13 @@ $buttons .= dolGetButtonTitle($langs->trans('RenumeroterClasse'), $langs->trans(
 print load_fiche_titre($langs->trans('ElevesDeLaClasse').' ('.count($lignes).')', $buttons, 'fa-user-graduate');
 
 print '<div class="div-table-responsive-no-min"><table class="noborder centpercent">';
-print '<tr class="liste_titre"><td class="center">'.$langs->trans('NumeroAppelCourt').'</td><td>'.$langs->trans('Matricule').'</td><td>'.$langs->trans('NomCompletFr').'</td><td>'.$langs->trans('NomCompletAr').'</td>';
+print '<tr class="liste_titre"><td class="center">'.$langs->trans('NumeroAppelCourt').'</td><td>'.$langs->trans('Matricule').'</td><td>'.$langs->trans('NomComplet').'</td>';
 print '<td class="center">'.$langs->trans('Sexe').'</td><td>'.$langs->trans('Responsable').'</td><td>'.$langs->trans('TelephoneResponsable').'</td><td class="center">'.$langs->trans('StatutEleve').'</td></tr>';
 $st = new EcoleEleve($db);
 foreach ($lignes as $e) {
 	print '<tr class="oddeven"><td class="center"><b>'.($e->numero_appel ? (int) $e->numero_appel : '<span class="opacitymedium">—</span>').'</b></td>';
 	print '<td class="nowraponall"><a href="'.dol_buildpath('/eleves/eleve/card.php', 1).'?id='.((int) $e->rowid).'">'.img_picto('', 'fa-user-graduate', 'class="pictofixedwidth"').dol_escape_htmltag($e->ref).'</a></td>';
-	print '<td>'.dol_escape_htmltag($e->nom_fr).'</td><td dir="rtl">'.dol_escape_htmltag((string) $e->nom_ar).'</td>';
+	print '<td dir="auto">'.dol_escape_htmltag(ecole_label($e)).'</td>';
 	print '<td class="center">'.($e->sexe ? $langs->trans($e->sexe === 'F' ? 'SexeF' : 'SexeM') : '').'</td>';
 	print '<td>'.dol_escape_htmltag(ecole_label((object) array('nom_fr' => (string) $e->rnom_fr, 'nom_ar' => (string) $e->rnom_ar))).'</td>';
 	print '<td class="nowraponall">'.dol_print_phone((string) $e->telephone, '', 0, 0, 'AC_TEL', '&nbsp;', 'phone').'</td>';

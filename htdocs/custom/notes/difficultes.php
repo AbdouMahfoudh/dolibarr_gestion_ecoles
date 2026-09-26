@@ -62,7 +62,7 @@ foreach ($lignes as $l) {
 	$r = $l['res'];
 	print '<tr class="oddeven">';
 	print '<td data-f="'.dol_escape_htmltag($l['classe']->ref).'"><a href="'.dol_buildpath('/notes/resultats.php', 1).'?fk_classe='.((int) $l['classe']->rowid).'&periode='.$periode.'">'.dol_escape_htmltag($l['classe']->ref).'</a></td>';
-	print '<td class="nowraponall"><a href="'.dol_buildpath('/notes/eleve.php', 1).'?id='.((int) $e->rowid).'&periode='.$periode.'">'.dol_escape_htmltag($e->nom_fr).'</a>'.(!empty($e->nom_ar) ? ' <span dir="rtl" class="opacitymedium">'.dol_escape_htmltag($e->nom_ar).'</span>' : '').'</td>';
+	print '<td class="nowraponall"><a href="'.dol_buildpath('/notes/eleve.php', 1).'?id='.((int) $e->rowid).'&periode='.$periode.'" dir="auto">'.dol_escape_htmltag(ecole_label($e)).'</a></td>';
 	print '<td class="center" data-f="'.round($r['moyenne'], 2).'"><b class="error">'.notes_moy($r['moyenne']).'</b></td>';
 	print '<td class="center" data-f="'.($r['rang'] !== null ? (int) $r['rang'] : '').'">'.dol_escape_htmltag(notes_rang_label($r['rang'], $r['exaequo'])).' / '.$l['nb'].'</td>';
 	print '<td>'.dol_escape_htmltag(implode(', ', $l['faibles'])).'</td>';

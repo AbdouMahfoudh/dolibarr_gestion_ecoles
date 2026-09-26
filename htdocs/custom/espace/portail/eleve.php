@@ -69,10 +69,6 @@ if (!empty($_SESSION['ecole_espace_msg'])) {
 print '<section class="es-card es-student">';
 print espace_avatar($e, 'es-avatar-lg');
 print '<div class="es-student-info"><h1>'.dol_escape_htmltag(ecole_label($e)).'</h1>';
-$autreNom = $rtl ? $e->nom_fr : $e->nom_ar;
-if (!empty($autreNom) && $autreNom !== ecole_label($e)) {
-	print '<div class="es-muted" dir="auto">'.dol_escape_htmltag($autreNom).'</div>';
-}
 print '<div class="es-small"><i class="fas fa-chalkboard"></i> '.dol_escape_htmltag(ecole_label($classe)).' &nbsp;·&nbsp; <span dir="ltr">'.dol_escape_htmltag($e->ref).'</span></div>';
 if ((int) $e->status === EcoleEleve::STATUS_SUSPENDU) {
 	print '<span class="es-chip es-chip-orange">'.dol_escape_htmltag($e->LibStatut($e->status, 0)).'</span>';

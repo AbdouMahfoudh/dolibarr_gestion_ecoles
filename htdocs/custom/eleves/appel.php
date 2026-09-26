@@ -335,10 +335,7 @@ foreach ($eleves as $eid => $e) {
 	$rowclass = isset($classes[$type]) ? $classes[$type] : '';
 	print '<tr class="oddeven'.$rowclass.'" data-eleve="'.$eid.'">';
 	print '<td class="center appel-num">'.($e->numero_appel ? (int) $e->numero_appel : '<span class="opacitymedium">—</span>').'</td>';
-	print '<td class="appel-nom" title="'.dol_escape_htmltag($e->ref).'"><b>'.dol_escape_htmltag($e->nom_fr).'</b>';
-	if (!empty($e->nom_ar)) {
-		print ' <span dir="rtl" class="opacitymedium">'.dol_escape_htmltag($e->nom_ar).'</span>';
-	}
+	print '<td class="appel-nom" title="'.dol_escape_htmltag($e->ref).'"><b dir="auto">'.dol_escape_htmltag(ecole_label($e)).'</b>';
 	print '</td><td class="nowraponall">';
 	if ($e->etat_special === 'exclu') {
 		print '<span class="badge badge-status8">'.$langs->trans('ExcluTemporairement').'</span>';

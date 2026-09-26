@@ -461,7 +461,7 @@ function personnel_controle_matiere_edt($db, $fk_user, $fk_matiere)
 	if ($resql && $db->num_rows($resql) > 0) {
 		return '';
 	}
-	return $langs->trans('ErrorMatiereHorsFiche', ecole_row_label($db, 'ecole_matiere', $fk_matiere), trim($o->ref.' '.$o->nom_fr));
+	return $langs->trans('ErrorMatiereHorsFiche', ecole_row_label($db, 'ecole_matiere', $fk_matiere), trim($o->ref.' '.ecole_label($o)));
 }
 
 /* ------------------------------------------------------------------
@@ -702,10 +702,7 @@ function employe_print_banner($object, $tab)
 
 	$linkback = '<a href="'.dol_buildpath('/personnel/employe/list.php', 1).'?restore_lastsearch_values=1">'.$langs->trans('BackToList').'</a>';
 	$morehtmlref = '<div class="refidno">';
-	$morehtmlref .= '<span class="bold">'.dol_escape_htmltag($object->nom_fr).'</span>';
-	if (!empty($object->nom_ar)) {
-		$morehtmlref .= ' &nbsp; <span dir="rtl" class="bold">'.dol_escape_htmltag($object->nom_ar).'</span>';
-	}
+	$morehtmlref .= '<span class="bold" dir="auto">'.dol_escape_htmltag(ecole_label($object)).'</span>';
 	$morehtmlref .= '<br>'.personnel_categories_badges((string) $object->categories);
 	if (!empty($object->poste)) {
 		$morehtmlref .= ' <span class="opacitymedium">'.dol_escape_htmltag($object->poste).'</span>';

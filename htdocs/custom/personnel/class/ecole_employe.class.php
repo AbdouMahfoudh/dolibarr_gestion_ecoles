@@ -411,7 +411,7 @@ class EcoleEmploye extends EcoleObject
 		if ($fku > 0) {
 			$autre = self::employeDeUtilisateur($this->db, $fku, (int) $this->id);
 			if ($autre) {
-				$this->errors[] = $langs->trans('ErrorUtilisateurDejaRelie', ecole_user_label($this->db, $fku), $autre->ref.' '.$autre->nom_fr);
+				$this->errors[] = $langs->trans('ErrorUtilisateurDejaRelie', ecole_user_label($this->db, $fku), $autre->ref.' '.ecole_label($autre));
 			} elseif ($this->link_user > 0 && personnel_est_compte_espace($this->db, $fku)) {
 				$this->errors[] = $langs->trans('ErrorCompteEspace');
 			}
@@ -1093,12 +1093,12 @@ class EcoleEmploye extends EcoleObject
 			return $out;
 		}
 		$fiche = array_keys($this->getMatieres());
-		$sql = "SELECT DISTINCT m.rowid, m.ref, m.label_fr FROM ".$this->db->prefix()."ecole_edt_cours e INNER JOIN ".$this->db->prefix()."ecole_matiere m ON m.rowid = e.fk_matiere";
+		$sql = "SELECT DISTINCT m.rowid, m.ref, m.label_fr, m.label_ar FROM ".$this->db->prefix()."ecole_edt_cours e INNER JOIN ".$this->db->prefix()."ecole_matiere m ON m.rowid = e.fk_matiere";
 		$sql .= " WHERE e.fk_user = ".((int) $this->fk_user);
 		$resql = $this->db->query($sql);
 		while ($resql && ($o = $this->db->fetch_object($resql))) {
 			if (!in_array((int) $o->rowid, $fiche, true)) {
-				$out[(int) $o->rowid] = $o->ref.' - '.$o->label_fr;
+				$out[(int) $o->rowid] = $o->ref.' - '.ecole_label($o);
 			}
 		}
 		return $out;

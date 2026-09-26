@@ -200,7 +200,7 @@ function notes_resultats_html($db, $user, $classe, $periode)
 		print '<tr class="oddeven">';
 		print '<td class="center" data-f="'.($r['rang'] !== null ? (int) $r['rang'] : '').'"><b>'.dol_escape_htmltag(notes_rang_label($r['rang'], $r['exaequo'])).'</b></td>';
 		print '<td class="center">'.($e->numero_appel ? (int) $e->numero_appel : '').'</td>';
-		print '<td class="nowraponall"><a href="'.dol_buildpath('/notes/eleve.php', 1).'?id='.$eid.'&periode='.((int) $periode).'" title="'.dol_escape_htmltag($e->ref).'">'.dol_escape_htmltag($e->nom_fr).'</a>'.(!empty($e->nom_ar) ? ' <span dir="rtl" class="opacitymedium">'.dol_escape_htmltag($e->nom_ar).'</span>' : '').'</td>';
+		print '<td class="nowraponall"><a href="'.dol_buildpath('/notes/eleve.php', 1).'?id='.$eid.'&periode='.((int) $periode).'" title="'.dol_escape_htmltag($e->ref).'" dir="auto">'.dol_escape_htmltag(ecole_label($e)).'</a></td>';
 		foreach ($calc['matieres'] as $mid => $m) {
 			$v = $r['matieres'][$mid]['moyenne'];
 			print '<td class="center'.($v !== null && $v < 10 ? ' error' : '').'" data-f="'.($v !== null ? round($v, 2) : '').'">'.notes_moy($v).'</td>';

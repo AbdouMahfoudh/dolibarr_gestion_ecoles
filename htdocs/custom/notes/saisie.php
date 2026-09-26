@@ -292,7 +292,7 @@ if (!$fk_matiere) {
 		$nbD = isset($parMat[$mid][NOTES_DEVOIR]) ? count($parMat[$mid][NOTES_DEVOIR]) : 0;
 		$pct = ($nbEl > 0 && isset($compoIds[$mid])) ? min(100, round($n / $nbEl * 100)) : 0;
 		print '<a class="nt-card" href="'.dol_escape_htmltag($url).'" data-search="'.dol_escape_htmltag($m->label_fr.' '.$m->label_ar.' '.implode(' ', $m->enseignants)).'" data-etat="'.$etat.'">';
-		print '<div class="nt-card-head"><div><div class="nt-card-title">'.dol_escape_htmltag($m->label_fr).'</div>'.(!empty($m->label_ar) ? '<div class="nt-card-sub"><span dir="rtl">'.dol_escape_htmltag($m->label_ar).'</span></div>' : '').'</div>';
+		print '<div class="nt-card-head"><div><div class="nt-card-title" dir="auto">'.dol_escape_htmltag(ecole_label($m)).'</div></div>';
 		print '<span class="nt-tag nt-accent" title="'.dol_escape_htmltag($langs->trans('Coefficient')).'">×'.notes_fmt($m->coefficient).'</span></div>';
 		print '<div class="nt-card-meta"><span class="nt-tag">'.$langs->trans('NoteSur').' '.notes_fmt($m->note_max).'</span>';
 		print '<span class="nt-tag'.(isset($exceptions[$mid]) ? ' nt-warn' : '').'" title="'.dol_escape_htmltag($langs->trans('NoteDevoirs')).'">'.$langs->trans($choixRegles['calcul_devoirs'][$calc]).'</span>';
@@ -330,7 +330,7 @@ foreach ($evals as $e) {
 
 // En-tête : matière, classe, règles
 print '<div class="nt-hero"><div>';
-print '<h2>'.dol_escape_htmltag($mat->label_fr).(!empty($mat->label_ar) ? '<span class="nt-ar"><span dir="rtl">'.dol_escape_htmltag($mat->label_ar).'</span></span>' : '').'</h2>';
+print '<h2 dir="auto">'.dol_escape_htmltag(ecole_label($mat)).'</h2>';
 print '<div class="nt-card-meta">';
 print '<span class="nt-tag nt-accent">'.img_picto('', 'fa-chalkboard').' '.dol_escape_htmltag($classe->ref.' - '.ecole_label($classe)).'</span>';
 print '<span class="nt-tag">'.$langs->trans('Coefficient').' '.notes_fmt($mat->coefficient).'</span>';
@@ -452,15 +452,12 @@ print '</tr>';
 foreach ($eleves as $elid => $el) {
 	print '<tr class="oddeven'.($el->ancien ? ' notes-ancien' : '').'">';
 	print '<td class="nt-num">'.($el->numero_appel && !$el->ancien ? '<span class="nt-num-badge">'.(int) $el->numero_appel.'</span>' : '').'</td>';
-	print '<td class="nt-nom" title="'.dol_escape_htmltag($el->ref).'"><span class="nt-name">'.dol_escape_htmltag($el->nom_fr).'</span>';
+	print '<td class="nt-nom" title="'.dol_escape_htmltag($el->ref).'"><span class="nt-name" dir="auto">'.dol_escape_htmltag(ecole_label($el)).'</span>';
 	if ($el->ancien) {
 		$lib = ((int) $el->fk_classe !== $fk_classe && in_array((int) $el->status, EcoleEleve::statusOccupantPlace(), true)) ? $langs->trans('ChangeDeClasse') : (isset($statuts[(int) $el->status]) ? $langs->trans($statuts[(int) $el->status][0]) : '');
 		print ' <span class="badge badge-status8 small">'.dol_escape_htmltag($lib).'</span>';
 	} elseif ((int) $el->status === EcoleEleve::STATUS_SUSPENDU) {
 		print ' <span class="badge badge-status7 small">'.$langs->trans('StatutSuspendu').'</span>';
-	}
-	if (!empty($el->nom_ar)) {
-		print '<span class="nt-name-ar"><span dir="rtl">'.dol_escape_htmltag($el->nom_ar).'</span></span>';
 	}
 	print '</td>';
 	foreach ($evals as $eid => $e) {

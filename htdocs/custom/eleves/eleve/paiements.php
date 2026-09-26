@@ -71,7 +71,7 @@ eleve_print_banner($object, 'paiements');
 print '<div class="underbanner clearboth"></div>';
 
 if ($action == 'encaissement' && $canencaisser) {
-	print load_fiche_titre($langs->trans('EncaisserPour', $object->nom_fr), '', 'fa-cash-register');
+	print load_fiche_titre($langs->trans('EncaisserPour', ecole_label($object)), '', 'fa-cash-register');
 	eleves_encaissement_form(array($object), $self, array('id' => $object->id));
 	print dol_get_fiche_end();
 	llxFooter();

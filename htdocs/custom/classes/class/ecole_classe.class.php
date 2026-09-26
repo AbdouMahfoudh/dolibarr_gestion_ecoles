@@ -88,7 +88,7 @@ class EcoleClasse extends EcoleObject
 			if ($niveau->fetch($this->fk_niveau) > 0) {
 				if (!empty($niveau->avec_sections)) {
 					if (empty($this->fk_section) || $this->fk_section < 0) {
-						$this->errors[] = $langs->trans('ErrorEcoleSectionRequired', $niveau->label_fr);
+						$this->errors[] = $langs->trans('ErrorEcoleSectionRequired', ecole_label($niveau));
 					}
 				} else {
 					$this->fk_section = null;

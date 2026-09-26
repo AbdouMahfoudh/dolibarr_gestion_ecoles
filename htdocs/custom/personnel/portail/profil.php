@@ -98,10 +98,6 @@ if ($urlPhoto !== '') {
 	print '<span class="es-avatar es-avatar-ini es-avatar-lg">'.dol_escape_htmltag(dol_strtoupper($ini)).'</span>';
 }
 print '<div class="es-student-info"><h1>'.dol_escape_htmltag(ecole_label($emp)).'</h1>';
-$autre = espace_rtl() ? $emp->nom_fr : $emp->nom_ar;
-if (!empty($autre) && $autre !== ecole_label($emp)) {
-	print '<div class="es-muted" dir="auto">'.dol_escape_htmltag($autre).'</div>';
-}
 print '<div class="es-small"><span dir="ltr">'.dol_escape_htmltag($emp->ref).'</span>'.($emp->poste ? ' · '.dol_escape_htmltag($emp->poste) : '').'</div>';
 print '<div class="es-chips">';
 foreach ($emp->getCategories() as $c) {

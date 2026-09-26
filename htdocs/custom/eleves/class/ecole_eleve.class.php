@@ -268,11 +268,11 @@ class EcoleEleve extends EcoleObject
 	 * @param  int    $fk_classe Classe
 	 * @param  int    $numero    Numéro
 	 * @param  int    $exclude   Élève à ignorer
-	 * @return object|null       Ligne (rowid, ref, nom_fr)
+	 * @return object|null       Ligne (rowid, ref, nom_fr, nom_ar)
 	 */
 	public static function eleveAvecNumero($db, $fk_classe, $numero, $exclude = 0)
 	{
-		$sql = "SELECT rowid, ref, nom_fr FROM ".$db->prefix()."ecole_eleve WHERE entity IN (".getEntity('ecole_eleve').")";
+		$sql = "SELECT rowid, ref, nom_fr, nom_ar FROM ".$db->prefix()."ecole_eleve WHERE entity IN (".getEntity('ecole_eleve').")";
 		$sql .= " AND fk_classe = ".((int) $fk_classe)." AND numero_appel = ".((int) $numero)." AND rowid <> ".((int) $exclude);
 		$sql .= " AND status IN (".self::sqlStatutsNumerotes().")";
 		$resql = $db->query($sql);
@@ -441,7 +441,7 @@ class EcoleEleve extends EcoleObject
 		} elseif ((int) $this->fk_classe > 0) {
 			$autre = self::eleveAvecNumero($this->db, (int) $this->fk_classe, (int) $this->numero_appel, (int) $this->id);
 			if ($autre) {
-				$this->errors[] = $langs->trans('ErrorNumeroAppelPris', (int) $this->numero_appel, $autre->ref.' '.$autre->nom_fr);
+				$this->errors[] = $langs->trans('ErrorNumeroAppelPris', (int) $this->numero_appel, $autre->ref.' '.ecole_label($autre));
 			}
 		}
 		if ((int) $this->fk_responsable > 0) {
@@ -1026,7 +1026,7 @@ class EcoleEleve extends EcoleObject
 		if (empty($this->errors) && in_array((int) $this->status, self::statusOccupantPlace(), true)) {
 			$places = self::placesClasse($this->db, (int) $fk_classe, (int) $this->id);
 			if ($places['libres'] !== null && $places['libres'] <= 0) {
-				$this->errors[] = $langs->trans('ErrorClassePleine', $classe->ref.' - '.$classe->label_fr, $places['max']);
+				$this->errors[] = $langs->trans('ErrorClassePleine', $classe->ref.' - '.ecole_label($classe), $places['max']);
 			}
 		}
 		if ($this->finishValidation() < 0) {

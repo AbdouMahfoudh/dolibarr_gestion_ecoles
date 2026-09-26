@@ -406,7 +406,7 @@ function eleve_print_form($object, $extrafields, $create, $rights)
 
 $title = $langs->trans('Eleve');
 if ($object->id > 0) {
-	$title = $object->ref.' - '.$object->nom_fr;
+	$title = $object->ref.' - '.ecole_label($object);
 }
 llxHeader('', $title, '', '', 0, 0, '', '', '', 'mod-eleves page-card');
 print '<style>input[name$="_ar"],textarea[name$="_ar"]{direction:rtl;text-align:right}table.eleve-bloc td.titlefield{width:35%}</style>';
@@ -449,7 +449,7 @@ if ($action == 'create') {
 	if ($action == 'valider' && $canvalider) {
 		$check = $object->checkValidation();
 		if ($check['ok']) {
-			print $form->formconfirm($page, $langs->trans('ValiderInscription'), $langs->trans('ConfirmValiderInscription', $object->nom_fr), 'confirm_valider',
+			print $form->formconfirm($page, $langs->trans('ValiderInscription'), $langs->trans('ConfirmValiderInscription', ecole_label($object)), 'confirm_valider',
 				array(array('type' => 'date', 'name' => 'datestatut', 'label' => $langs->trans('DateEffet'), 'value' => $today), $motifq), 'yes', 1, 0, 550);
 		} elseif (!$check['place'] && count($check['raisons']) === 1) {
 			// Seule la place manque : proposer la liste d'attente
