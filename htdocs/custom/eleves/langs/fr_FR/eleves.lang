@@ -617,3 +617,5 @@ AttestationInscriptionNonValidee=L'inscription de cet élève n'est pas encore v
 DateLieuNaissance=Date et lieu de naissance
 NeLeA=%s à %s
 FraisPayesSur=%s payés sur %s
+
+RemplirMontantComplet=Remplir avec le montant complet

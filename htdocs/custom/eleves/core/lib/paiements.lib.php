@@ -578,7 +578,9 @@ function eleves_encaissement_form($eleves, $action, $hidden = array())
 			print '<input type="hidden" name="'.$name.'[eleve]" value="'.((int) $e->id).'"><input type="hidden" name="'.$name.'[type]" value="'.$l['type'].'"><input type="hidden" name="'.$name.'[periode]" value="'.$l['periode'].'"></td>';
 			print '<td class="center">'.($l['type'] === 'mensualite' ? eleves_etat_badge($l['etat'], $l['reste']) : '').'</td>';
 			print '<td class="right">'.price($l['du']).'</td><td class="right">'.price($l['paye']).'</td><td class="right">'.price($l['reste']).'</td>';
-			print '<td class="right"><input type="text" class="flat maxwidth100 right eleves-ligne" data-reste="'.price2num($l['reste']).'" data-ordre="'.($l['type'] === 'inscription' ? '0000-00' : $l['periode']).'-'.sprintf('%04d', $n).'" name="'.$name.'[montant]" value="'.dol_escape_htmltag((string) $val).'"></td>';
+			// Petite flèche (comme le paiement d'une facture Dolibarr) : remplit avec le reste complet de la ligne
+			print '<td class="right nowraponall"><a href="#" class="eleves-remplir paddingright" title="'.dol_escape_htmltag($langs->trans('RemplirMontantComplet')).'" data-cible="'.$name.'[montant]" data-montant="'.price2num($l['reste']).'">'.img_picto($langs->trans('RemplirMontantComplet'), 'rightarrow').'</a>';
+			print '<input type="text" class="flat maxwidth100 right eleves-ligne" data-reste="'.price2num($l['reste']).'" data-ordre="'.($l['type'] === 'inscription' ? '0000-00' : $l['periode']).'-'.sprintf('%04d', $n).'" name="'.$name.'[montant]" value="'.dol_escape_htmltag((string) $val).'"></td>';
 			print '</tr>';
 			$first = false;
 			$n++;
@@ -649,6 +651,10 @@ $(function () {
 		total();
 	});
 	$(".eleves-ligne, .eleves-autre").on("input", total);
+	$(".eleves-remplir").on("click", function (ev) {
+		ev.preventDefault();
+		$("input[name=\"" + $(this).data("cible") + "\"]").val($(this).data("montant")).trigger("input");
+	});
 	total();
 });
 </script>';

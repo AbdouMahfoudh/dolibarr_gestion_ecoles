@@ -617,3 +617,5 @@ AttestationInscriptionNonValidee=This student's registration has not been valida
 DateLieuNaissance=Date and place of birth
 NeLeA=%s in %s
 FraisPayesSur=%s paid out of %s
+
+RemplirMontantComplet=Fill with the full amount

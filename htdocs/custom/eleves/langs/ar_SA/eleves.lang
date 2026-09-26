@@ -617,3 +617,5 @@ AttestationInscriptionNonValidee=لم يتم بعد تأكيد تسجيل هذا
 DateLieuNaissance=تاريخ ومكان الازدياد
 NeLeA=%s في %s
 FraisPayesSur=%s مدفوعة من أصل %s
+
+RemplirMontantComplet=ملء بالمبلغ الكامل

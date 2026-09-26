@@ -307,6 +307,11 @@ function espace_footer()
 {
 	global $langs, $mysoc;
 	print '</main>';
+	// Barre d'onglets : l'onglet ouvert reste visible (défilement horizontal jusqu'à lui, sans revenir au début)
+	print '<script>(function(){var navs=document.querySelectorAll(".es-tabs");for(var i=0;i<navs.length;i++){var n=navs[i],a=n.querySelector(".es-tab.active");if(!a){continue;}'
+		.'var k="es-tabs-"+i,s=null;try{s=sessionStorage.getItem(k);}catch(e){}if(s!==null){n.scrollLeft=parseFloat(s);}'
+		.'var r=a.getBoundingClientRect(),q=n.getBoundingClientRect();if(r.left<q.left||r.right>q.right){n.scrollLeft+=(r.left+r.width/2)-(q.left+q.width/2);}'
+		.'n.addEventListener("click",function(ev){try{sessionStorage.setItem(this.k,this.n.scrollLeft);}catch(e){}}.bind({k:k,n:n}));}})();</script>';
 	print '<footer class="es-foot">'.dol_escape_htmltag($mysoc->name).($mysoc->phone ? ' · <a href="tel:'.dol_escape_htmltag(preg_replace('/[^0-9+]/', '', $mysoc->phone)).'">'.dol_escape_htmltag($mysoc->phone).'</a>' : '').'</footer>';
 	print '</body></html>';
 }
