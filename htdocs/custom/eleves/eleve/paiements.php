@@ -107,6 +107,10 @@ print '<div class="fichecenter"><div class="fichehalfleft">';
 // Mensualités mois par mois
 print '<table class="noborder centpercent">';
 print '<tr class="liste_titre"><td>'.$langs->trans('Libelle').'</td><td class="right">'.$langs->trans('MontantDu').'</td><td class="right">'.$langs->trans('DejaPaye').'</td><td class="right">'.$langs->trans('Reste').'</td><td class="center">'.$langs->trans('Etat').'</td></tr>';
+foreach ($s['arrieres'] as $a) {
+	print '<tr class="oddeven"><td>'.$langs->trans('ArrieresDe', $a['label']).'</td><td class="right">'.price($a['du']).'</td><td class="right">'.price($a['paye']).'</td><td class="right">'.price($a['reste']).'</td>';
+	print '<td class="center">'.eleves_etat_badge($a['reste'] > 0 ? 'impaye' : 'paye', $a['reste']).'</td></tr>';
+}
 $ins = $s['inscription'];
 print '<tr class="oddeven"><td>'.$langs->trans('FraisInscription').'</td><td class="right">'.price($ins['du']).'</td><td class="right">'.price($ins['paye']).'</td><td class="right">'.price($ins['reste']).'</td>';
 print '<td class="center">'.eleves_etat_badge(eleves_etat_inscription($s), $ins['reste']).'</td></tr>';

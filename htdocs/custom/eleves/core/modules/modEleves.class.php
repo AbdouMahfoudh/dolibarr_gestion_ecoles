@@ -116,6 +116,7 @@ class modEleves extends DolibarrModules
 			array(104791, 'Sanctions : voir', 'sanction', 'lire'),
 			array(104792, 'Sanctions : enregistrer une sanction', 'sanction', 'creer'),
 			array(104793, 'Sanctions : annuler une sanction (avec motif)', 'sanction', 'annuler'),
+			array(104795, 'Année scolaire : passer à l\'année suivante et vider les anciens attendus', 'annee', 'passage'),
 		);
 		foreach ($defs as $d) {
 			$this->rights[$r][0] = $d[0];
@@ -163,6 +164,7 @@ class modEleves extends DolibarrModules
 			array('eleves_sanct',    '',               'MenuSanctions',         '/eleves/sanction/list.php',                     'sanction.lire',     19),
 			array('eleves_resp',     '',               'MenuResponsables',      '/eleves/responsable/list.php',                  'responsable.lire',  20),
 			array('eleves_resp_n',   'eleves_resp',    'MenuNouveauResponsable', '/eleves/responsable/card.php?action=create',   'responsable.creer', 21),
+			array('eleves_passage',  '',               'MenuPassageAnnee',      '/eleves/passage.php',                           'annee.passage',     29),
 			array('eleves_config',   '',               'MenuConfiguration',     '/eleves/admin/setup.php',                       'config.gerer',      30),
 			array('eleves_reglages', 'eleves_config',  'MenuReglages',          '/eleves/admin/setup.php',                       'config.gerer',      31),
 			array('eleves_cfgpaie',  'eleves_config',  'MenuConfigPaiements',   '/eleves/admin/paiements.php',                   'config.gerer',      32),

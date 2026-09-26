@@ -43,6 +43,10 @@ class EcoleEleve extends EcoleObject
 	const STATUS_PARTI = 4;
 	const STATUS_ABANDON = 5;
 	const STATUS_EXCLU = 6;
+	/** Ancien élève attendu à la rentrée (après le passage d'année) : ni inscrit ni pré-inscrit, ne prend pas de place */
+	const STATUS_ANCIEN_ATTENDU = 7;
+	/** Ancien élève qui n'est pas revenu (ou sorti) : caché des listes, dossier et matricule gardés */
+	const STATUS_ARCHIVE = 8;
 
 	public $required = array('nom_fr', 'date_inscription', 'fk_classe', 'fk_responsable');
 	public $unique = array('ref', 'rip');
@@ -192,6 +196,8 @@ class EcoleEleve extends EcoleObject
 			self::STATUS_PARTI => array('StatutParti', 'status6'),
 			self::STATUS_ABANDON => array('StatutAbandon', 'status5'),
 			self::STATUS_EXCLU => array('StatutExclu', 'status8'),
+			self::STATUS_ANCIEN_ATTENDU => array('StatutAncienAttendu', 'status3'),
+			self::STATUS_ARCHIVE => array('StatutArchive', 'status9'),
 		);
 	}
 
@@ -238,6 +244,8 @@ class EcoleEleve extends EcoleObject
 			self::STATUS_PARTI => array(self::STATUS_PREINSCRIT),
 			self::STATUS_ABANDON => array(self::STATUS_PREINSCRIT),
 			self::STATUS_EXCLU => array(self::STATUS_PREINSCRIT),
+			self::STATUS_ANCIEN_ATTENDU => array(self::STATUS_ARCHIVE),
+			self::STATUS_ARCHIVE => array(),
 		);
 	}
 
@@ -249,6 +257,16 @@ class EcoleEleve extends EcoleObject
 	public static function statusOccupantPlace()
 	{
 		return array(self::STATUS_INSCRIT, self::STATUS_SUSPENDU);
+	}
+
+	/**
+	 * Anciens élèves après le passage d'année : attendus à la rentrée ou archivés (rien n'est dû pour l'année en cours).
+	 *
+	 * @return int[]
+	 */
+	public static function statusAnciens()
+	{
+		return array(self::STATUS_ANCIEN_ATTENDU, self::STATUS_ARCHIVE);
 	}
 
 	/**
@@ -948,6 +966,52 @@ class EcoleEleve extends EcoleObject
 			$this->date_statut = $date;
 		}
 		return $res;
+	}
+
+	/**
+	 * Passage à l'année scolaire suivante (assistant de passage) : l'élève devient « ancien attendu » (avec la classe
+	 * proposée pour la rentrée) ou « archivé ». Sa période dans la classe se termine, son numéro d'appel est libéré ;
+	 * les réglages propres à l'année (premier mois dû, frais d'inscription, exonération, validation) sont remis à zéro.
+	 * Les réductions sont gardées (reconduites). Le matricule ne change jamais.
+	 *
+	 * @param  User   $user      Utilisateur
+	 * @param  int    $status    STATUS_ANCIEN_ATTENDU ou STATUS_ARCHIVE
+	 * @param  int    $fk_classe Classe proposée pour la rentrée (0 = inchangée)
+	 * @param  int    $date      Date du passage
+	 * @param  string $motif     Motif (historique des statuts)
+	 * @return int               1 si OK, -1 sinon
+	 */
+	public function passerAnnee(User $user, $status, $fk_classe, $date, $motif)
+	{
+		if (!$this->checkId() || !in_array((int) $status, self::statusAnciens(), true)) {
+			return -1;
+		}
+		$p = $this->db->prefix();
+		$old = (int) $this->status;
+		$sql = "UPDATE ".$p.$this->table_element." SET status = ".((int) $status).", date_statut = '".$this->db->idate($date)."'";
+		if ((int) $fk_classe > 0) {
+			$sql .= ", fk_classe = ".((int) $fk_classe);
+		}
+		$sql .= ", numero_appel = NULL, mois_debut = NULL, frais_inscription_du = NULL, exo_type = NULL, exo_valeur = NULL, fk_motif_exo = NULL, exo_note = NULL";
+		$sql .= ", exo_fk_user = NULL, exo_date = NULL, date_validation = NULL, fk_user_valid = NULL, fk_user_modif = ".((int) $user->id);
+		$sql .= " WHERE rowid = ".((int) $this->id);
+		if (!$this->db->query($sql)) {
+			$this->error = $this->db->lasterror();
+			return -1;
+		}
+		if (!$this->db->query("UPDATE ".$p."ecole_eleve_classe SET date_fin = '".$this->db->idate($date)."' WHERE fk_eleve = ".((int) $this->id)." AND date_fin IS NULL")) {
+			$this->error = $this->db->lasterror();
+			return -1;
+		}
+		if ($old !== (int) $status && $this->addHistoriqueStatut($user, $old, (int) $status, $date, $motif) < 0) {
+			return -1;
+		}
+		$this->status = (int) $status;
+		if ((int) $fk_classe > 0) {
+			$this->fk_classe = (int) $fk_classe;
+		}
+		$this->numero_appel = null;
+		return 1;
 	}
 
 	/**

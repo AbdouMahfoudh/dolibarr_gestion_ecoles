@@ -61,6 +61,11 @@ function eleves_crud_config($name)
 function eleves_list_state_hook($object, &$conds, &$param)
 {
 	$remove = GETPOST('button_removefilter', 'alpha') || GETPOST('button_removefilter_x', 'alpha');
+	// Élèves archivés (anciens non revenus) : cachés, sauf si on filtre sur ce statut
+	$ss = $remove ? '' : GETPOST('search_status', 'alpha');
+	if ($ss === '' || $ss === '-1') {
+		$conds[] = 't.status <> '.EcoleEleve::STATUS_ARCHIVE;
+	}
 	if (!$remove && GETPOSTINT('manquantes')) {
 		$conds[] = EcoleEleve::sqlPiecesManquantes($object->db);
 		$param .= '&manquantes=1';

@@ -543,6 +543,28 @@ if ($action == 'create') {
 	eleve_bloc_row($langs->trans('Observations'), dol_nl2br(dol_escape_htmltag((string) $object->observations)));
 	print '</table><br>';
 
+	// Années scolaires passées (dossier gardé au passage d'année)
+	if (ecole_table_exists($db, 'ecole_eleve_annee')) {
+		$sql = "SELECT a.annee, a.decision, a.arriere, a.status, c.ref, s.ref as sref FROM ".$db->prefix()."ecole_eleve_annee a";
+		$sql .= " LEFT JOIN ".$db->prefix()."ecole_classe c ON c.rowid = a.fk_classe LEFT JOIN ".$db->prefix()."ecole_classe s ON s.rowid = a.fk_classe_suivante";
+		$sql .= " WHERE a.fk_eleve = ".((int) $object->id)." ORDER BY a.annee DESC";
+		$resql = $db->query($sql);
+		if ($resql && $db->num_rows($resql)) {
+			eleve_bloc_start($langs->trans('AnneesPrecedentes'), 'fa-history');
+			while ($o = $db->fetch_object($resql)) {
+				$txt = '<b>'.dol_escape_htmltag((string) $o->ref).'</b>';
+				if ($o->decision) {
+					$txt .= ' — '.$langs->trans('DecisionPassage_'.$o->decision).($o->sref && $o->decision !== 'non_repris' ? ' → '.dol_escape_htmltag($o->sref) : '');
+				}
+				if ((float) $o->arriere > 0) {
+					$txt .= ' <span class="opacitymedium">('.$langs->trans('ArriereReporte', eleves_montant($o->arriere)).')</span>';
+				}
+				eleve_bloc_row(eleves_annee_label((int) $o->annee), $txt);
+			}
+			print '</table><br>';
+		}
+	}
+
 	// Champs supplémentaires
 	if (!empty($extrafields->attributes[$object->table_element]['label'])) {
 		eleve_bloc_start($langs->trans('InformationsComplementaires'), 'fa-list');
@@ -634,6 +656,11 @@ if ($action == 'create') {
 			if ($situation['inscription']['reste'] > 0 && $situation['actif']) {
 				array_unshift($l, $langs->trans('FraisInscription'));
 			}
+			foreach (array_reverse($situation['arrieres']) as $a) {
+				if ($a['reste'] > 0) {
+					array_unshift($l, $langs->trans('ArrieresDe', $a['label']));
+				}
+			}
 			eleve_bloc_row('<span class="error">'.$langs->trans('Impaye').'</span>', '<span class="badge badge-danger">'.eleves_montant($situation['impaye']).'</span> <span class="opacitymedium">'.dol_escape_htmltag(implode(', ', $l)).'</span>');
 		} else {
 			eleve_bloc_row($langs->trans('Impaye'), '<span class="badge badge-status4">'.$langs->trans('AJour').'</span>');
@@ -665,8 +692,11 @@ if ($action == 'create') {
 	if ($st === EcoleEleve::STATUS_PREINSCRIT) {
 		print dolGetButtonAction('', $langs->trans('MettreEnAttente'), 'default', $page.'&action=attente&token='.newToken(), '', $canvalider || $canstatut);
 	}
-	print dolGetButtonAction('', $langs->trans('ChangerStatut'), 'default', $page.'&action=statut&token='.newToken(), '', $canstatut);
-	if (!in_array($st, EcoleEleve::statusSortis(), true)) {
+	$transitions = EcoleEleve::transitions();
+	if (!empty($transitions[$st])) {
+		print dolGetButtonAction('', $langs->trans('ChangerStatut'), 'default', $page.'&action=statut&token='.newToken(), '', $canstatut);
+	}
+	if (!in_array($st, EcoleEleve::statusSortis(), true) && !in_array($st, EcoleEleve::statusAnciens(), true)) {
 		print dolGetButtonAction('', $langs->trans('ChangerClasse'), 'default', $page.'&action=classe&token='.newToken(), '', $canclasse);
 	}
 	// Attestation d'inscription : après la validation de l'inscription

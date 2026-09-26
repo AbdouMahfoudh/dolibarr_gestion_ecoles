@@ -9,6 +9,8 @@
  * Fichier : custom/eleves/core/lib/paiements.lib.php
  */
 
+dol_include_once('/classes/core/lib/classes.lib.php'); // années scolaires, tables
+
 /**
  * Année scolaire en cours (année de la rentrée : 2026 = 2026-2027). Réglage ELEVES_ANNEE_SCOLAIRE,
  * sinon calculée : à partir d'août, l'année en cours, avant, l'année précédente.
@@ -192,10 +194,28 @@ function eleves_situations($db, $eleves, $now = 0)
 	}
 	// Montants payés (reçus valides)
 	$paye = array();
-	$resql = $db->query("SELECT fk_eleve, type, periode, SUM(montant) as total FROM ".$p."ecole_paiement WHERE status = 1 AND fk_eleve IN (".$in.") AND type IN ('inscription', 'mensualite') GROUP BY fk_eleve, type, periode");
+	// (année en cours seulement : les années passées sont soldées en arriérés)
+	$resql = $db->query("SELECT fk_eleve, type, periode, SUM(montant) as total FROM ".$p."ecole_paiement WHERE status = 1 AND fk_eleve IN (".$in.") AND type IN ('inscription', 'mensualite') AND annee = ".((int) ecole_annee_active())." GROUP BY fk_eleve, type, periode");
 	while ($resql && ($o = $db->fetch_object($resql))) {
 		$k = ($o->type === 'inscription') ? 'inscription' : (string) $o->periode;
 		$paye[(int) $o->fk_eleve][$k] = (float) $o->total;
+	}
+	// Arriérés : reste des années passées (gardé au passage d'année) moins ce qui a été payé depuis
+	$arrieres = array();
+	if (ecole_table_exists($db, 'ecole_eleve_annee')) {
+		$resql = $db->query("SELECT fk_eleve, annee, arriere FROM ".$p."ecole_eleve_annee WHERE fk_eleve IN (".$in.") AND arriere > 0 ORDER BY annee");
+		while ($resql && ($o = $db->fetch_object($resql))) {
+			$arrieres[(int) $o->fk_eleve][(int) $o->annee] = array('annee' => (int) $o->annee, 'label' => eleves_annee_label((int) $o->annee), 'du' => (float) $o->arriere, 'paye' => 0.0, 'reste' => (float) $o->arriere);
+		}
+		$resql = $db->query("SELECT fk_eleve, annee, SUM(montant) as total FROM ".$p."ecole_paiement WHERE status = 1 AND fk_eleve IN (".$in.") AND type = 'arriere' GROUP BY fk_eleve, annee");
+		while ($resql && ($o = $db->fetch_object($resql))) {
+			if (isset($arrieres[(int) $o->fk_eleve][(int) $o->annee])) {
+				$a = &$arrieres[(int) $o->fk_eleve][(int) $o->annee];
+				$a['paye'] = (float) $o->total;
+				$a['reste'] = max(0, (float) price2num($a['du'] - $a['paye'], 'MT'));
+				unset($a);
+			}
+		}
 	}
 	// Dernier reçu valide
 	$dernier = array();
@@ -216,6 +236,8 @@ function eleves_situations($db, $eleves, $now = 0)
 		$h = isset($hist[$id]) ? $hist[$id] : array();
 		$pay = isset($paye[$id]) ? $paye[$id] : array();
 
+		// Ancien élève attendu ou archivé : rien n'est dû pour l'année en cours (seulement ses arriérés)
+		$horsAnnee = in_array($st, EcoleEleve::statusAnciens(), true);
 		// Frais d'inscription : montant fixé sur la fiche, sinon celui de la classe d'inscription
 		// (avant l'inscription : la classe demandée, qui peut encore changer)
 		$avant = in_array($st, array(EcoleEleve::STATUS_PREINSCRIT, EcoleEleve::STATUS_ATTENTE), true);
@@ -224,7 +246,7 @@ function eleves_situations($db, $eleves, $now = 0)
 			: (isset($classes[$classeInscr]) ? $classes[$classeInscr]['frais'] : 0);
 		// Exonération (réinscription, bourse...) : le montant exonéré n'est ni dû ni compté comme impayé
 		$fraisExo = method_exists($e, 'montantExonere') ? $e->montantExonere($fraisBrut) : 0;
-		$fraisDu = (float) price2num(max(0, $fraisBrut - $fraisExo), 'MT');
+		$fraisDu = $horsAnnee ? 0.0 : (float) price2num(max(0, $fraisBrut - $fraisExo), 'MT');
 		$fraisPaye = isset($pay['inscription']) ? $pay['inscription'] : 0;
 
 		// Mois dus : du premier mois (réglé ou mois d'inscription) au départ éventuel
@@ -245,7 +267,7 @@ function eleves_situations($db, $eleves, $now = 0)
 		$totalDu = $fraisDu;
 		$totalPaye = $fraisPaye;
 		foreach ($liste as $per) {
-			$dans = in_array($per, $periodes, true) && ($debut === '' || $per >= $debut) && ($fin === null || $per <= $fin);
+			$dans = !$horsAnnee && in_array($per, $periodes, true) && ($debut === '' || $per >= $debut) && ($fin === null || $per <= $fin);
 			$du = 0.0;
 			if ($dans) {
 				$classe = eleves_classe_du_mois($h, $per, (int) $e->fk_classe);
@@ -284,6 +306,12 @@ function eleves_situations($db, $eleves, $now = 0)
 		if ($actif && $fraisReste > 0) {
 			$impaye += $fraisReste;
 		}
+		$arr = isset($arrieres[$id]) ? $arrieres[$id] : array();
+		$arrReste = 0.0;
+		foreach ($arr as $a) {
+			$arrReste += $a['reste'];
+		}
+		$impaye += $arrReste;
 		$out[$id] = array(
 			'actif' => $actif,
 			'inscription' => array('du' => $fraisDu, 'paye' => $fraisPaye, 'reste' => $fraisReste, 'brut' => $fraisBrut, 'exonere' => $fraisExo),
@@ -294,6 +322,8 @@ function eleves_situations($db, $eleves, $now = 0)
 			'total_paye' => (float) price2num($totalPaye, 'MT'),
 			'reste' => max(0, (float) price2num($totalDu - $totalPaye, 'MT')),
 			'dernier' => isset($dernier[$id]) ? $dernier[$id] : null,
+			'arrieres' => $arr,
+			'arriere_reste' => (float) price2num($arrReste, 'MT'),
 		);
 	}
 	return $out;
@@ -554,6 +584,11 @@ function eleves_encaissement_form($eleves, $action, $hidden = array())
 	foreach ($eleves as $e) {
 		$s = $situations[(int) $e->id];
 		$lignes = array();
+		foreach ($s['arrieres'] as $a) {
+			if ($a['reste'] > 0) {
+				$lignes[] = array('type' => 'arriere', 'periode' => '', 'annee' => $a['annee'], 'label' => $langs->trans('ArrieresDe', $a['label']), 'du' => $a['du'], 'paye' => $a['paye'], 'reste' => $a['reste'], 'etat' => 'impaye');
+			}
+		}
 		if ($s['inscription']['reste'] > 0) {
 			$lignes[] = array('type' => 'inscription', 'periode' => '', 'label' => $langs->trans('FraisInscription'), 'du' => $s['inscription']['du'], 'paye' => $s['inscription']['paye'], 'reste' => $s['inscription']['reste'], 'etat' => $s['actif'] ? 'impaye' : 'a_venir');
 		}
@@ -578,12 +613,16 @@ function eleves_encaissement_form($eleves, $action, $hidden = array())
 			print '<tr class="oddeven">';
 			print '<td>'.($first ? $e->getNomUrl(1).' '.dol_escape_htmltag(ecole_label($e)) : '').'</td>';
 			print '<td>'.dol_escape_htmltag($l['label']);
-			print '<input type="hidden" name="'.$name.'[eleve]" value="'.((int) $e->id).'"><input type="hidden" name="'.$name.'[type]" value="'.$l['type'].'"><input type="hidden" name="'.$name.'[periode]" value="'.$l['periode'].'"></td>';
+			print '<input type="hidden" name="'.$name.'[eleve]" value="'.((int) $e->id).'"><input type="hidden" name="'.$name.'[type]" value="'.$l['type'].'"><input type="hidden" name="'.$name.'[periode]" value="'.$l['periode'].'">';
+			if (!empty($l['annee'])) {
+				print '<input type="hidden" name="'.$name.'[annee]" value="'.((int) $l['annee']).'">';
+			}
+			print '</td>';
 			print '<td class="center">'.($l['type'] === 'mensualite' ? eleves_etat_badge($l['etat'], $l['reste']) : '').'</td>';
 			print '<td class="right">'.price($l['du']).'</td><td class="right">'.price($l['paye']).'</td><td class="right">'.price($l['reste']).'</td>';
 			// Petite flèche (comme le paiement d'une facture Dolibarr) : remplit avec le reste complet de la ligne
 			print '<td class="right nowraponall"><a href="#" class="eleves-remplir paddingright" title="'.dol_escape_htmltag($langs->trans('RemplirMontantComplet')).'" data-cible="'.$name.'[montant]" data-montant="'.price2num($l['reste']).'">'.img_picto($langs->trans('RemplirMontantComplet'), 'rightarrow').'</a>';
-			print '<input type="text" class="flat maxwidth100 right eleves-ligne" data-reste="'.price2num($l['reste']).'" data-ordre="'.($l['type'] === 'inscription' ? '0000-00' : $l['periode']).'-'.sprintf('%04d', $n).'" name="'.$name.'[montant]" value="'.dol_escape_htmltag((string) $val).'"></td>';
+			print '<input type="text" class="flat maxwidth100 right eleves-ligne" data-reste="'.price2num($l['reste']).'" data-ordre="'.($l['type'] === 'arriere' ? '0000-00-'.$l['annee'] : ($l['type'] === 'inscription' ? '0000-01' : $l['periode'])).'-'.sprintf('%04d', $n).'" name="'.$name.'[montant]" value="'.dol_escape_htmltag((string) $val).'"></td>';
 			print '</tr>';
 			$first = false;
 			$n++;
@@ -694,11 +733,18 @@ function eleves_encaissement_process($db, $user, $eleves, $fk_responsable = 0)
 		$eid = isset($l['eleve']) ? (int) $l['eleve'] : 0;
 		$type = isset($l['type']) ? (string) $l['type'] : '';
 		$per = isset($l['periode']) ? (string) $l['periode'] : '';
-		if (!isset($byid[$eid]) || !in_array($type, array('inscription', 'mensualite'), true)) {
+		if (!isset($byid[$eid]) || !in_array($type, array('inscription', 'mensualite', 'arriere'), true)) {
 			continue;
 		}
 		$s = $situations[$eid];
-		if ($type === 'inscription') {
+		$an = isset($l['annee']) ? (int) $l['annee'] : 0;
+		if ($type === 'arriere') {
+			if (!isset($s['arrieres'][$an])) {
+				continue;
+			}
+			$reste = $s['arrieres'][$an]['reste'];
+			$label = $langs->transnoentities('ArrieresDe', $s['arrieres'][$an]['label']);
+		} elseif ($type === 'inscription') {
 			$reste = $s['inscription']['reste'];
 			$label = $langs->transnoentities('FraisInscription');
 		} else {
@@ -712,7 +758,7 @@ function eleves_encaissement_process($db, $user, $eleves, $fk_responsable = 0)
 			$errors[] = $langs->trans('ErrorMontantSuperieurReste', $byid[$eid]->ref, $label, price($reste));
 			continue;
 		}
-		$lignes[] = array('fk_eleve' => $eid, 'type' => $type, 'periode' => ($type === 'mensualite' ? $per : null), 'libelle' => $label, 'montant' => $montant);
+		$lignes[] = array('fk_eleve' => $eid, 'type' => $type, 'periode' => ($type === 'mensualite' ? $per : null), 'annee' => ($type === 'arriere' ? $an : ecole_annee_active()), 'libelle' => $label, 'montant' => $montant);
 	}
 	$ft = new EcoleFraisType($db);
 	$types = $ft->fetchActives();
@@ -775,7 +821,7 @@ function eleves_impayes($db)
 		$conds[] = 't.fk_classe = '.$classe;
 		$param .= '&search_fk_classe='.$classe;
 	}
-	$statuts = ($groupe === 'sortis') ? EcoleEleve::statusSortis() : (($groupe === 'tous') ? array_merge(EcoleEleve::statusOccupantPlace(), EcoleEleve::statusSortis()) : EcoleEleve::statusOccupantPlace());
+	$statuts = ($groupe === 'sortis') ? array_merge(EcoleEleve::statusSortis(), EcoleEleve::statusAnciens()) : (($groupe === 'tous') ? array_merge(EcoleEleve::statusOccupantPlace(), EcoleEleve::statusSortis(), EcoleEleve::statusAnciens()) : EcoleEleve::statusOccupantPlace());
 	$conds[] = 't.status IN ('.implode(',', $statuts).')';
 	$param .= '&search_groupe='.urlencode($groupe);
 	if ($nom !== '') {
@@ -809,6 +855,11 @@ function eleves_impayes($db)
 			continue;
 		}
 		$mois = array();
+		foreach ($s['arrieres'] as $a) {
+			if ($a['reste'] > 0) {
+				$mois[] = 'arriere:'.$a['annee'];
+			}
+		}
 		if ($s['inscription']['reste'] > 0) {
 			$mois[] = 'inscription';
 		}
@@ -926,7 +977,11 @@ function eleves_impayes_libelle($mois)
 	global $langs;
 	$out = array();
 	foreach ($mois as $m) {
-		$out[] = ($m === 'inscription') ? $langs->transnoentities('FraisInscription') : eleves_periode_label($m);
+		if (strpos($m, 'arriere:') === 0) {
+			$out[] = $langs->transnoentities('ArrieresDe', eleves_annee_label((int) substr($m, 8)));
+		} else {
+			$out[] = ($m === 'inscription') ? $langs->transnoentities('FraisInscription') : eleves_periode_label($m);
+		}
 	}
 	return implode(', ', $out);
 }
@@ -976,6 +1031,9 @@ function eleves_ligne_libelle($l)
 	static $frais = null;
 	if ($l->type === 'inscription') {
 		return $langs->transnoentities('FraisInscription');
+	}
+	if ($l->type === 'arriere' && !empty($l->annee)) {
+		return $langs->transnoentities('ArrieresDe', eleves_annee_label((int) $l->annee));
 	}
 	if ($l->type === 'mensualite' && !empty($l->periode)) {
 		return $langs->transnoentities('MensualiteDe', eleves_periode_label($l->periode));

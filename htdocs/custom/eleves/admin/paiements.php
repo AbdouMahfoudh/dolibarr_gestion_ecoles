@@ -27,7 +27,7 @@ $formats = array('A5' => $langs->trans('FormatA5'), 'A4' => $langs->trans('Forma
  */
 if ($action == 'save') {
 	$errors = array();
-	$annee = GETPOSTINT('annee');
+	$annee = GETPOSTISSET('annee') ? GETPOSTINT('annee') : eleves_annee_scolaire();
 	$mois = array();
 	foreach (eleves_mois_ordre() as $m) {
 		if (GETPOST('mois_'.$m, 'alpha')) {
@@ -97,7 +97,14 @@ for ($a = (int) date('Y') - 3; $a <= (int) date('Y') + 2; $a++) {
 $actifs = array_map('intval', explode(',', getDolGlobalString('ELEVES_MOIS_PAYANTS', '10,11,12,1,2,3,4,5,6')));
 print '<table class="noborder centpercent">';
 print '<tr class="liste_titre"><td colspan="2">'.$langs->trans('MensualitesEtImpayes').'</td></tr>';
-print '<tr class="oddeven"><td class="titlefieldcreate">'.$langs->trans('AnneeScolaire').'</td><td>'.$form->selectarray('annee', $annees, GETPOSTISSET('annee') ? GETPOSTINT('annee') : $annee, 0).' <span class="opacitymedium">'.$langs->trans('AnneeScolaireAide').'</span></td></tr>';
+// Après un premier passage d'année, l'année ne change plus qu'avec l'assistant de passage
+$verrou = ecole_table_exists($db, 'ecole_eleve_annee') && ($r = $db->query("SELECT COUNT(*) as nb FROM ".$db->prefix()."ecole_eleve_annee")) && ($o = $db->fetch_object($r)) && (int) $o->nb > 0;
+if ($verrou) {
+	print '<tr class="oddeven"><td class="titlefieldcreate">'.$langs->trans('AnneeScolaire').'</td><td><b>'.eleves_annee_label($annee).'</b> <span class="opacitymedium">'.$langs->trans('AnneeScolaireVerrouillee').'</span>';
+	print ' <a href="'.dol_buildpath('/eleves/passage.php', 1).'">'.$langs->trans('MenuPassageAnnee').'</a></td></tr>';
+} else {
+	print '<tr class="oddeven"><td class="titlefieldcreate">'.$langs->trans('AnneeScolaire').'</td><td>'.$form->selectarray('annee', $annees, GETPOSTISSET('annee') ? GETPOSTINT('annee') : $annee, 0).' <span class="opacitymedium">'.$langs->trans('AnneeScolaireAide').'</span></td></tr>';
+}
 print '<tr class="oddeven"><td>'.$langs->trans('MoisPayants').'</td><td>';
 foreach (eleves_mois_ordre() as $m) {
 	print '<label class="marginrightonly nowraponall"><input type="checkbox" name="mois_'.$m.'" value="1"'.(in_array($m, $actifs, true) ? ' checked' : '').'> '.$langs->trans('Month'.sprintf('%02d', $m)).'</label> ';

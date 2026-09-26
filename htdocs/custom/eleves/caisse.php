@@ -33,7 +33,8 @@ if ($fk_eleve > 0 || $fk_responsable > 0) {
 	if ($fk_responsable > 0) {
 		$sits = eleves_situations($db, $eleves);
 		foreach ($eleves as $k => $e) {
-			if (in_array((int) $e->status, EcoleEleve::statusSortis(), true) && $sits[(int) $e->id]['reste'] <= 0) {
+			$clos = in_array((int) $e->status, EcoleEleve::statusSortis(), true) || in_array((int) $e->status, EcoleEleve::statusAnciens(), true);
+			if ($clos && $sits[(int) $e->id]['reste'] <= 0 && $sits[(int) $e->id]['arriere_reste'] <= 0) {
 				unset($eleves[$k]);
 			}
 		}

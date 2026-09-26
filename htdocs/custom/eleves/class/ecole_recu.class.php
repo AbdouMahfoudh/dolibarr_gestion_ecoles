@@ -176,9 +176,9 @@ class EcoleRecu extends EcoleObject
 	public function fetchLignes()
 	{
 		$this->lignes = array();
-		$sql = "SELECT l.rowid, l.fk_eleve, l.type, l.periode, l.fk_frais_type, l.libelle, l.montant, l.status, e.ref as eleve_ref, e.nom_fr, e.nom_ar, e.fk_classe";
+		$sql = "SELECT l.rowid, l.fk_eleve, l.type, l.periode, l.annee, l.fk_frais_type, l.libelle, l.montant, l.status, e.ref as eleve_ref, e.nom_fr, e.nom_ar, e.fk_classe";
 		$sql .= " FROM ".$this->db->prefix()."ecole_paiement l LEFT JOIN ".$this->db->prefix()."ecole_eleve e ON e.rowid = l.fk_eleve";
-		$sql .= " WHERE l.fk_recu = ".((int) $this->id)." ORDER BY e.nom_fr, l.fk_eleve, FIELD(l.type, 'inscription', 'mensualite', 'autre'), l.periode, l.rowid";
+		$sql .= " WHERE l.fk_recu = ".((int) $this->id)." ORDER BY e.nom_fr, l.fk_eleve, FIELD(l.type, 'arriere', 'inscription', 'mensualite', 'autre'), l.periode, l.rowid";
 		$resql = $this->db->query($sql);
 		while ($resql && ($o = $this->db->fetch_object($resql))) {
 			$this->lignes[] = $o;

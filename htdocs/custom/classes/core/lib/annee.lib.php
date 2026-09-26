@@ -13,7 +13,7 @@
 define('ECOLE_ANNEE_PARAM', 'annee_vue');
 
 /** Version du schéma « année scolaire » (colonnes annee, clés uniques) */
-define('ECOLE_ANNEE_SCHEMA', 2);
+define('ECOLE_ANNEE_SCHEMA', 3);
 
 /**
  * Année scolaire active (réglage ELEVES_ANNEE_SCOLAIRE, sinon d'après la date : à partir d'août, année en cours).
@@ -89,7 +89,7 @@ function ecole_annees()
 	}
 	$active = ecole_annee_active();
 	$annees = array($active => $active);
-	foreach (array('ecole_evaluation', 'ecole_bulletin', 'ecole_note_cloture', 'ecole_edt_annee', 'ecole_classe_tarif') as $t) {
+	foreach (array('ecole_evaluation', 'ecole_bulletin', 'ecole_note_cloture', 'ecole_edt_annee', 'ecole_classe_tarif', 'ecole_eleve_annee') as $t) {
 		if (!function_exists('ecole_table_exists') || !ecole_table_exists($db, $t)) {
 			continue;
 		}
@@ -246,9 +246,9 @@ function ecole_annee_migrer($db)
 	$active = ecole_annee_active();
 	$ok = true;
 	// Tables des années (tarifs, emplois du temps passés) : créées d'après leur fichier sql/
-	foreach (array('ecole_classe_tarif', 'ecole_edt_annee') as $t) {
-		if (!ecole_table_exists($db, $t)) {
-			$sql = preg_replace('/^\s*--.*$/m', '', (string) @file_get_contents(dirname(__DIR__, 2).'/sql/llx_'.$t.'.sql'));
+	foreach (array('ecole_classe_tarif' => 'classes', 'ecole_edt_annee' => 'classes', 'ecole_eleve_annee' => 'eleves') as $t => $module) {
+		if (!ecole_table_exists($db, $t) && ($module === 'classes' || isModEnabled($module))) {
+			$sql = preg_replace('/^\s*--.*$/m', '', (string) @file_get_contents(dirname(__DIR__, 3).'/'.$module.'/sql/llx_'.$t.'.sql'));
 			$sql = str_replace('CREATE TABLE llx_', 'CREATE TABLE IF NOT EXISTS '.$p, trim($sql));
 			$ok = ($sql !== '' && $db->query(rtrim($sql, "; \n"))) && $ok;
 		}
@@ -270,9 +270,13 @@ function ecole_annee_migrer($db)
 			$db->query("ALTER TABLE ".$p.$t." ADD INDEX idx_".$t."_annee (annee)");
 		}
 		if ($t === 'ecole_paiement') {
-			// Mensualités : année de la période ; autres lignes : année de la date du reçu
-			$db->query("UPDATE ".$p."ecole_paiement SET annee = IF(CAST(SUBSTRING(periode, 6, 2) AS UNSIGNED) >= 8, CAST(LEFT(periode, 4) AS UNSIGNED), CAST(LEFT(periode, 4) AS UNSIGNED) - 1) WHERE annee = 0 AND periode LIKE '____-__'");
-			$db->query("UPDATE ".$p."ecole_paiement l INNER JOIN ".$p."ecole_recu r ON r.rowid = l.fk_recu SET l.annee = IF(MONTH(r.date_recu) >= 8, YEAR(r.date_recu), YEAR(r.date_recu) - 1) WHERE l.annee = 0 AND r.date_recu IS NOT NULL");
+			// Mensualités : année de la période ; autres lignes (inscription, autres frais) : année active,
+			// tant qu'aucun passage d'année n'a été fait (tout ce qui existe appartient à l'année en cours)
+			$db->query("UPDATE ".$p."ecole_paiement SET annee = IF(CAST(SUBSTRING(periode, 6, 2) AS UNSIGNED) >= 8, CAST(LEFT(periode, 4) AS UNSIGNED), CAST(LEFT(periode, 4) AS UNSIGNED) - 1) WHERE annee = 0 AND type = 'mensualite' AND periode LIKE '____-__'");
+			$aucunPassage = !ecole_table_exists($db, 'ecole_eleve_annee') || (($r = $db->query("SELECT COUNT(*) as nb FROM ".$p."ecole_eleve_annee")) && ($o = $db->fetch_object($r)) && (int) $o->nb === 0);
+			if ($aucunPassage) {
+				$db->query("UPDATE ".$p."ecole_paiement SET annee = ".$active." WHERE type <> 'mensualite' AND annee <> ".$active);
+			}
 		}
 		$db->query("UPDATE ".$p.$t." SET annee = ".$active." WHERE annee = 0");
 		if ($cle[0] !== '') {
