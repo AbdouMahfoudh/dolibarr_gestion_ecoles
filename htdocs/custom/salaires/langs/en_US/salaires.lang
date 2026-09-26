@@ -336,3 +336,5 @@ DejaRetenuValides=Already deducted (validated or paid payslips)
 PrevuBrouillon=Planned on a draft payslip (not deducted yet)
 RetenuePrevue=planned (draft)
 ErrorRetenueBrouillon=A deduction is planned on draft payslip %s: recalculate it after removing the line, or cancel it first.
+
+EdTableauDeBord=Dashboard

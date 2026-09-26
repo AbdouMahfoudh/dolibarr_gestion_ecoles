@@ -8,6 +8,7 @@
 
 require 'init.php';
 dol_include_once('/personnel/core/lib/presence.lib.php');
+dol_include_once('/classes/core/lib/dashboard.lib.php');
 
 $langs->loadLangs(array('personnel@personnel', 'classes@classes', 'other'));
 
@@ -17,10 +18,38 @@ if (!$user->hasRight('personnel', 'employe', 'lire')) {
 $p = $db->prefix();
 $aujourdhui = personnel_aujourdhui();
 
-llxHeader('', $langs->trans('Personnel'), '', '', 0, 0, '', '', '', 'mod-personnel page-index');
+llxHeader('', $langs->trans('EdTableauPersonnel'), '', '', 0, 0, '', '', '', 'mod-personnel page-index');
+print ecole_dash_hero($langs->trans('EdTableauPersonnel'));
 
-$boutons = dolGetButtonTitle($langs->trans('NouvelEmploye'), '', 'fa fa-plus-circle', dol_buildpath('/personnel/employe/card.php', 1).'?action=create', '', $user->hasRight('personnel', 'employe', 'creer'));
-print load_fiche_titre($langs->trans('Personnel'), $boutons, 'fa-id-badge');
+// Chiffres clés et graphiques
+$st = ecole_dash_personnel();
+$auj = ecole_dash_aujourdhui();
+$cats = personnel_categories_choix();
+$urlL = dol_buildpath('/personnel/employe/list.php', 1);
+$kpis = array(
+	array($langs->trans('EdEmployesActifs'), $st['actifs'], 'fa-id-badge', 'blue', $urlL.'?search_status=1,2'),
+	array($langs->trans('EdEnseignants'), isset($st['categories']['enseignant']) ? $st['categories']['enseignant'] : 0, 'fa-chalkboard-teacher', 'purple', $urlL.'?search_extra_categories=enseignant&search_status=1,2,3'),
+	array($langs->trans('EdEnPeriodeEssai'), isset($st['statut'][2]) ? $st['statut'][2] : 0, 'fa-user-clock', 'orange', $urlL.'?search_status=2'),
+	array($langs->trans('EdAbsentsAujourdhui'), $auj['profs_absents'], 'fa-user-times', $auj['profs_absents'] ? 'red' : 'green', dol_buildpath('/personnel/presence.php', 1)),
+	array($langs->trans('EdCoursAujourdhui'), $auj['cours'], 'fa-calendar-day', 'teal', dol_buildpath('/personnel/presence.php', 1)),
+);
+if (isModEnabled('salaires') && $user->hasRight('salaires', 'bulletin', 'lire')) {
+	$sal = ecole_dash_salaires();
+	$kpis[] = array($langs->trans('EdMasseSalarialeMois'), ecole_dash_montant($sal['net']), 'fa-money-check-alt', 'pink', dol_buildpath('/salaires/index.php', 1), $langs->trans('EdBulletinsPayes', $sal['paye'], $sal['brouillon'] + $sal['valide'] + $sal['paye']));
+}
+print ecole_dash_kpis($kpis);
+$data = array();
+foreach ($st['categories'] as $k => $n) {
+	$data[] = array(isset($cats[$k]) ? $cats[$k] : $k, $n);
+}
+print '<div class="ed-cols">'.ecole_dash_box($langs->trans('EffectifsParCategorie'), 'fa-chart-pie', ecole_dash_graph('perso_cat', 'pie', $data));
+print ecole_dash_box($langs->trans('AccesRapides'), 'fa-bolt', ecole_dash_links(array(
+	array($user->hasRight('personnel', 'employe', 'creer'), dol_buildpath('/personnel/employe/card.php', 1).'?action=create', $langs->trans('NouvelEmploye'), 'fa-plus'),
+	array($user->hasRight('personnel', 'presence', 'lire'), dol_buildpath('/personnel/presence.php', 1), $langs->trans('EdPresenceDuJour'), 'fa-clipboard-check'),
+	array($user->hasRight('personnel', 'presence', 'lire'), dol_buildpath('/personnel/heures.php', 1), $langs->trans('EdHeuresDuMois'), 'fa-clock'),
+	array($user->hasRight('personnel', 'absence', 'lire'), dol_buildpath('/personnel/absence/list.php', 1), $langs->trans('EdAbsencesPersonnel'), 'fa-user-clock'),
+	array(isModEnabled('salaires') && $user->hasRight('salaires', 'bulletin', 'lire'), dol_buildpath('/salaires/index.php', 1), $langs->trans('MenuSalaires'), 'fa-money-check-alt'),
+))).'</div>';
 
 print '<div class="fichecenter"><div class="fichethirdleft">';
 

@@ -104,7 +104,7 @@ class modSalaires extends DolibarrModules
 			'prefix'   => img_picto('', $this->picto, 'class="pictofixedwidth valignmiddle"'),
 			'mainmenu' => 'salaires',
 			'leftmenu' => '',
-			'url'      => '/salaires/bulletin/list.php?sortfield=t.rowid&sortorder=DESC',
+			'url'      => '/salaires/index.php',
 			'langs'    => 'salaires@salaires',
 			'position' => 1002,
 			'enabled'  => 'isModEnabled("salaires")',
@@ -114,6 +114,7 @@ class modSalaires extends DolibarrModules
 		);
 		// [leftmenu, parent leftmenu ('' = racine), titre, url, droit « rubrique.action », position, icône]
 		$left = array(
+			array('sal_dash',    '',         'EdTableauDeBord',       '/salaires/index.php',                                          'bulletin.lire', 5, 'fa-tachometer-alt'),
 			array('sal_bul',     '',         'BulletinsDePaie',       '/salaires/bulletin/list.php?sortfield=t.rowid&sortorder=DESC', 'bulletin.lire', 10, 'fa-money-check-alt'),
 			array('sal_new',     'sal_bul',  'MenuNouveauBulletin',   '/salaires/bulletin/card.php?action=create',                    'bulletin.creer', 11, ''),
 			array('sal_avalid',  'sal_bul',  'MenuAValider',          '/salaires/bulletin/list.php?search_status=0',                  'bulletin.lire', 12, ''),

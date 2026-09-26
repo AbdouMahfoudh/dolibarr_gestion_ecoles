@@ -1,0 +1,5 @@
+# Accueil de l'école (remplace l'accueil de Dolibarr)
+AccueilEcole=School home
+AccueilBonjour=Good morning %s
+AccueilBonsoir=Good evening %s
+AccueilAnneeScolaire=School year %s

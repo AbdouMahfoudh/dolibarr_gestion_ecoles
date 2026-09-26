@@ -1,0 +1,5 @@
+# Accueil de l'école (remplace l'accueil de Dolibarr)
+AccueilEcole=Accueil de l'école
+AccueilBonjour=Bonjour %s
+AccueilBonsoir=Bonsoir %s
+AccueilAnneeScolaire=Année scolaire %s

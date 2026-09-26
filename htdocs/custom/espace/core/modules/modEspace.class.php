@@ -85,6 +85,7 @@ class modEspace extends DolibarrModules
 		$r = 0;
 		$left = array(
 			array('espace_acces',  '',             'MenuEspaceParents',  '/espace/list.php',              '$user->hasRight("espace", "acces", "lire")', 25),
+			array('espace_dash',   'espace_acces', 'EdTableauDeBord',    '/espace/index.php',             '$user->hasRight("espace", "acces", "lire")', 0),
 			array('espace_jamais', 'espace_acces', 'MenuJamaisConnectes', '/espace/list.php?search_etat=jamais', '$user->hasRight("espace", "acces", "lire")', 1),
 			array('espace_config', 'espace_acces', 'MenuConfigEspace',   '/espace/admin/setup.php',       '$user->hasRight("espace", "config", "gerer")', 3),
 		);

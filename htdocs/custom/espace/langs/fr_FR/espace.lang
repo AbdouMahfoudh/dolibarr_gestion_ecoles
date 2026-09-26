@@ -234,3 +234,5 @@ PermDossier=Pièces du dossier
 PermBulletinPdf=Télécharger les bulletins (PDF)
 PermRecuPdf=Télécharger les reçus de paiement (PDF)
 PermCertificatPdf=Télécharger le certificat de scolarité (PDF)
+
+EdTableauDeBord=Tableau de bord

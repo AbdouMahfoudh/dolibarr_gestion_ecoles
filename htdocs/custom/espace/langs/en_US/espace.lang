@@ -234,3 +234,5 @@ PermDossier=File documents
 PermBulletinPdf=Download report cards (PDF)
 PermRecuPdf=Download payment receipts (PDF)
 PermCertificatPdf=Download the school certificate (PDF)
+
+EdTableauDeBord=Dashboard

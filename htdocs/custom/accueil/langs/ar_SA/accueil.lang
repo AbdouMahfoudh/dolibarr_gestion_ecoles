@@ -1,0 +1,5 @@
+# Accueil de l'école (remplace l'accueil de Dolibarr)
+AccueilEcole=الصفحة الرئيسية للمدرسة
+AccueilBonjour=صباح الخير %s
+AccueilBonsoir=مساء الخير %s
+AccueilAnneeScolaire=السنة الدراسية %s

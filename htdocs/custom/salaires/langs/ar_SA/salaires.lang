@@ -347,3 +347,5 @@ DejaRetenuValides=المقتطع (كشوف مصادق عليها أو مدفوع
 PrevuBrouillon=متوقع في كشف مسودة (لم يقتطع بعد)
 RetenuePrevue=متوقع (مسودة)
 ErrorRetenueBrouillon=يوجد اقتطاع متوقع في كشف المسودة %s: أعد حسابه بعد حذف السطر، أو ألغه أولا.
+
+EdTableauDeBord=لوحة القيادة

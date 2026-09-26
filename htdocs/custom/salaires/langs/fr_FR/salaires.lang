@@ -347,3 +347,5 @@ DejaRetenuValides=Déjà retenu (bulletins validés ou payés)
 PrevuBrouillon=Prévu sur un bulletin en brouillon (pas encore retenu)
 RetenuePrevue=prévue (brouillon)
 ErrorRetenueBrouillon=Une retenue est prévue sur le bulletin en brouillon %s : recalculez-le après avoir enlevé la ligne, ou annulez-le d'abord.
+
+EdTableauDeBord=Tableau de bord

@@ -90,6 +90,13 @@ if (GETPOST('addbox')) {	// Add box (when submit is done from a form when ajax d
  * View
  */
 
+// Accueil de l'école (module personnalisé custom/accueil) : remplace l'accueil standard de Dolibarr
+$accueilEcole = dol_buildpath('/accueil/index.php', 0);
+if (is_readable($accueilEcole) && !GETPOST('accueil_dolibarr', 'int')) {
+	include $accueilEcole;
+	exit;
+}
+
 if (!isset($form) || !is_object($form)) {
 	$form = new Form($db);
 }
